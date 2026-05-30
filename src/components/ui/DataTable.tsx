@@ -1,15 +1,16 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { staggerContainerSlow, fadeSlideUp } from "@/lib/motion";
 import { Button } from "./Button";
-import { Skeleton } from "./Skeleton";
 
 export interface Column<T> {
   key: string;
@@ -39,37 +40,42 @@ export function DataTable<T>({
   onRowClick,
   onRetry,
 }: DataTableProps<T>) {
-  const tableColumns: ColumnDef<T>[] = columns.map((column) => ({
-    id: column.key,
-    header: column.label,
-    cell: ({ row }) => {
-      if (column.render) {
-        return column.render(row.original);
-      }
+  const tableColumns: ColumnDef<T>[] = useMemo(
+    () =>
+      columns.map((column) => ({
+        id: column.key,
+        header: column.label,
+        cell: ({ row }) => {
+          if (column.render) {
+            return column.render(row.original);
+          }
 
-      const value = (row.original as Record<string, unknown>)[column.key];
-      return String(value ?? "");
-    },
-    meta: {
-      className: column.className,
-    },
-  }));
+          const value = (row.original as Record<string, unknown>)[column.key];
+          return String(value ?? "");
+        },
+        meta: {
+          className: column.className,
+        },
+      })),
+    [columns],
+  );
 
   const table = useReactTable({
     data,
     columns: tableColumns,
     getCoreRowModel: getCoreRowModel(),
     getRowId: (row) => String(keyExtractor(row)),
-    manualPagination: true,
   });
 
   if (loading) {
     return (
       <div className="overflow-hidden border-2 border-[#d0e8e6] rounded-sm">
-        <div className="grid gap-3 p-4">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Skeleton key={index} className="h-10 w-full" />
-          ))}
+        <div className="flex min-h-40 items-center justify-center p-6">
+          <Loader2
+            size={28}
+            className="animate-spin text-[#5a9c94]"
+            aria-label="Carregando dados"
+          />
         </div>
       </div>
     );

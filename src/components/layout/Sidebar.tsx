@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLogout } from "@/app/(public)/login/hooks/logout";
+import { logout } from "@/services/auth/auth.service";
 import { useRouter } from "next/navigation";
 import { SidebarLink } from "./SidebarLink";
 import { getRoleLabel } from "@/lib/auth/routes";
@@ -49,9 +49,9 @@ interface SidebarProps {
 
 export function Sidebar({ area }: SidebarProps) {
   const { user, setUser } = useAuth();
-  const { logoutUser } = useLogout();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const clinicModules = [...baseModules, ...adminModules].filter((module) =>
     user ? module.roles.includes(user.role) : false
@@ -59,9 +59,14 @@ export function Sidebar({ area }: SidebarProps) {
   const modules = area === "superadmin" ? superAdminModules : clinicModules;
 
   const handleLogout = async () => {
-    await logoutUser();
-    setUser(null);
-    router.replace("/login");
+    try {
+      setIsLoggingOut(true);
+      await logout();
+    } finally {
+      setUser(null);
+      router.replace("/login");
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -119,8 +124,9 @@ export function Sidebar({ area }: SidebarProps) {
       <motion.button
         whileHover={{ x: collapsed ? 0 : 2 }}
         onClick={handleLogout}
+        disabled={isLoggingOut}
         className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-semibold uppercase tracking-wider
-          text-white/60 hover:text-red-400 hover:bg-white/5 transition-colors border-2 border-transparent hover:border-red-400/30
+          text-white/60 hover:text-red-400 hover:bg-white/5 transition-colors border-2 border-transparent hover:border-red-400/30 disabled:cursor-wait disabled:opacity-60
           ${collapsed ? "justify-center" : ""}`}
         style={{ fontFamily: "var(--font-serif)" }}
         title={collapsed ? "Sair" : undefined}

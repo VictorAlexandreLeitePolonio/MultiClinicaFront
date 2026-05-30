@@ -1,52 +1,57 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { History } from "lucide-react";
-import { DataTable, Column } from "@/components/ui/DataTable";
+import { Button } from "@/components/ui/Button";
+import { Column, DataTable } from "@/components/ui/DataTable";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Pagination } from "@/components/ui/Pagination";
-import { SearchInput } from "@/components/ui/SearchInput";
-import { SuperAdminCommercialHistoryItem } from "@/types";
-import { formatDateTime } from "@/utils/formatters";
-import { useSuperAdminHistory } from "../hooks/useSuperAdminHistory";
+import { SuperAdminClinic } from "@/types";
+import { useSuperAdminClinics } from "../hooks/useSuperAdminClinics";
 
-const columns: Column<SuperAdminCommercialHistoryItem>[] = [
-  { key: "clinicName", label: "Clínica" },
-  { key: "action", label: "Ação" },
-  { key: "description", label: "Descrição" },
-  { key: "createdByName", label: "Responsável", render: (item) => item.createdByName ?? "-" },
-  { key: "createdAt", label: "Data", render: (item) => formatDateTime(item.createdAt) },
+const columns = (onOpenHistory: (clinicId: number) => void): Column<SuperAdminClinic>[] => [
+  { key: "nome", label: "Clínica" },
+  { key: "cnpj", label: "Documento", render: (clinic) => clinic.cnpj || "-" },
+  { key: "email", label: "E-mail", render: (clinic) => clinic.email || "-" },
+  {
+    key: "actions",
+    label: "",
+    className: "text-right",
+    render: (clinic) => (
+      <div className="ml-auto w-40">
+        <Button type="button" variant="outline" onClick={() => onOpenHistory(clinic.id)}>
+          Ver histórico
+        </Button>
+      </div>
+    ),
+  },
 ];
 
 export default function SuperAdminHistoryPage() {
-  const [search, setSearch] = useState("");
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const { data, isLoading, error, refetch } = useSuperAdminHistory({
-    page,
-    pageSize,
-    search,
-  });
+  const { data, isLoading, error, refetch } = useSuperAdminClinics({ page, pageSize });
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-8">
       <PageHeader title="Histórico Comercial" />
-      <SearchInput value={search} onChange={setSearch} placeholder="Buscar no histórico..." />
 
-      {!isLoading && !error && data?.data.length === 0 ? (
+      {!isLoading && !error && data?.data?.length === 0 ? (
         <EmptyState
           icon={History}
-          title="Nenhum evento comercial encontrado"
-          description="Ativações, bloqueios, pagamentos e ajustes aparecerão nesta linha do tempo."
+          title="Nenhuma clínica encontrada"
+          description="O histórico comercial é consultado por clínica, conforme a rota atual da API."
         />
       ) : (
         <DataTable
-          columns={columns}
+          columns={columns((clinicId) => router.push(`/superadmin/clinicas/${clinicId}?tab=history`))}
           data={data?.data ?? []}
           loading={isLoading}
-          error={error ? "Erro ao carregar histórico comercial." : null}
-          keyExtractor={(item) => item.id}
+          error={error ? "Erro ao carregar clínicas." : null}
+          keyExtractor={(clinic) => clinic.id}
           onRetry={() => void refetch()}
         />
       )}

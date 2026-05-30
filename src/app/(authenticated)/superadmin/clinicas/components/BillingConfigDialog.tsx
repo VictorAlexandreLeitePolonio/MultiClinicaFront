@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 
 const BillingConfigSchema = z.object({
-  enabled: z.boolean(),
-  monthlyFee: z.number().min(0, "Mensalidade não pode ser negativa"),
+  cobrancaAtiva: z.boolean(),
+  valorMensalidade: z.number().min(0, "Mensalidade não pode ser negativa"),
+  diaVencimento: z.number().min(1, "Dia inválido").max(28, "Dia deve ser até 28"),
+  dataInicioCobranca: z.string().optional(),
 });
 
 export type BillingConfigFormData = z.infer<typeof BillingConfigSchema>;
@@ -41,7 +43,7 @@ export function BillingConfigDialog({
 
   if (!open) return null;
 
-  const enabled = watch("enabled");
+  const cobrancaAtiva = watch("cobrancaAtiva");
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
@@ -60,8 +62,8 @@ export function BillingConfigDialog({
           <label className="flex items-center gap-3 rounded-sm border-2 border-[#e2ebe6] bg-white px-4 py-3 text-sm font-semibold text-[#1a2a4a]">
             <input
               type="checkbox"
-              checked={enabled}
-              onChange={(event) => setValue("enabled", event.target.checked, { shouldValidate: true })}
+              checked={cobrancaAtiva}
+              onChange={(event) => setValue("cobrancaAtiva", event.target.checked, { shouldValidate: true })}
             />
             Cobrança ativa
           </label>
@@ -70,8 +72,24 @@ export function BillingConfigDialog({
             label="Mensalidade"
             type="number"
             step="0.01"
-            error={errors.monthlyFee?.message}
-            {...register("monthlyFee", { valueAsNumber: true })}
+            error={errors.valorMensalidade?.message}
+            {...register("valorMensalidade", { valueAsNumber: true })}
+          />
+          <FormField
+            id="billing-due-day"
+            label="Dia de vencimento"
+            type="number"
+            min="1"
+            max="28"
+            error={errors.diaVencimento?.message}
+            {...register("diaVencimento", { valueAsNumber: true })}
+          />
+          <FormField
+            id="billing-start-date"
+            label="Início da cobrança"
+            type="date"
+            error={errors.dataInicioCobranca?.message}
+            {...register("dataInicioCobranca")}
           />
         </div>
 

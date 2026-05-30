@@ -5,11 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
+import { SuperAdminBillingCharge } from "@/types";
 
 const RegisterPaymentSchema = z.object({
-  referenceMonth: z.string().min(7, "Informe o mês de referência"),
-  amount: z.number().positive("Valor deve ser maior que zero"),
-  paidAt: z.string().min(10, "Informe a data de pagamento"),
+  chargeId: z.number().positive("Selecione uma cobrança"),
+  paymentMethod: z.string().min(2, "Informe a forma de pagamento"),
+  paidAt: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -18,14 +19,9 @@ export type RegisterPaymentFormData = z.infer<typeof RegisterPaymentSchema>;
 interface RegisterPaymentDialogProps {
   open: boolean;
   loading?: boolean;
-  defaultAmount: number;
+  charges: SuperAdminBillingCharge[];
   onClose: () => void;
   onSubmit: (data: RegisterPaymentFormData) => Promise<void> | void;
-}
-
-function getCurrentReferenceMonth() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
 function getTodayDate() {
@@ -35,19 +31,20 @@ function getTodayDate() {
 export function RegisterPaymentDialog({
   open,
   loading,
-  defaultAmount,
+  charges,
   onClose,
   onSubmit,
 }: RegisterPaymentDialogProps) {
+  const pendingCharges = charges.filter((charge) => charge.status === "Pending");
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<RegisterPaymentFormData>({
     resolver: zodResolver(RegisterPaymentSchema),
-    defaultValues: {
-      referenceMonth: getCurrentReferenceMonth(),
-      amount: defaultAmount,
+    values: {
+      chargeId: pendingCharges[0]?.id ?? 0,
+      paymentMethod: "",
       paidAt: getTodayDate(),
       notes: "",
     },
@@ -69,8 +66,31 @@ export function RegisterPaymentDialog({
         </p>
 
         <div className="mt-5 space-y-4">
-          <FormField id="payment-reference-month" label="Mês de referência" type="month" error={errors.referenceMonth?.message} {...register("referenceMonth")} />
-          <FormField id="payment-amount" label="Valor" type="number" step="0.01" error={errors.amount?.message} {...register("amount", { valueAsNumber: true })} />
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="payment-charge-id"
+              className="text-sm font-semibold uppercase tracking-wide text-[#1a2a4a]"
+              style={{ fontFamily: "var(--font-serif)" }}
+            >
+              Cobrança
+            </label>
+            <select
+              id="payment-charge-id"
+              className="w-full rounded-sm border-2 border-[#e2ebe6] bg-[#fdfcfa] px-4 py-3 text-[#1a2a4a] transition-all duration-150 focus:border-[#5a9c94] focus:shadow-[3px_3px_0_0_#5a9c94] focus:outline-none"
+              style={{ fontFamily: "var(--font-serif)" }}
+              {...register("chargeId", { valueAsNumber: true })}
+            >
+              {pendingCharges.map((charge) => (
+                <option key={charge.id} value={charge.id}>
+                  {charge.referenceMonth} - R$ {charge.amount.toFixed(2)}
+                </option>
+              ))}
+            </select>
+            {errors.chargeId?.message && (
+              <span className="text-xs font-medium text-red-600">{errors.chargeId.message}</span>
+            )}
+          </div>
+          <FormField id="payment-method" label="Forma de pagamento" error={errors.paymentMethod?.message} {...register("paymentMethod")} />
           <FormField id="payment-paid-at" label="Data de pagamento" type="date" error={errors.paidAt?.message} {...register("paidAt")} />
           <FormField id="payment-notes" label="Observações" error={errors.notes?.message} {...register("notes")} />
         </div>
@@ -79,7 +99,7 @@ export function RegisterPaymentDialog({
           <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
             Cancelar
           </Button>
-          <Button type="submit" loading={loading}>
+          <Button type="submit" loading={loading} disabled={pendingCharges.length === 0 || loading}>
             Registrar
           </Button>
         </div>

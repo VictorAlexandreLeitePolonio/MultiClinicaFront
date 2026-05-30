@@ -1,20 +1,21 @@
-import api from "@/lib/api";
-import { PagedResult, SuperAdminBillingCharge } from "@/types";
+import api from '@/lib/api'
+import { normalizePagedResult } from '@/lib/pagination'
+import { PagedResult, SuperAdminBillingCharge } from '@/types'
 
 export interface GetSuperAdminBillingParams {
-  page: number;
-  pageSize: number;
-  search?: string;
-  status?: string;
+  page: number
+  pageSize: number
+  status?: string
 }
 
-export async function getSuperAdminBillingCharges(
-  params: GetSuperAdminBillingParams
+export async function getSuperAdminClinicCharges(
+  clinicId: number,
+  params: GetSuperAdminBillingParams,
 ): Promise<PagedResult<SuperAdminBillingCharge>> {
   const response = await api.get<PagedResult<SuperAdminBillingCharge>>(
-    "/api/superadmin/billing/charges",
-    { params }
-  );
+    `/api/superadmin/clinicas/${clinicId}/charges`,
+    { params },
+  )
 
-  return response.data;
+  return normalizePagedResult<SuperAdminBillingCharge>(response.data, params.pageSize)
 }

@@ -31,14 +31,14 @@ export default function SuperAdminDashboardPage() {
         },
         {
           label: 'Bloqueadas por cobrança',
-          value: data.billingBlockedClinics,
-          description: `${data.billingEnabledClinics} com cobrança ativa`,
+          value: data.billingBlocked,
+          description: `${data.billingEnabled} com cobrança ativa`,
           icon: ClipboardList,
         },
         {
           label: 'Receita recebida no mês',
-          value: formatCurrency(data.monthlyReceivedRevenue),
-          description: `${formatCurrency(data.monthlyPendingRevenue)} pendente`,
+          value: formatCurrency(data.monthlyReceived),
+          description: `${formatCurrency(data.monthlyPending)} pendente`,
           icon: CircleDollarSign,
         },
       ]

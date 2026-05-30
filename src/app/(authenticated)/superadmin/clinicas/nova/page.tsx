@@ -8,38 +8,29 @@ import { createSuperAdminClinic, CreateSuperAdminClinicPayload } from "@/service
 import { ClinicCreateWizard } from "../components/ClinicCreateWizard";
 import { ClinicCreateFormData } from "../schemas/clinic-create.schema";
 
-function emptyToUndefined(value?: string): string | undefined {
-  const normalized = value?.trim();
-  return normalized ? normalized : undefined;
+function trimValue(value?: string): string {
+  return value?.trim() ?? "";
 }
 
 function buildPayload(data: ClinicCreateFormData): CreateSuperAdminClinicPayload {
   return {
-    name: data.name,
-    document: emptyToUndefined(data.document),
-    email: emptyToUndefined(data.email),
-    phone: emptyToUndefined(data.phone),
-    address: {
-      rua: emptyToUndefined(data.rua),
-      numero: emptyToUndefined(data.numero),
-      bairro: emptyToUndefined(data.bairro),
-      cidade: emptyToUndefined(data.cidade),
-      estado: emptyToUndefined(data.estado),
-      cep: emptyToUndefined(data.cep),
+    nome: trimValue(data.name),
+    nomeFantasia: trimValue(data.name),
+    nomeResponsavel: trimValue(data.adminName),
+    cnpj: trimValue(data.document),
+    email: trimValue(data.email),
+    telefone: trimValue(data.phone),
+    rua: trimValue(data.rua),
+    numero: trimValue(data.numero),
+    bairro: trimValue(data.bairro),
+    cidade: trimValue(data.cidade),
+    estado: trimValue(data.estado),
+    cep: trimValue(data.cep),
+    firstAdmin: {
+      name: trimValue(data.adminName),
+      email: trimValue(data.adminEmail),
+      password: data.adminPassword ?? "",
     },
-    billing: {
-      enabled: data.billingEnabled,
-      monthlyFee: data.monthlyFee,
-    },
-    status: data.status,
-    internalNotes: emptyToUndefined(data.internalNotes),
-    firstAdministrator: data.createFirstAdmin
-      ? {
-          name: data.adminName ?? "",
-          email: data.adminEmail ?? "",
-          password: data.adminPassword ?? "",
-        }
-      : undefined,
   };
 }
 

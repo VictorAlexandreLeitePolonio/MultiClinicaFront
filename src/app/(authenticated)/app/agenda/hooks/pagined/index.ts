@@ -19,7 +19,7 @@ export function useAgendaPaginated(initialFilters?: AgendaFilters) {
     totalCount: 0,
     totalPages: 0,
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<AgendaFilters>(initialFilters ?? {});

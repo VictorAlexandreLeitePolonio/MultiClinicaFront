@@ -12,8 +12,8 @@ vi.mock("@/contexts/AuthContext", () => ({
   }),
 }));
 
-vi.mock("@/app/(public)/login/hooks/logout", () => ({
-  useLogout: () => ({ logoutUser: vi.fn() }),
+vi.mock("@/services/auth/auth.service", () => ({
+  logout: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({

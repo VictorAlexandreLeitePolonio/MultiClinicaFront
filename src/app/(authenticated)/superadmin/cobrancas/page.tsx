@@ -1,66 +1,81 @@
 "use client";
 
 import { useState } from "react";
-import { DataTable, Column } from "@/components/ui/DataTable";
+import { useRouter } from "next/navigation";
+import { CreditCard } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Column, DataTable } from "@/components/ui/DataTable";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Pagination } from "@/components/ui/Pagination";
-import { SearchInput } from "@/components/ui/SearchInput";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { SuperAdminBillingCharge } from "@/types";
-import { formatCurrency, formatDate } from "@/utils/formatters";
-import { useSuperAdminBilling } from "../hooks/useSuperAdminBilling";
+import { SuperAdminClinic } from "@/types";
+import { formatCurrency } from "@/utils/formatters";
+import { useSuperAdminClinics } from "../hooks/useSuperAdminClinics";
 
-const columns: Column<SuperAdminBillingCharge>[] = [
-  { key: "clinicName", label: "Clínica" },
-  { key: "referenceMonth", label: "Referência" },
-  { key: "amount", label: "Valor", render: (charge) => formatCurrency(charge.amount) },
-  { key: "dueDate", label: "Vencimento", render: (charge) => formatDate(charge.dueDate) },
+const columns = (onOpenBilling: (clinicId: number) => void): Column<SuperAdminClinic>[] => [
+  { key: "nome", label: "Clínica" },
   {
-    key: "status",
-    label: "Status",
-    render: (charge) => (
+    key: "cobrancaAtiva",
+    label: "Cobrança",
+    render: (clinic) => (
       <StatusBadge
-        status={charge.status}
+        status={clinic.isBlockedByBilling ? "Blocked" : clinic.cobrancaAtiva ? "Enabled" : "Disabled"}
         mapping={{
-          Pending: { label: "Pendente", className: "bg-yellow-100 text-yellow-700 border-yellow-200" },
-          Paid: { label: "Pago", className: "bg-green-100 text-green-700 border-green-200" },
-          Overdue: { label: "Vencido", className: "bg-red-100 text-red-700 border-red-200" },
-          Cancelled: { label: "Cancelado", className: "bg-gray-100 text-gray-700 border-gray-200" },
+          Enabled: { label: "Ativa", className: "bg-blue-100 text-blue-700 border-blue-200" },
+          Blocked: { label: "Bloqueada", className: "bg-red-100 text-red-700 border-red-200" },
+          Disabled: { label: "Desativada", className: "bg-gray-100 text-gray-700 border-gray-200" },
         }}
       />
     ),
   },
-  { key: "paidAt", label: "Pagamento", render: (charge) => formatDate(charge.paidAt) },
+  {
+    key: "valorMensalidade",
+    label: "Mensalidade",
+    render: (clinic) => formatCurrency(clinic.valorMensalidade),
+  },
+  { key: "diaVencimento", label: "Vencimento", render: (clinic) => `Dia ${clinic.diaVencimento}` },
+  {
+    key: "actions",
+    label: "",
+    className: "text-right",
+    render: (clinic) => (
+      <div className="ml-auto w-40">
+        <Button type="button" variant="outline" onClick={() => onOpenBilling(clinic.id)}>
+          Ver cobranças
+        </Button>
+      </div>
+    ),
+  },
 ];
 
 export default function SuperAdminBillingPage() {
-  const [search, setSearch] = useState("");
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const { data, isLoading, error, refetch } = useSuperAdminBilling({
+  const { data, isLoading, error, refetch } = useSuperAdminClinics({
     page,
     pageSize,
-    search,
+    cobrancaAtiva: true,
   });
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-8">
       <PageHeader title="Cobranças Comerciais" />
-      <SearchInput value={search} onChange={setSearch} placeholder="Buscar por clínica..." />
 
-      {!isLoading && !error && data?.data.length === 0 ? (
+      {!isLoading && !error && data?.data?.length === 0 ? (
         <EmptyState
-          title="Nenhuma cobrança encontrada"
-          description="As cobranças comerciais aparecerão aqui quando o backend retornar dados."
+          icon={CreditCard}
+          title="Nenhuma clínica com cobrança ativa"
+          description="As cobranças são consultadas pelo detalhe de cada clínica, conforme a rota atual da API."
         />
       ) : (
         <DataTable
-          columns={columns}
+          columns={columns((clinicId) => router.push(`/superadmin/clinicas/${clinicId}?tab=billing`))}
           data={data?.data ?? []}
           loading={isLoading}
-          error={error ? "Erro ao carregar cobranças." : null}
-          keyExtractor={(charge) => charge.id}
+          error={error ? "Erro ao carregar clínicas com cobrança." : null}
+          keyExtractor={(clinic) => clinic.id}
           onRetry={() => void refetch()}
         />
       )}

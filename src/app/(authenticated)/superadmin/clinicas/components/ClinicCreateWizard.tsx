@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { FormActions } from "@/components/ui/FormActions";
 import { FormField } from "@/components/ui/FormField";
@@ -67,7 +66,6 @@ export function ClinicCreateWizard({ loading, onCancel, onSubmit }: ClinicCreate
   });
 
   const formValues = watch();
-  const createFirstAdmin = watch("createFirstAdmin");
 
   const validateCurrentStep = async () => {
     if (currentStep === 0) return trigger(clinicDataFields);
@@ -147,33 +145,11 @@ export function ClinicCreateWizard({ loading, onCancel, onSubmit }: ClinicCreate
       )}
 
       {currentStep === 3 && (
-        <div className="space-y-4">
-          <label className="flex items-center gap-3 rounded-sm border-2 border-[#e2ebe6] bg-white px-4 py-3 text-sm font-semibold text-[#1a2a4a]">
-            <input
-              type="checkbox"
-              checked={createFirstAdmin}
-              onChange={(event) => setValue("createFirstAdmin", event.target.checked, { shouldValidate: true })}
-            />
-            Criar primeiro administrador da clínica
-          </label>
-
-          {!createFirstAdmin && (
-            <div className="flex gap-3 rounded-sm border-2 border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
-              <AlertTriangle size={20} className="shrink-0" />
-              <p>
-                A clínica será criada sem usuário administrador. O acesso inicial precisará ser configurado depois.
-              </p>
-            </div>
-          )}
-
-          {createFirstAdmin && (
-            <FormSection title="Primeiro administrador" columns={2}>
-              <FormField id="admin-name" label="Nome" required error={errors.adminName?.message} {...register("adminName")} />
-              <FormField id="admin-email" label="E-mail" required type="email" error={errors.adminEmail?.message} {...register("adminEmail")} />
-              <PasswordField id="admin-password" label="Senha" required error={errors.adminPassword?.message} {...register("adminPassword")} />
-            </FormSection>
-          )}
-        </div>
+        <FormSection title="Primeiro administrador" columns={2}>
+          <FormField id="admin-name" label="Nome" required error={errors.adminName?.message} {...register("adminName")} />
+          <FormField id="admin-email" label="E-mail" required type="email" error={errors.adminEmail?.message} {...register("adminEmail")} />
+          <PasswordField id="admin-password" label="Senha" required error={errors.adminPassword?.message} {...register("adminPassword")} />
+        </FormSection>
       )}
 
       {currentStep === 4 && (

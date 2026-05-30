@@ -11,6 +11,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Pagination } from "@/components/ui/Pagination";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Tabs } from "@/components/ui/Tabs";
@@ -31,6 +32,9 @@ import { CreateClinicUserDialog, CreateClinicUserFormData } from "../components/
 import { RegisterPaymentDialog, RegisterPaymentFormData } from "../components/RegisterPaymentDialog";
 import { UnblockBillingDialog, UnblockBillingFormData } from "../components/UnblockBillingDialog";
 import { useSuperAdminClinicDetail } from "../../hooks/useSuperAdminClinicDetail";
+import { useSuperAdminBilling } from "../../hooks/useSuperAdminBilling";
+import { useSuperAdminClinicUsers } from "../../hooks/useSuperAdminClinicUsers";
+import { useSuperAdminHistory } from "../../hooks/useSuperAdminHistory";
 
 const tabs = [
   { value: "overview", label: "Visão geral" },
@@ -57,15 +61,18 @@ const userColumns: Column<SuperAdminClinicUser>[] = [
       />
     ),
   },
-  { key: "createdAt", label: "Cadastro", render: (user) => formatDate(user.createdAt) },
 ];
 
 const historyColumns: Column<SuperAdminCommercialHistoryItem>[] = [
-  { key: "action", label: "Ação" },
+  { key: "type", label: "Ação" },
   { key: "description", label: "Descrição" },
-  { key: "createdByName", label: "Responsável", render: (item) => item.createdByName ?? "-" },
   { key: "createdAt", label: "Data", render: (item) => formatDateTime(item.createdAt) },
 ];
+
+function getBillingStatus(data: { isBlockedByBilling: boolean; cobrancaAtiva: boolean }) {
+  if (data.isBlockedByBilling) return "Blocked";
+  return data.cobrancaAtiva ? "Enabled" : "Disabled";
+}
 
 function InfoRow({ label, value }: { label: string; value: string | number | null | undefined }) {
   return (
@@ -97,7 +104,25 @@ export default function SuperAdminClinicDetailPage() {
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(queryAction === "payment");
   const [unblockDialogOpen, setUnblockDialogOpen] = useState(queryAction === "unblock");
   const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
+  const [usersPage, setUsersPage] = useState(1);
+  const [usersPageSize, setUsersPageSize] = useState(10);
+  const [historyPage, setHistoryPage] = useState(1);
+  const [historyPageSize, setHistoryPageSize] = useState(10);
+  const chargesPage = 1;
+  const chargesPageSize = 10;
   const { data, isLoading, error, refetch } = useSuperAdminClinicDetail(clinicId);
+  const usersQuery = useSuperAdminClinicUsers(clinicId, {
+    page: usersPage,
+    pageSize: usersPageSize,
+  });
+  const historyQuery = useSuperAdminHistory(clinicId, {
+    page: historyPage,
+    pageSize: historyPageSize,
+  });
+  const chargesQuery = useSuperAdminBilling(clinicId, {
+    page: chargesPage,
+    pageSize: chargesPageSize,
+  });
 
   const billingMutation = useMutation({
     mutationFn: (payload: BillingConfigFormData) => configureClinicBilling(clinicId, payload),
@@ -105,6 +130,7 @@ export default function SuperAdminClinicDetailPage() {
       toast.success("Cobrança atualizada com sucesso.");
       setBillingDialogOpen(false);
       void refetch();
+      void chargesQuery.refetch();
     },
     onError: (mutationError) => {
       toast.error(getApiErrorMessage(mutationError, "Erro ao atualizar cobrança."));
@@ -117,6 +143,8 @@ export default function SuperAdminClinicDetailPage() {
       toast.success("Pagamento registrado com sucesso.");
       setPaymentDialogOpen(false);
       void refetch();
+      void chargesQuery.refetch();
+      void historyQuery.refetch();
     },
     onError: (mutationError) => {
       toast.error(getApiErrorMessage(mutationError, "Erro ao registrar pagamento."));
@@ -129,6 +157,7 @@ export default function SuperAdminClinicDetailPage() {
       toast.success("Cobrança desbloqueada com sucesso.");
       setUnblockDialogOpen(false);
       void refetch();
+      void historyQuery.refetch();
     },
     onError: (mutationError) => {
       toast.error(getApiErrorMessage(mutationError, "Erro ao desbloquear cobrança."));
@@ -141,7 +170,7 @@ export default function SuperAdminClinicDetailPage() {
       toast.success("Usuário criado com sucesso.");
       setCreateUserDialogOpen(false);
       setActiveTab("users");
-      void refetch();
+      void usersQuery.refetch();
     },
     onError: (mutationError) => {
       toast.error(getApiErrorMessage(mutationError, "Erro ao criar usuário."));
@@ -190,7 +219,7 @@ export default function SuperAdminClinicDetailPage() {
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-8">
       <PageHeader
-        title={data.name}
+        title={data.nome}
         onBack={() => router.push("/superadmin/clinicas")}
         actions={
           <div className="flex flex-wrap gap-2">
@@ -204,7 +233,7 @@ export default function SuperAdminClinicDetailPage() {
                 Registrar pagamento
               </Button>
             </div>
-            {data.billing.status === "Blocked" && (
+            {data.isBlockedByBilling && (
               <div className="w-44">
                 <Button type="button" variant="danger" onClick={() => setUnblockDialogOpen(true)}>
                   Desbloquear
@@ -218,20 +247,20 @@ export default function SuperAdminClinicDetailPage() {
       <Tabs tabs={tabs} value={activeTab} onChange={setActiveTab}>
         {activeTab === "overview" && (
           <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <MetricCard label="Usuários" value={data.usersCount} icon={Users} />
+            <MetricCard label="Usuários" value={usersQuery.data?.totalCount ?? 0} icon={Users} />
             <MetricCard
               label="Status da clínica"
-              value={data.status === "Active" ? "Ativa" : "Inativa"}
+              value={data.isActive ? "Ativa" : "Inativa"}
               icon={CalendarDays}
             />
             <MetricCard
               label="Cobrança"
-              value={data.billing.status === "Blocked" ? "Bloqueada" : data.billing.enabled ? "Ativa" : "Desativada"}
+              value={data.isBlockedByBilling ? "Bloqueada" : data.cobrancaAtiva ? "Ativa" : "Desativada"}
               icon={CreditCard}
             />
             <MetricCard
               label="Mensalidade"
-              value={formatCurrency(data.billing.monthlyFee)}
+              value={formatCurrency(data.valorMensalidade)}
               icon={FileText}
             />
           </section>
@@ -239,26 +268,28 @@ export default function SuperAdminClinicDetailPage() {
 
         {activeTab === "data" && (
           <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <InfoRow label="Documento" value={data.document} />
+            <InfoRow label="Razão social" value={data.nome} />
+            <InfoRow label="Nome fantasia" value={data.nomeFantasia} />
+            <InfoRow label="Responsável" value={data.nomeResponsavel} />
+            <InfoRow label="Documento" value={data.cnpj} />
             <InfoRow label="E-mail" value={data.email} />
-            <InfoRow label="Telefone" value={data.phone} />
-            <InfoRow label="Rua" value={data.address.rua} />
-            <InfoRow label="Número" value={data.address.numero} />
-            <InfoRow label="Bairro" value={data.address.bairro} />
-            <InfoRow label="Cidade" value={data.address.cidade} />
-            <InfoRow label="Estado" value={data.address.estado} />
-            <InfoRow label="CEP" value={data.address.cep} />
-            <InfoRow label="Observações internas" value={data.internalNotes} />
+            <InfoRow label="Telefone" value={data.telefone} />
+            <InfoRow label="Rua" value={data.rua} />
+            <InfoRow label="Número" value={data.numero} />
+            <InfoRow label="Bairro" value={data.bairro} />
+            <InfoRow label="Cidade" value={data.cidade} />
+            <InfoRow label="Estado" value={data.estado} />
+            <InfoRow label="CEP" value={data.cep} />
           </section>
         )}
 
         {activeTab === "billing" && (
           <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <InfoRow label="Cobrança ativa" value={data.billing.enabled ? "Sim" : "Não"} />
-            <InfoRow label="Status comercial" value={data.billing.status} />
-            <InfoRow label="Mensalidade" value={formatCurrency(data.billing.monthlyFee)} />
-            <InfoRow label="Motivo do bloqueio" value={data.billing.billingBlockedReason} />
-            <InfoRow label="Bloqueado em" value={formatDateTime(data.billing.blockedAt)} />
+            <InfoRow label="Cobrança ativa" value={data.cobrancaAtiva ? "Sim" : "Não"} />
+            <InfoRow label="Status comercial" value={getBillingStatus(data)} />
+            <InfoRow label="Mensalidade" value={formatCurrency(data.valorMensalidade)} />
+            <InfoRow label="Dia de vencimento" value={data.diaVencimento} />
+            <InfoRow label="Início da cobrança" value={formatDate(data.dataInicioCobranca)} />
           </section>
         )}
 
@@ -274,28 +305,56 @@ export default function SuperAdminClinicDetailPage() {
             </div>
             <DataTable
               columns={userColumns}
-              data={data.users}
+              data={usersQuery.data?.data ?? []}
+              loading={usersQuery.isLoading}
+              error={usersQuery.error ? "Erro ao carregar usuários." : null}
               emptyMessage="Nenhum usuário cadastrado para esta clínica."
               keyExtractor={(user) => user.id}
+              onRetry={() => void usersQuery.refetch()}
             />
+            {usersQuery.data && usersQuery.data.totalPages > 0 && (
+              <Pagination
+                page={usersPage}
+                totalPages={usersQuery.data.totalPages}
+                pageSize={usersPageSize}
+                onPageChange={setUsersPage}
+                onPageSizeChange={setUsersPageSize}
+              />
+            )}
           </section>
         )}
 
         {activeTab === "history" && (
-          <DataTable
-            columns={historyColumns}
-            data={data.commercialHistory}
-            emptyMessage="Nenhum evento comercial registrado."
-            keyExtractor={(item) => item.id}
-          />
+          <section className="flex flex-col gap-4">
+            <DataTable
+              columns={historyColumns}
+              data={historyQuery.data?.data ?? []}
+              loading={historyQuery.isLoading}
+              error={historyQuery.error ? "Erro ao carregar histórico." : null}
+              emptyMessage="Nenhum evento comercial registrado."
+              keyExtractor={(item) => item.id}
+              onRetry={() => void historyQuery.refetch()}
+            />
+            {historyQuery.data && historyQuery.data.totalPages > 0 && (
+              <Pagination
+                page={historyPage}
+                totalPages={historyQuery.data.totalPages}
+                pageSize={historyPageSize}
+                onPageChange={setHistoryPage}
+                onPageSizeChange={setHistoryPageSize}
+              />
+            )}
+          </section>
         )}
       </Tabs>
 
       <BillingConfigDialog
         open={billingDialogOpen}
         defaultValues={{
-          enabled: data.billing.enabled,
-          monthlyFee: data.billing.monthlyFee,
+          cobrancaAtiva: data.cobrancaAtiva,
+          valorMensalidade: data.valorMensalidade,
+          diaVencimento: data.diaVencimento,
+          dataInicioCobranca: data.dataInicioCobranca ?? "",
         }}
         loading={billingMutation.isPending}
         onClose={() => setBillingDialogOpen(false)}
@@ -304,7 +363,7 @@ export default function SuperAdminClinicDetailPage() {
 
       <RegisterPaymentDialog
         open={paymentDialogOpen}
-        defaultAmount={data.billing.monthlyFee}
+        charges={chargesQuery.data?.data ?? []}
         loading={paymentMutation.isPending}
         onClose={() => setPaymentDialogOpen(false)}
         onSubmit={(payload) => paymentMutation.mutate(payload)}

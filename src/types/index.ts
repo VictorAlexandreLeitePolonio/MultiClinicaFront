@@ -18,29 +18,40 @@ export interface User {
   createdAt?: string;
 }
 
-export type ClinicStatus = "Active" | "Inactive";
 export type BillingStatus = "Enabled" | "Blocked" | "Disabled";
 
 export interface SuperAdminDashboardMetrics {
   totalClinics: number;
   activeClinics: number;
   inactiveClinics: number;
-  billingBlockedClinics: number;
-  billingEnabledClinics: number;
+  billingBlocked: number;
+  billingEnabled: number;
   overdueCharges: number;
-  monthlyReceivedRevenue: number;
-  monthlyPendingRevenue: number;
+  monthlyReceived: number;
+  monthlyPending: number;
+  latestActivities: SuperAdminCommercialHistoryItem[];
 }
 
 export interface SuperAdminClinic {
   id: number;
-  name: string;
-  document: string | null;
-  email: string | null;
-  phone: string | null;
-  status: ClinicStatus;
-  billingStatus: BillingStatus;
-  usersCount: number;
+  nome: string;
+  nomeFantasia: string;
+  nomeResponsavel: string;
+  cnpj: string;
+  email: string;
+  telefone: string;
+  rua: string;
+  numero: string;
+  bairro: string;
+  cidade: string;
+  estado: string;
+  cep: string;
+  isActive: boolean;
+  isBlockedByBilling: boolean;
+  valorMensalidade: number;
+  diaVencimento: number;
+  cobrancaAtiva: boolean;
+  dataInicioCobranca: string | null;
   createdAt: string;
 }
 
@@ -50,50 +61,28 @@ export interface SuperAdminClinicUser {
   email: string;
   role: Exclude<UserRole, "SuperAdmin">;
   isActive: boolean;
-  createdAt: string;
 }
 
-export interface SuperAdminClinicBilling {
-  enabled: boolean;
-  status: BillingStatus;
-  monthlyFee: number;
-  billingBlockedReason: string | null;
-  blockedAt: string | null;
-}
-
-export interface SuperAdminClinicDetail extends SuperAdminClinic {
-  address: {
-    rua: string | null;
-    numero: string | null;
-    bairro: string | null;
-    cidade: string | null;
-    estado: string | null;
-    cep: string | null;
-  };
-  billing: SuperAdminClinicBilling;
-  users: SuperAdminClinicUser[];
-  commercialHistory: SuperAdminCommercialHistoryItem[];
-  internalNotes: string | null;
-}
+export type SuperAdminClinicDetail = SuperAdminClinic;
 
 export interface SuperAdminBillingCharge {
   id: number;
-  clinicId: number;
-  clinicName: string;
+  clinicaId: number;
   referenceMonth: string;
   amount: number;
-  status: "Pending" | "Paid" | "Overdue" | "Cancelled";
+  status: "Pending" | "Paid" | "Cancelled";
   dueDate: string;
   paidAt: string | null;
+  paymentMethod: string;
+  notes: string;
 }
 
 export interface SuperAdminCommercialHistoryItem {
   id: number;
-  clinicId: number;
-  clinicName: string;
-  action: string;
+  clinicaId: number;
+  type: string;
   description: string;
-  createdByName: string | null;
+  metadataJson: string | null;
   createdAt: string;
 }
 

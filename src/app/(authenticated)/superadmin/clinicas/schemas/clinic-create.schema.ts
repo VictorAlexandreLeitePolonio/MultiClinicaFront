@@ -22,7 +22,14 @@ export const ClinicCreateSchema = z
     adminPassword: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (!data.createFirstAdmin) return;
+    if (!data.createFirstAdmin) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["createFirstAdmin"],
+        message: "A API exige o primeiro administrador da clínica",
+      });
+      return;
+    }
 
     if (!data.adminName || data.adminName.trim().length < 2) {
       ctx.addIssue({

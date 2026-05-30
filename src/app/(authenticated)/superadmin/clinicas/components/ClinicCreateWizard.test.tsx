@@ -15,7 +15,7 @@ describe("ClinicCreateWizard", () => {
     expect(screen.getByLabelText(/Nome da clínica/i)).toBeInTheDocument();
   });
 
-  it("allows skipping first administrator with an explicit warning", async () => {
+  it("submits with the first administrator required by the API", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
 
@@ -25,9 +25,9 @@ describe("ClinicCreateWizard", () => {
     await user.click(screen.getByRole("button", { name: "Próximo" }));
     await user.click(screen.getByRole("button", { name: "Próximo" }));
     await user.click(screen.getByRole("button", { name: "Próximo" }));
-    await user.click(screen.getByLabelText(/Criar primeiro administrador/i));
-
-    expect(screen.getByText(/A clínica será criada sem usuário administrador/i)).toBeInTheDocument();
+    await user.type(screen.getByLabelText(/^Nome/i), "Admin Centro");
+    await user.type(screen.getByLabelText(/E-mail/i), "admin@clinica.test");
+    await user.type(screen.getByLabelText(/Senha/i), "123456");
 
     await user.click(screen.getByRole("button", { name: "Próximo" }));
     await user.click(screen.getByRole("button", { name: "Criar clínica" }));
@@ -35,7 +35,9 @@ describe("ClinicCreateWizard", () => {
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
         name: "Clínica Centro",
-        createFirstAdmin: false,
+        createFirstAdmin: true,
+        adminName: "Admin Centro",
+        adminEmail: "admin@clinica.test",
       }),
       expect.anything()
     );

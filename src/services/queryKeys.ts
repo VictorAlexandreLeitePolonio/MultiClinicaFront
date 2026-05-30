@@ -41,7 +41,8 @@ export const queryKeys = {
     dashboard: ["superadmin", "dashboard"] as const,
     clinics: (params: unknown) => ["superadmin", "clinics", params] as const,
     clinicDetail: (clinicId: number) => ["superadmin", "clinics", clinicId] as const,
-    billing: (params: unknown) => ["superadmin", "billing", params] as const,
-    history: (params: unknown) => ["superadmin", "history", params] as const,
+    billing: (clinicId: number, params: unknown) => ["superadmin", "billing", clinicId, params] as const,
+    history: (clinicId: number, params: unknown) => ["superadmin", "history", clinicId, params] as const,
+    clinicUsers: (clinicId: number, params: unknown) => ["superadmin", "users", clinicId, params] as const,
   },
 };
