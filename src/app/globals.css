@@ -1,0 +1,116 @@
+@import "tailwindcss";
+@import "@fontsource/crimson-text/400.css";
+@import "@fontsource/crimson-text/600.css";
+@import "@fontsource/crimson-text/700.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+
+:root {
+  /* Paleta alinhada ao logo Dra. Laiza Polonio */
+  --color-primary: #5a9c94;          /* Teal do logo */
+  --color-primary-dark: #4a8880;     /* Teal escuro */
+  --color-primary-light: #7bbfb8;    /* Teal claro */
+  --color-primary-muted: #e8f4f3;    /* Teal muito suave (backgrounds) */
+
+  --color-secondary: #1a2a4a;        /* Navy azul (manter) */
+  --color-secondary-dark: #121d33;
+  --color-secondary-light: #2a3d6a;
+
+  --color-white: #ffffff;
+
+  /* Fundos quentinhos — efeito papel/pergaminho */
+  --color-bg-warm: #f7f5f1;          /* Fundo principal — bege quente */
+  --color-bg-card: #fdfcfa;          /* Cards — quase branco quente */
+  --color-bg-sidebar: #1e2d4a;       /* Sidebar escura (navy profundo) */
+  --color-bg-sidebar-active: #5a9c94; /* Item ativo no sidebar */
+
+  --color-gray-50: #f7f5f1;
+  --color-gray-100: #ede9e3;
+  --color-gray-200: #d8d2c8;
+  --color-gray-600: #6b7280;
+  --color-gray-800: #2a3d33;
+
+  /* Tipografia */
+  --font-serif: "Crimson Text", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  /* Sombras físicas — aumentar levemente para mais presença rústica */
+  --shadow-sm: 3px 3px 0 0 rgba(26, 42, 74, 0.12);
+  --shadow-md: 4px 4px 0 0 rgba(26, 42, 74, 0.18);
+  --shadow-lg: 6px 6px 0 0 rgba(26, 42, 74, 0.22);
+
+  --shadow-teal-sm: 3px 3px 0 0 rgba(90, 156, 148, 0.3);
+  --shadow-teal-md: 4px 4px 0 0 rgba(90, 156, 148, 0.4);
+
+  /* Bordas */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+}
+
+@theme inline {
+  --color-background: var(--color-bg-warm);
+  --color-foreground: var(--color-secondary);
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+}
+
+body {
+  background: var(--color-bg-warm);
+  color: var(--color-secondary);
+  font-family: var(--font-sans);
+}
+
+/* Estilos rústicos funcionais */
+.card-rustic {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-secondary);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-sm);
+}
+
+.input-rustic {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-serif);
+  transition: all 0.15s ease;
+}
+
+.input-rustic:focus {
+  border-color: var(--color-primary);
+  box-shadow: 3px 3px 0 0 var(--color-primary);
+  outline: none;
+}
+
+.btn-rustic {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: 2px solid var(--color-primary-dark);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.btn-rustic:hover {
+  background: var(--color-primary-dark);
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-rustic:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.text-serif {
+  font-family: var(--font-serif);
+}
+
+.border-rustic {
+  border: 2px solid var(--color-secondary);
+}
