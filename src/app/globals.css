@@ -7,7 +7,7 @@
 @import "@fontsource/inter/600.css";
 
 :root {
-  /* Paleta alinhada ao logo Dra. Laiza Polonio */
+  /* Paleta base MultiClinica */
   --color-primary: #5a9c94;          /* Teal do logo */
   --color-primary-dark: #4a8880;     /* Teal escuro */
   --color-primary-light: #7bbfb8;    /* Teal claro */
@@ -46,6 +46,19 @@
   /* Bordas */
   --radius-sm: 2px;
   --radius-md: 4px;
+}
+
+.dark {
+  --color-bg-warm: #0f172a;
+  --color-bg-card: #111827;
+  --color-secondary: #e5e7eb;
+  --color-secondary-dark: #cbd5e1;
+  --color-primary-muted: #153f3c;
+  --color-gray-50: #111827;
+  --color-gray-100: #1f2937;
+  --color-gray-200: #334155;
+  --color-gray-600: #94a3b8;
+  --color-gray-800: #e5e7eb;
 }
 
 @theme inline {

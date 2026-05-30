@@ -1,7 +1,7 @@
 "use client";
 
-import Cookies from "js-cookie";
 import { useState } from "react";
+import { logout } from "@/services/auth/auth.service";
 
 interface UseLogoutReturn {
   logoutUser: () => Promise<{ success: boolean }>;
@@ -14,7 +14,7 @@ export const useLogout = (): UseLogoutReturn => {
   const logoutUser = async () => {
     setLoading(true);
     try {
-      Cookies.remove("auth_user");
+      await logout();
       return { success: true };
     } finally {
       setLoading(false);

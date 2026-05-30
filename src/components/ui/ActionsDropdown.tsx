@@ -28,13 +28,8 @@ interface Position {
 export function ActionsDropdown({ actions, label = "Ações" }: ActionsDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<Position>({ top: 0, left: 0, width: 140 });
-  const [mounted, setMounted] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Calcula a posição do dropdown baseada no botão
   useLayoutEffect(() => {
@@ -170,7 +165,7 @@ export function ActionsDropdown({ actions, label = "Ações" }: ActionsDropdownP
         {label}
       </motion.button>
 
-      {mounted && createPortal(dropdownContent, document.body)}
+      {isOpen && typeof document !== "undefined" && createPortal(dropdownContent, document.body)}
     </>
   );
 }

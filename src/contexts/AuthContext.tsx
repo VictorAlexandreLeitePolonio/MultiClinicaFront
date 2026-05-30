@@ -1,48 +1,63 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import Cookies from "js-cookie";
 import { User } from "@/types";
+import { getCurrentUser } from "@/services/auth/auth.service";
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   initialLoading: boolean;
   setUser: (user: User | null) => void;
+  refreshUser: () => Promise<User | null>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
-
-const COOKIE_OPTIONS = {
-  expires: 1 / 3, // 8 horas
-  sameSite: "strict" as const,
-  secure: process.env.NODE_ENV === "production",
-};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUserState] = useState<User | null>(null);
   const [initialLoading, setInitialLoading] = useState(true);
 
-  // Lê o cookie somente no cliente (após hidratação)
+  const refreshUser = async () => {
+    try {
+      const currentUser = await getCurrentUser();
+      setUserState(currentUser);
+      return currentUser;
+    } catch {
+      setUserState(null);
+      return null;
+    }
+  };
+
   useEffect(() => {
-    const stored = Cookies.get("auth_user");
-    if (stored) {
+    let isActive = true;
+
+    async function loadCurrentUser() {
       try {
-        setUserState(JSON.parse(stored));
+        const currentUser = await getCurrentUser();
+        if (isActive) {
+          setUserState(currentUser);
+        }
       } catch {
-        Cookies.remove("auth_user");
+        if (isActive) {
+          setUserState(null);
+        }
+      } finally {
+        if (isActive) {
+          setInitialLoading(false);
+        }
       }
     }
-    setInitialLoading(false);
+
+    void loadCurrentUser();
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   const setUser = (u: User | null) => {
     setUserState(u);
-    if (u) {
-      Cookies.set("auth_user", JSON.stringify(u), COOKIE_OPTIONS);
-    } else {
-      Cookies.remove("auth_user");
-    }
   };
 
   return (
@@ -52,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         initialLoading,
         setUser,
+        refreshUser,
       }}
     >
       {children}

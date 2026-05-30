@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLogout } from "@/app/(public)/login/hooks/logout";
 import { useRouter } from "next/navigation";
 import { SidebarLink } from "./SidebarLink";
-import logo from "@/../public/logoLaiza.png";
+import { getRoleLabel } from "@/lib/auth/routes";
 import {
   Home,
   Users,
@@ -19,34 +19,44 @@ import {
   ChevronLeft,
   ChevronRight,
   BarChart2,
-  MessageSquare,
+  Building2,
 } from "lucide-react";
-import Image from "next/image";
 
 const baseModules = [
-  { href: "/bem-vindo", label: "Início", icon: <Home size={18} /> },
-  { href: "/pacientes", label: "Pacientes", icon: <Users size={18} /> },
-  { href: "/agenda", label: "Agenda", icon: <Calendar size={18} /> },
-  { href: "/prontuarios", label: "Prontuários", icon: <FileText size={18} /> },
+  { href: "/app", label: "Início", icon: <Home size={18} />, roles: ["Administrador", "Profissional", "Recepcao"] },
+  { href: "/app/pacientes", label: "Pacientes", icon: <Users size={18} />, roles: ["Administrador", "Profissional", "Recepcao"] },
+  { href: "/app/agenda", label: "Agenda", icon: <Calendar size={18} />, roles: ["Administrador", "Profissional", "Recepcao"] },
+  { href: "/app/prontuarios", label: "Prontuários", icon: <FileText size={18} />, roles: ["Administrador", "Profissional"] },
 ];
 
 const adminModules = [
-  { href: "/pagamentos", label: "Pagamentos", icon: <CreditCard size={18} /> },
-  { href: "/financeiro", label: "Financeiro", icon: <BarChart2 size={18} /> },
-  { href: "/whatsapp-logs", label: "WhatsApp Logs", icon: <MessageSquare size={18} /> },
-  { href: "/usuarios", label: "Usuários", icon: <Shield size={18} /> },
-  { href: "/planos", label: "Planos", icon: <ClipboardList size={18} /> },
+  { href: "/app/pagamentos", label: "Pagamentos", icon: <CreditCard size={18} />, roles: ["Administrador", "Recepcao"] },
+  { href: "/app/financeiro", label: "Financeiro", icon: <BarChart2 size={18} />, roles: ["Administrador"] },
+  { href: "/app/usuarios", label: "Usuários", icon: <Shield size={18} />, roles: ["Administrador"] },
+  { href: "/app/planos", label: "Planos", icon: <ClipboardList size={18} />, roles: ["Administrador"] },
 ];
 
-export function Sidebar() {
+const superAdminModules = [
+  { href: "/superadmin", label: "Dashboard", icon: <Home size={18} /> },
+  { href: "/superadmin/clinicas", label: "Clínicas", icon: <Building2 size={18} /> },
+  { href: "/superadmin/cobrancas", label: "Cobranças", icon: <CreditCard size={18} /> },
+  { href: "/superadmin/historico", label: "Histórico", icon: <ClipboardList size={18} /> },
+];
+
+interface SidebarProps {
+  area: "clinic" | "superadmin";
+}
+
+export function Sidebar({ area }: SidebarProps) {
   const { user, setUser } = useAuth();
   const { logoutUser } = useLogout();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
 
-  const modules = user?.role === "Admin"
-    ? [...baseModules, ...adminModules]
-    : baseModules;
+  const clinicModules = [...baseModules, ...adminModules].filter((module) =>
+    user ? module.roles.includes(user.role) : false
+  );
+  const modules = area === "superadmin" ? superAdminModules : clinicModules;
 
   const handleLogout = async () => {
     await logoutUser();
@@ -64,15 +74,15 @@ export function Sidebar() {
       <div className={`flex items-center mb-2 px-1 ${collapsed ? "justify-center" : "justify-between"}`}>
         {!collapsed && (
           <div className="flex flex-col items-center gap-2 w-full">
-            <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center border-2 border-[#5a9c94] shadow-[0_0_0_3px_rgba(90,156,148,0.2)]">
-              <Image src={logo} alt="Logo" width={56} height={56} className="object-contain" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-sm border-2 border-[#5a9c94] bg-white text-[#1e2d4a] shadow-[0_0_0_3px_rgba(90,156,148,0.2)]">
+              <Building2 size={28} />
             </div>
             <div className="text-center">
               <p className="text-white text-xs font-bold tracking-widest uppercase" style={{ fontFamily: "var(--font-serif)" }}>
-                Dra. Laiza Polonio
+                MultiClinica
               </p>
               <p className="text-[#5a9c94] text-[10px] tracking-widest uppercase">
-                Fisioterapeuta
+                {area === "superadmin" ? "Painel Global" : user?.clinicName ?? "App Clínica"}
               </p>
             </div>
           </div>
@@ -97,6 +107,13 @@ export function Sidebar() {
 
       {/* Divisor */}
       <div className="h-px bg-white/10 my-4 mx-2" />
+
+      {!collapsed && user && (
+        <div className="mb-3 rounded-sm border border-white/10 bg-white/5 px-3 py-2">
+          <p className="truncate text-xs font-semibold text-white">{user.name}</p>
+          <p className="truncate text-[11px] text-white/50">{getRoleLabel(user.role)}</p>
+        </div>
+      )}
 
       {/* Sair */}
       <motion.button

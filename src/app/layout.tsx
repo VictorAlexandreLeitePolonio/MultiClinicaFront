@@ -1,22 +1,19 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import { Toaster } from "sonner";
 import { ClientProviders } from "@/providers/ClientProviders";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "ProjetoLP — Clínica de Fisioterapia",
-  description: "Sistema de gestão da clínica",
+  title: "MultiClinica",
+  description: "Sistema SaaS para gestão de clínicas",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className="h-full">
-      <body className={`${geist.className} min-h-full antialiased`}>
+    <html lang="pt-BR" className="h-full" suppressHydrationWarning>
+      <body className="min-h-full antialiased">
         <ClientProviders>{children}</ClientProviders>
         <Toaster
           position="top-right"

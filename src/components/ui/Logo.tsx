@@ -2,8 +2,8 @@
 
 import { motion } from "motion/react";
 import { fadeSlideUp } from "@/lib/motion";
-import logo from "@/../public/logoLaiza.png";
-import Image from "next/image";
+import { Building2 } from "lucide-react";
+
 export function Logo() {
   return (
     <motion.div
@@ -21,7 +21,7 @@ export function Logo() {
           boxShadow: "4px 4px 0 0 rgba(26, 42, 74, 0.3)",
         }}
       >
-        <Image src={logo} alt="Logo" width={60} height={60} className="object-contain" />
+        <Building2 size={34} className="text-white" />
         {/* Detalhe decorativo de canto */}
         <div className="absolute top-1 left-1 w-2 h-2 border-t-2 border-l-2 border-white/40" />
         <div className="absolute top-1 right-1 w-2 h-2 border-t-2 border-r-2 border-white/40" />
@@ -34,13 +34,13 @@ export function Logo() {
           className="text-2xl font-bold text-[#1a2a4a] tracking-tight"
           style={{ fontFamily: "var(--font-serif)" }}
         >
-          ProjetoLP
+          MultiClinica
         </h1>
         <p 
           className="text-sm text-[#1a4a3a] mt-1"
           style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
         >
-          Clínica de Fisioterapia
+          Gestão para clínicas
         </p>
         <div className="flex items-center justify-center gap-2 mt-2">
           <div className="h-px w-8 bg-[#1a4a3a]" />

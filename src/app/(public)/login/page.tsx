@@ -9,6 +9,7 @@ import { AuthLayout } from "./components/layout/AuthLayout";
 import { AuthRightPanel } from "./components/layout/AuthRightPanel";
 import { useLogin } from "./hooks/login";
 import { useAuth } from "@/contexts/AuthContext";
+import { getDashboardPathByRole } from "@/lib/auth/routes";
 import { loginSchema, LoginFormData } from "./schemas/loginSchema";
 import { Logo } from "@/components/ui/Logo";
 import { FormField } from "@/components/ui/FormField";
@@ -17,7 +18,7 @@ import { Button } from "@/components/ui/Button";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setUser, isAuthenticated } = useAuth();
+  const { setUser, isAuthenticated, user } = useAuth();
   const { loginUser, loading } = useLogin();
 
   const {
@@ -30,16 +31,16 @@ export default function LoginPage() {
 
   // Redireciona se já estiver autenticado
   useEffect(() => {
-    if (isAuthenticated) {
-      router.replace("/bem-vindo");
+    if (isAuthenticated && user) {
+      router.replace(getDashboardPathByRole(user.role));
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, user]);
 
   const onSubmit = async (data: LoginFormData) => {
     const result = await loginUser(data);
     if (result.success && result.user) {
       setUser(result.user);
-      router.replace("/bem-vindo");
+      router.replace(getDashboardPathByRole(result.user.role));
     } else {
       toast.error(result.error ?? "Erro ao fazer login.");
     }

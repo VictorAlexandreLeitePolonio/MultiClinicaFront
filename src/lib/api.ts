@@ -12,7 +12,14 @@ let isRedirectingToLogin = false;
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && !isRedirectingToLogin) {
+    const requestUrl = String(error.config?.url ?? "");
+    const isAuthBootstrapRequest = requestUrl.includes("/api/auth/me");
+
+    if (
+      error.response?.status === 401 &&
+      !isAuthBootstrapRequest &&
+      !isRedirectingToLogin
+    ) {
       isRedirectingToLogin = true;
       toast.error("Sua sessão expirou. Faça login novamente.");
       setTimeout(() => {

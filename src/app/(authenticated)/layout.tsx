@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { Sidebar } from "@/components/layout/Sidebar";
 
 export default function AuthenticatedLayout({
   children,
@@ -22,9 +21,6 @@ export default function AuthenticatedLayout({
   if (initialLoading || !isAuthenticated) return null;
 
   return (
-    <div className="flex min-h-screen bg-[#f7f5f1]">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto">{children}</main>
-    </div>
+    <>{children}</>
   );
 }

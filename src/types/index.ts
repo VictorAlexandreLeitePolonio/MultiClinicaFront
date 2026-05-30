@@ -6,14 +6,95 @@ export interface PagedResult<T> {
   totalPages: number;
 }
 
-export type UserRole = "Admin" | "Fisio";
+export type UserRole = "SuperAdmin" | "Administrador" | "Profissional" | "Recepcao";
 
 export interface User {
   id: number;
   name: string;
   email: string;
   role: UserRole;
+  clinicId?: number | null;
+  clinicName?: string | null;
   createdAt?: string;
+}
+
+export type ClinicStatus = "Active" | "Inactive";
+export type BillingStatus = "Enabled" | "Blocked" | "Disabled";
+
+export interface SuperAdminDashboardMetrics {
+  totalClinics: number;
+  activeClinics: number;
+  inactiveClinics: number;
+  billingBlockedClinics: number;
+  billingEnabledClinics: number;
+  overdueCharges: number;
+  monthlyReceivedRevenue: number;
+  monthlyPendingRevenue: number;
+}
+
+export interface SuperAdminClinic {
+  id: number;
+  name: string;
+  document: string | null;
+  email: string | null;
+  phone: string | null;
+  status: ClinicStatus;
+  billingStatus: BillingStatus;
+  usersCount: number;
+  createdAt: string;
+}
+
+export interface SuperAdminClinicUser {
+  id: number;
+  name: string;
+  email: string;
+  role: Exclude<UserRole, "SuperAdmin">;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface SuperAdminClinicBilling {
+  enabled: boolean;
+  status: BillingStatus;
+  monthlyFee: number;
+  billingBlockedReason: string | null;
+  blockedAt: string | null;
+}
+
+export interface SuperAdminClinicDetail extends SuperAdminClinic {
+  address: {
+    rua: string | null;
+    numero: string | null;
+    bairro: string | null;
+    cidade: string | null;
+    estado: string | null;
+    cep: string | null;
+  };
+  billing: SuperAdminClinicBilling;
+  users: SuperAdminClinicUser[];
+  commercialHistory: SuperAdminCommercialHistoryItem[];
+  internalNotes: string | null;
+}
+
+export interface SuperAdminBillingCharge {
+  id: number;
+  clinicId: number;
+  clinicName: string;
+  referenceMonth: string;
+  amount: number;
+  status: "Pending" | "Paid" | "Overdue" | "Cancelled";
+  dueDate: string;
+  paidAt: string | null;
+}
+
+export interface SuperAdminCommercialHistoryItem {
+  id: number;
+  clinicId: number;
+  clinicName: string;
+  action: string;
+  description: string;
+  createdByName: string | null;
+  createdAt: string;
 }
 
 export type TipoPlano = "Mensal" | "Avulso";
@@ -43,7 +124,6 @@ export interface Payment {
   status: PaymentStatus;
   paidAt: string | null;
   paymentDate: string | null;
-  paymentReminderSent: boolean;
   createdAt: string;
 }
 
@@ -138,7 +218,6 @@ export interface PatientProfilePayment {
   status: "Pending" | "Paid" | "Cancelled";
   paymentDate: string | null;
   paidAt: string | null;
-  paymentReminderSent: boolean;
   createdAt: string;
 }
 
@@ -160,20 +239,6 @@ export interface PatientProfile {
   appointments: PatientProfileAppointment[];
   medicalRecords: PatientProfileMedicalRecord[];
   payments: PatientProfilePayment[];
-}
-
-// ─── WhatsApp Logs ─────────────────────────────────────────────────────────
-
-export interface WhatsAppLogItem {
-  id: number;
-  patientId: number | null;
-  patientName: string | null;
-  phone: string;
-  message: string;
-  type: "AppointmentReminder" | "PaymentReminder";
-  success: boolean;
-  errorMessage: string | null;
-  sentAt: string;
 }
 
 // ─── Módulo Financeiro ─────────────────────────────────────────────────────
