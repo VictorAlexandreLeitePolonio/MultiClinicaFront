@@ -71,30 +71,28 @@ export default function BemVindoPage() {
 
       {/* Card de balanço financeiro - apenas para Administrador */}
       {user?.role === "Administrador" && (
-        <div className="mt-4">
+        <section className="mt-4">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 rounded-sm bg-[#1a4a3a] border-2 border-[#143d2f] flex items-center justify-center">
-              <BarChart2 size={16} className="text-white" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ecfdf5] text-[#0f766e] ring-1 ring-[#a7f3d0]">
+              <BarChart2 size={16} />
             </div>
             <h2
-              className="text-lg font-bold text-[#1a2a4a]"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="text-lg font-bold text-[#0f172a] dark:text-white"
             >
               Resumo Financeiro
             </h2>
           </div>
 
-          <div className="bg-white rounded-sm border-2 border-[#e2ebe6] p-6 shadow-[2px_2px_0_0_#e2ebe6]">
+          <div className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between mb-4">
               <h3
-                className="text-lg font-bold text-[#1a2a4a] capitalize"
-                style={{ fontFamily: "var(--font-serif)" }}
+                className="text-lg font-bold capitalize text-[#0f172a] dark:text-white"
               >
                 Balanço de {currentMonthLabel}
               </h3>
               <Link
                 href="/app/financeiro"
-                className="flex items-center gap-1 text-sm text-[#1a4a3a] hover:text-[#143d2f] font-semibold transition-colors"
+                className="flex items-center gap-1 text-sm font-semibold text-[#0f766e] transition-colors hover:text-[#14b8a6] dark:text-[#67e8f9]"
               >
                 Ver detalhes
                 <ArrowRight size={16} />
@@ -109,54 +107,48 @@ export default function BemVindoPage() {
               </div>
             ) : balance ? (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-green-50 border-2 border-green-100 rounded-sm p-4">
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
                   <p
-                    className="text-sm text-green-700 mb-1"
-                    style={{ fontFamily: "var(--font-serif)" }}
+                    className="mb-1 text-sm font-medium text-emerald-700"
                   >
                     Entradas
                   </p>
                   <p
-                    className="text-xl font-bold text-green-600"
-                    style={{ fontFamily: "var(--font-serif)" }}
+                    className="text-xl font-bold text-emerald-600"
                   >
                     {formatCurrency(balance.totalIncome)}
                   </p>
                 </div>
-                <div className="bg-red-50 border-2 border-red-100 rounded-sm p-4">
+                <div className="rounded-2xl border border-red-100 bg-red-50 p-4">
                   <p
-                    className="text-sm text-red-700 mb-1"
-                    style={{ fontFamily: "var(--font-serif)" }}
+                    className="mb-1 text-sm font-medium text-red-700"
                   >
                     Saídas
                   </p>
                   <p
                     className="text-xl font-bold text-red-600"
-                    style={{ fontFamily: "var(--font-serif)" }}
                   >
                     {formatCurrency(balance.totalExpenses)}
                   </p>
                 </div>
                 <div
-                  className={`border-2 rounded-sm p-4 ${
+                  className={`rounded-2xl border p-4 ${
                     balance.netBalance >= 0
-                      ? "bg-blue-50 border-blue-100"
-                      : "bg-red-50 border-red-100"
+                      ? "border-cyan-100 bg-cyan-50"
+                      : "border-red-100 bg-red-50"
                   }`}
                 >
                   <p
-                    className={`text-sm mb-1 ${
-                      balance.netBalance >= 0 ? "text-blue-700" : "text-red-700"
+                    className={`mb-1 text-sm font-medium ${
+                      balance.netBalance >= 0 ? "text-cyan-700" : "text-red-700"
                     }`}
-                    style={{ fontFamily: "var(--font-serif)" }}
                   >
                     Saldo
                   </p>
                   <p
                     className={`text-xl font-bold ${
-                      balance.netBalance >= 0 ? "text-blue-600" : "text-red-600"
+                      balance.netBalance >= 0 ? "text-cyan-600" : "text-red-600"
                     }`}
-                    style={{ fontFamily: "var(--font-serif)" }}
                   >
                     {formatCurrency(balance.netBalance)}
                   </p>
@@ -164,23 +156,21 @@ export default function BemVindoPage() {
               </div>
             ) : (
               <p
-                className="text-[#4a6354] text-center py-4"
-                style={{ fontFamily: "var(--font-serif)" }}
+                className="py-4 text-center text-[#64748b] dark:text-slate-300"
               >
                 Nenhum dado financeiro disponível para este mês.
               </p>
             )}
           </div>
-        </div>
+        </section>
       )}
       <div>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 rounded-sm bg-[#1a4a3a] border-2 border-[#143d2f] flex items-center justify-center">
-            <ClipboardList size={16} className="text-white" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ecfdf5] text-[#0f766e] ring-1 ring-[#a7f3d0]">
+            <ClipboardList size={16} />
           </div>
           <h2
-            className="text-lg font-bold text-[#1a2a4a]"
-            style={{ fontFamily: "var(--font-serif)" }}
+            className="text-lg font-bold text-[#0f172a] dark:text-white"
           >
             Agendamentos de hoje
           </h2>
@@ -196,18 +186,17 @@ export default function BemVindoPage() {
         )}
 
         {error && (
-          <div className="bg-red-50 border-2 border-red-200 rounded-sm p-4 text-red-700">
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
             <p className="text-sm">{error}</p>
           </div>
         )}
 
         {/* Empty state */}
         {!loading && !error && data.length === 0 && (
-          <div className="text-center py-12 bg-[#f8faf9] border-2 border-dashed border-[#e2ebe6] rounded-sm">
-            <Calendar size={32} className="mx-auto mb-3 text-[#1a4a3a]/40" />
+          <div className="rounded-2xl border border-dashed border-[#a7f3d0] bg-white/80 py-12 text-center shadow-sm dark:border-slate-700 dark:bg-slate-900/80">
+            <Calendar size={32} className="mx-auto mb-3 text-[#14b8a6]/70" />
             <p
-              className="text-sm text-[#4a6354]"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="text-sm text-[#64748b] dark:text-slate-300"
             >
               Nenhum agendamento para hoje.
             </p>

@@ -58,7 +58,7 @@ export function FilterPopover({
         <Filter size={16} className="mr-2" />
         Filtros
         {hasActiveFilters && (
-          <span className="ml-2 w-5 h-5 rounded-full bg-[#5a9c94] text-white text-xs flex items-center justify-center">
+          <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#14b8a6] text-xs text-white">
             {Object.values(values).filter((v) => v !== "").length}
           </span>
         )}
@@ -79,20 +79,19 @@ export function FilterPopover({
               initial="hidden"
               animate="show"
               exit="exit"
-              className="absolute top-full right-0 mt-2 w-80 bg-white rounded-sm border-2 border-[#1a2a4a] shadow-[6px_6px_0_0_#1a2a4a] z-50 p-4"
+              className="absolute right-0 top-full z-50 mt-2 w-80 rounded-2xl border border-[#d7f3ea] bg-white p-4 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900"
             >
               <div className="flex items-center justify-between mb-4">
                 <h3 
-                  className="text-lg font-bold text-[#1a2a4a]"
-                  style={{ fontFamily: "var(--font-serif)" }}
+                  className="text-lg font-bold text-[#0f172a] dark:text-white"
                 >
                   Filtros
                 </h3>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-1 rounded-sm hover:bg-[#f0f4f2] transition-colors"
+                  className="rounded-lg p-1 transition-colors hover:bg-[#ecfdf5] dark:hover:bg-slate-800"
                 >
-                  <X size={18} className="text-[#1a2a4a]" />
+                  <X size={18} className="text-[#64748b] dark:text-slate-300" />
                 </button>
               </div>
 
@@ -100,17 +99,14 @@ export function FilterPopover({
                 {filters.map((filter) => (
                   <div key={filter.key} className="space-y-2">
                     <label 
-                      className="text-xs font-bold text-[#1a2a4a] uppercase tracking-wider"
-                      style={{ fontFamily: "var(--font-serif)" }}
+                      className="text-sm font-semibold text-[#0f172a] dark:text-white"
                     >
                       {filter.label}
                     </label>
                     <select
                       value={values[filter.key] || ""}
                       onChange={(e) => handleSelectChange(filter.key, e.target.value)}
-                      className="w-full px-3 py-2 bg-[#fdfcfa] border-2 border-[#e2ebe6] rounded-sm text-[#1a2a4a]
-                        focus:border-[#5a9c94] focus:shadow-[2px_2px_0_0_#5a9c94] focus:outline-none transition-all"
-                      style={{ fontFamily: "var(--font-serif)" }}
+                      className="w-full rounded-xl border border-[#d7f3ea] bg-white px-3 py-2 text-[#0f172a] transition-all focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                     >
                       <option value="">Todos</option>
                       {filter.options.map((opt) => (
@@ -123,7 +119,7 @@ export function FilterPopover({
                 ))}
               </div>
 
-              <div className="flex gap-2 mt-6 pt-4 border-t-2 border-[#e2ebe6]">
+              <div className="mt-6 flex gap-2 border-t border-[#d7f3ea] pt-4 dark:border-slate-800">
                 <Button variant="outline" onClick={handleClear}>
                   Limpar
                 </Button>

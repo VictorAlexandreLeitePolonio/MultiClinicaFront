@@ -51,11 +51,11 @@ export function GreetingBanner({ totalAppointments }: GreetingBannerProps) {
       initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 80 }}
-      className="w-full bg-[#5a9c94] text-white px-8 py-6 rounded-sm border-2 border-[#4a8880] shadow-[6px_6px_0_0_#1a2a4a] relative overflow-hidden"
+      className="relative w-full overflow-hidden rounded-3xl border border-[#99f6e4] bg-gradient-to-br from-[#0f766e] via-[#14b8a6] to-[#06b6d4] px-8 py-6 text-white shadow-[0_30px_90px_-48px_rgba(20,184,166,0.85)]"
     >
       {/* Pattern overlay */}
       <div 
-        className="absolute inset-0 opacity-5"
+        className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `repeating-linear-gradient(
             45deg,
@@ -70,14 +70,12 @@ export function GreetingBanner({ totalAppointments }: GreetingBannerProps) {
       <div className="relative z-10 flex items-center justify-between">
         <div>
           <p 
-            className="text-sm text-white/70 capitalize tracking-wider"
-            style={{ fontFamily: "var(--font-serif)" }}
+            className="text-sm capitalize tracking-wide text-white/75"
           >
             {getFormattedDate()}
           </p>
           <h1 
-            className="text-2xl font-bold mt-1"
-            style={{ fontFamily: "var(--font-serif)" }}
+            className="mt-1 text-2xl font-bold tracking-tight"
           >
             {getGreeting()}, {user?.name} — seja bem-vindo ao sistema.
           </h1>
@@ -88,14 +86,13 @@ export function GreetingBanner({ totalAppointments }: GreetingBannerProps) {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.3, type: "spring" }}
-          className="text-right bg-white/10 px-6 py-3 rounded-sm border border-white/20"
+          className="rounded-2xl border border-white/25 bg-white/15 px-6 py-3 text-right backdrop-blur-sm"
         >
           <p className="text-3xl font-bold">
             <AnimatedCounter value={totalAppointments} />
           </p>
           <p 
-            className="text-xs text-white/70 uppercase tracking-wider"
-            style={{ fontFamily: "var(--font-serif)" }}
+            className="text-xs uppercase tracking-wide text-white/75"
           >
             agendamentos hoje
           </p>

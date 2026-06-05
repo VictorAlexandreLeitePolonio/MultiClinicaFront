@@ -15,7 +15,7 @@ const gridCols = { 1: "grid-cols-1", 2: "grid-cols-1 md:grid-cols-2", 3: "grid-c
 export function FormSection({ title, children, columns = 2, delay = 0 }: FormSectionProps) {
   return (
     <motion.section 
-      className="space-y-4"
+      className="space-y-4 rounded-2xl border border-[#d7f3ea] bg-white p-5 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900"
       initial="hidden"
       animate="show"
       variants={{
@@ -30,10 +30,9 @@ export function FormSection({ title, children, columns = 2, delay = 0 }: FormSec
     >
       <motion.h2 
         variants={fadeSlideUp}
-        className="text-xs font-bold text-[#1a2a4a] uppercase tracking-wider border-b-2 border-[#5a9c94]/30 pb-2 flex items-center"
-        style={{ fontFamily: "var(--font-serif)" }}
+        className="flex items-center border-b border-[#d7f3ea] pb-3 text-sm font-bold text-[#0f172a] dark:border-slate-800 dark:text-white"
       >
-        <span className="inline-block w-2 h-2 rounded-full bg-[#5a9c94] mr-2" />
+        <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[#14b8a6]" />
         {title}
       </motion.h2>
       <motion.div 

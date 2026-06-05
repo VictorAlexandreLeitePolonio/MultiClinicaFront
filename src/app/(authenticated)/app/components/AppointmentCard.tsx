@@ -6,9 +6,9 @@ import { fadeSlideUp, hoverLift } from "@/lib/motion";
 import { Clock } from "lucide-react";
 
 const statusConfig = {
-  Scheduled: { label: "Agendado", color: "bg-[#1a2a4a] text-white border-[#121d33]" },
-  Completed: { label: "Concluído", color: "bg-[#5a9c94] text-white border-[#4a8880]" },
-  Cancelled: { label: "Cancelado", color: "bg-red-700 text-white border-red-800" },
+  Scheduled: { label: "Agendado", color: "bg-cyan-50 text-cyan-700 border-cyan-200" },
+  Completed: { label: "Concluído", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  Cancelled: { label: "Cancelado", color: "bg-red-50 text-red-700 border-red-200" },
 };
 
 export function AppointmentCard({ appointment }: { appointment: Appointment }) {
@@ -22,25 +22,23 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
     <motion.div
       variants={fadeSlideUp}
       whileHover={hoverLift}
-      className="bg-white rounded-sm border-2 border-[#e2ebe6] p-4 flex justify-between items-center hover:border-[#5a9c94] transition-colors cursor-pointer"
+      className="flex cursor-pointer items-center justify-between rounded-2xl border border-[#d7f3ea] bg-white p-4 shadow-sm transition-colors hover:border-[#14b8a6] hover:bg-[#f8fffc] dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-sm bg-[#f0f4f2] border border-[#e2ebe6] flex items-center justify-center">
-          <Clock size={18} className="text-[#5a9c94]" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#a7f3d0] bg-[#ecfdf5]">
+          <Clock size={18} className="text-[#0f766e]" />
         </div>
         <div>
           <p 
-            className="text-sm font-semibold text-[#1a2a4a]"
-            style={{ fontFamily: "var(--font-serif)" }}
+            className="text-sm font-semibold text-[#0f172a] dark:text-white"
           >
             {appointment.patientName}
           </p>
-          <p className="text-xs text-[#4a6354] mt-0.5">{time}</p>
+          <p className="mt-0.5 text-xs text-[#64748b] dark:text-slate-300">{time}</p>
         </div>
       </div>
       <span 
-        className={`text-xs font-semibold px-3 py-1.5 rounded-sm border-2 ${color}`}
-        style={{ fontFamily: "var(--font-serif)" }}
+        className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${color}`}
       >
         {label}
       </span>

@@ -12,40 +12,28 @@ export function Logo() {
       animate="show"
       className="flex flex-col items-center gap-3"
     >
-      {/* Selo/Brasão estilo institucional */}
       <div 
-        className="w-20 h-20 rounded-sm flex items-center justify-center relative"
-        style={{
-          background: "linear-gradient(135deg, #1a4a3a 0%, #143d2f 100%)",
-          border: "3px solid #1a2a4a",
-          boxShadow: "4px 4px 0 0 rgba(26, 42, 74, 0.3)",
-        }}
+        className="relative flex h-20 w-20 items-center justify-center rounded-3xl border border-[#a7f3d0] bg-gradient-to-br from-[#14b8a6] via-[#10b981] to-[#06b6d4] text-white shadow-[0_24px_60px_-32px_rgba(20,184,166,0.95)]"
       >
         <Building2 size={34} className="text-white" />
-        {/* Detalhe decorativo de canto */}
-        <div className="absolute top-1 left-1 w-2 h-2 border-t-2 border-l-2 border-white/40" />
-        <div className="absolute top-1 right-1 w-2 h-2 border-t-2 border-r-2 border-white/40" />
-        <div className="absolute bottom-1 left-1 w-2 h-2 border-b-2 border-l-2 border-white/40" />
-        <div className="absolute bottom-1 right-1 w-2 h-2 border-b-2 border-r-2 border-white/40" />
+        <div className="absolute -right-1 -top-1 h-5 w-5 rounded-full border-4 border-white bg-[#67e8f9]" />
       </div>
       
       <div className="text-center">
         <h1 
-          className="text-2xl font-bold text-[#1a2a4a] tracking-tight"
-          style={{ fontFamily: "var(--font-serif)" }}
+          className="text-2xl font-bold tracking-tight text-[#0f172a] dark:text-white"
         >
           MultiClinica
         </h1>
         <p 
-          className="text-sm text-[#1a4a3a] mt-1"
-          style={{ fontFamily: "var(--font-serif)", fontStyle: "italic" }}
+          className="mt-1 text-sm font-medium text-[#0f766e] dark:text-[#67e8f9]"
         >
           Gestão para clínicas
         </p>
         <div className="flex items-center justify-center gap-2 mt-2">
-          <div className="h-px w-8 bg-[#1a4a3a]" />
-          <div className="w-1 h-1 bg-[#1a4a3a] rotate-45" />
-          <div className="h-px w-8 bg-[#1a4a3a]" />
+          <div className="h-px w-8 bg-[#a7f3d0]" />
+          <div className="h-1.5 w-1.5 rounded-full bg-[#14b8a6]" />
+          <div className="h-px w-8 bg-[#a7f3d0]" />
         </div>
       </div>
     </motion.div>

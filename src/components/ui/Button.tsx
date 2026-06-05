@@ -19,13 +19,13 @@ export function Button({
   onClick,
   variant = "primary"
 }: ButtonProps) {
-  const baseStyles = "w-full py-3 px-6 rounded-sm font-semibold uppercase tracking-wider text-sm border-2 transition-all duration-150";
+  const baseStyles = "w-full rounded-xl px-6 py-3 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#99f6e4] disabled:cursor-not-allowed disabled:opacity-60";
   
   const variants = {
-    primary: "bg-[#5a9c94] text-white border-[#4a8880] shadow-[4px_4px_0_0_#4a8880] hover:bg-[#4a8880]",
-    secondary: "bg-[#1a2a4a] text-white border-[#121d33] shadow-[4px_4px_0_0_#121d33] hover:bg-[#121d33]",
-    outline: "bg-white text-[#5a9c94] border-[#5a9c94] shadow-[4px_4px_0_0_#5a9c94] hover:bg-[#e8f4f3]",
-    danger: "bg-red-700 text-white border-red-800 shadow-[4px_4px_0_0_#7f1d1d] hover:bg-red-800",
+    primary: "border border-[#14b8a6] bg-[#14b8a6] text-white shadow-[0_18px_32px_-24px_rgba(20,184,166,0.9)] hover:bg-[#0f766e] hover:shadow-[0_20px_42px_-24px_rgba(20,184,166,0.95)]",
+    secondary: "border border-[#0f172a] bg-[#0f172a] text-white shadow-[0_18px_34px_-28px_rgba(15,23,42,0.9)] hover:bg-[#020617] dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700",
+    outline: "border border-[#99f6e4] bg-white text-[#0f766e] shadow-sm hover:border-[#14b8a6] hover:bg-[#ecfdf5] dark:border-slate-700 dark:bg-slate-900 dark:text-[#67e8f9] dark:hover:bg-slate-800",
+    danger: "border border-red-500 bg-red-500 text-white shadow-[0_18px_34px_-28px_rgba(239,68,68,0.9)] hover:bg-red-600",
   };
 
   return (
@@ -33,12 +33,9 @@ export function Button({
       type={type}
       onClick={onClick}
       whileHover={{ x: -2, y: -2 }}
-      whileTap={{ x: 4, y: 4, boxShadow: "0 0 0 0 transparent" }}
+      whileTap={{ y: 1 }}
       disabled={loading || disabled}
-      className={`${baseStyles} ${variants[variant]} 
-        disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#5a9c94]
-        disabled:transform-none disabled:shadow-[4px_4px_0_0_#4a8880]`}
-      style={{ fontFamily: "var(--font-serif)" }}
+      className={`${baseStyles} ${variants[variant]}`}
     >
       <AnimatePresence mode="wait">
         {loading ? (

@@ -8,14 +8,14 @@ import animationData from "@/../public/animations/lotties/Doctor Prescription.js
 export function AuthRightPanel() {
   return (
     <div
-      className="hidden md:flex w-1/2 min-h-screen relative overflow-hidden"
+      className="relative hidden min-h-screen w-1/2 overflow-hidden md:flex"
       style={{
-        background: "linear-gradient(135deg, #5a9c94 0%, #4a8880 100%)",
+        background: "linear-gradient(135deg, #0f766e 0%, #14b8a6 48%, #06b6d4 100%)",
       }}
     >
       {/* Pattern overlay */}
       <div 
-        className="absolute inset-0 opacity-5"
+        className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `repeating-linear-gradient(
             45deg,
@@ -28,17 +28,17 @@ export function AuthRightPanel() {
       />
       
       {/* Decorative frame */}
-      <div className="absolute inset-8 border-2 border-white/20 rounded-sm pointer-events-none" />
-      <div className="absolute inset-12 border border-white/10 rounded-sm pointer-events-none" />
+      <div className="pointer-events-none absolute inset-8 rounded-3xl border border-white/20" />
+      <div className="pointer-events-none absolute inset-12 rounded-3xl border border-white/10" />
       
       <motion.div
         variants={fadeIn}
         initial="hidden"
         animate="show"
-        className="relative z-10 flex flex-col items-center justify-center w-full p-12 text-center"
+        className="relative z-10 flex w-full flex-col items-center justify-center p-12 text-center"
       >
         {/* Lottie Animation */}
-        <div className="w-80 h-80 mb-8 bg-white/10 rounded-sm border border-white/20 p-6 backdrop-blur-sm">
+        <div className="mb-8 h-80 w-80 rounded-3xl border border-white/25 bg-white/15 p-6 shadow-[0_28px_80px_-46px_rgba(15,23,42,0.7)] backdrop-blur-sm">
           <Lottie
             animationData={animationData}
             loop={true}
@@ -49,23 +49,21 @@ export function AuthRightPanel() {
         
         {/* Panel Text */}
         <h2 
-          className="text-3xl font-bold text-white mb-4"
-          style={{ fontFamily: "var(--font-serif)" }}
+          className="mb-4 text-3xl font-bold tracking-tight text-white"
         >
           Bem-vindo de volta
         </h2>
         <p 
-          className="text-white/70 text-lg max-w-sm"
-          style={{ fontFamily: "var(--font-serif)" }}
+          className="max-w-sm text-lg text-white/80"
         >
           Gerencie sua clínica de fisioterapia de forma simples e eficiente.
         </p>
         
         {/* Decorative dots */}
         <div className="flex gap-2 mt-8">
-          <div className="w-2 h-2 bg-white/40 rotate-45" />
-          <div className="w-2 h-2 bg-white/60 rotate-45" />
-          <div className="w-2 h-2 bg-white/40 rotate-45" />
+          <div className="h-2 w-2 rounded-full bg-white/40" />
+          <div className="h-2 w-2 rounded-full bg-white/70" />
+          <div className="h-2 w-2 rounded-full bg-white/40" />
         </div>
       </motion.div>
     </div>

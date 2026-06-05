@@ -197,17 +197,17 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
       <PageHeader
         title="Agenda"
         actions={
-          <div className="flex gap-2">
-            <div className="flex items-center bg-white border-2 border-[#e2ebe6] rounded-sm">
+          <div className="flex flex-wrap gap-2">
+            <div className="inline-flex overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <button
                 type="button"
                 onClick={() => onChangeViewMode?.("list")}
-                className={`relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all border-r border-[#e2ebe6] last:border-r-0 ${
+                className={`relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
                   viewMode === "list"
-                    ? "bg-[#1a4a3a] text-white"
-                    : "bg-white text-[#4a6354] hover:bg-[#f0f4f2]"
+                    ? "bg-[#0f766e] text-white shadow-[0_12px_26px_-20px_rgba(15,118,110,0.9)]"
+                    : "text-[#64748b] hover:bg-[#ecfdf5] hover:text-[#0f766e] dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                 }`}
-                style={{ fontFamily: "var(--font-serif)" }}
+                aria-pressed={viewMode === "list"}
               >
                 <List size={16} />
                 Lista
@@ -215,12 +215,12 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
               <button
                 type="button"
                 onClick={() => onChangeViewMode?.("calendar")}
-                className={`relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all ${
+                className={`relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
                   viewMode === "calendar"
-                    ? "bg-[#1a4a3a] text-white"
-                    : "bg-white text-[#4a6354] hover:bg-[#f0f4f2]"
+                    ? "bg-[#0f766e] text-white shadow-[0_12px_26px_-20px_rgba(15,118,110,0.9)]"
+                    : "text-[#64748b] hover:bg-[#ecfdf5] hover:text-[#0f766e] dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                 }`}
-                style={{ fontFamily: "var(--font-serif)" }}
+                aria-pressed={viewMode === "calendar"}
               >
                 <CalendarDays size={16} />
                 Calendário
@@ -256,13 +256,15 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
       </>
       )}
 
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        pageSize={pageSize}
-        onPageChange={setPage}
-        onPageSizeChange={setPageSize}
-      />
+      {viewMode === "list" && (
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          onPageChange={setPage}
+          onPageSizeChange={setPageSize}
+        />
+      )}
 
       {viewMode === "list" && (
         <>

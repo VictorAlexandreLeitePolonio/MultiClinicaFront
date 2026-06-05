@@ -23,19 +23,19 @@ export function Topbar({ area }: TopbarProps) {
   const areaLabel = area === "superadmin" ? "SuperAdmin" : user?.clinicName ?? "App";
 
   return (
-    <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between gap-4 border-b-2 border-[#e2ebe6] bg-white/95 px-6 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
+    <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between gap-4 border-b border-[#d7f3ea] bg-white/85 px-6 py-3 shadow-[0_10px_34px_-32px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/85">
       <div className="min-w-0">
-        <nav className="flex flex-wrap items-center gap-1 text-xs font-semibold uppercase tracking-wide text-[#6b7280] dark:text-slate-400">
+        <nav className="flex flex-wrap items-center gap-1 text-xs font-semibold uppercase tracking-wide text-[#64748b] dark:text-slate-400">
           <span>{areaLabel}</span>
           {segments.slice(1).map((segment) => (
             <span key={segment} className="flex items-center gap-1">
-              <span>/</span>
+              <span className="text-[#14b8a6]">/</span>
               <span>{formatBreadcrumbSegment(segment)}</span>
             </span>
           ))}
         </nav>
         {user && (
-          <p className="mt-1 truncate text-sm text-[#1a2a4a] dark:text-slate-100">
+          <p className="mt-1 truncate text-sm font-medium text-[#0f172a] dark:text-white">
             {user.name} · {getRoleLabel(user.role)}
           </p>
         )}

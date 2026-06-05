@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -53,12 +54,11 @@ export default function LoginPage() {
 
         <div>
           <h1
-            className="text-2xl font-bold text-[#1a2a4a]"
-            style={{ fontFamily: "var(--font-serif)" }}
+            className="text-2xl font-bold tracking-tight text-[#0f172a]"
           >
             Acesso ao Sistema
           </h1>
-          <p className="text-sm text-[#4a6354] mt-1" style={{ fontFamily: "var(--font-serif)" }}>
+          <p className="mt-1 text-sm text-[#64748b]">
             Entre com suas credenciais para continuar
           </p>
         </div>
@@ -85,6 +85,13 @@ export default function LoginPage() {
             Entrar
           </Button>
         </form>
+
+        <Link
+          href="/"
+          className="text-center text-sm font-medium text-[#0f766e] transition-colors hover:text-[#14b8a6]"
+        >
+          Voltar para a página inicial
+        </Link>
       </AuthLayout>
 
       <AuthRightPanel />

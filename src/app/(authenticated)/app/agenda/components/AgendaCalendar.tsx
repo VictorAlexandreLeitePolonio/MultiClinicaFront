@@ -86,13 +86,13 @@ export default function AgendaCalendar({ onCreate }: Props) {
   const getAppointmentStyle = (status: Appointment["status"]) => {
     switch (status) {
       case "Scheduled":
-        return "bg-[#e8f0ec] border-[#1a4a3a] text-[#1a4a3a]";
+        return "border-cyan-200 bg-cyan-50 text-cyan-700";
       case "Completed":
-        return "bg-green-50 border-green-500 text-green-700";
+        return "border-emerald-200 bg-emerald-50 text-emerald-700";
       case "Cancelled":
-        return "bg-gray-100 border-gray-300 text-gray-400 line-through";
+        return "border-slate-200 bg-slate-50 text-slate-400 line-through";
       default:
-        return "bg-[#e8f0ec] border-[#1a4a3a] text-[#1a4a3a]";
+        return "border-cyan-200 bg-cyan-50 text-cyan-700";
     }
   };
 
@@ -106,8 +106,8 @@ export default function AgendaCalendar({ onCreate }: Props) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-[#4a6354]">Carregando calendário...</p>
+      <div className="flex h-96 items-center justify-center rounded-3xl border border-[#d7f3ea] bg-white shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900">
+        <p className="text-sm font-medium text-[#64748b] dark:text-slate-300">Carregando calendário...</p>
       </div>
     );
   }
@@ -115,25 +115,26 @@ export default function AgendaCalendar({ onCreate }: Props) {
   return (
     <motion.div variants={fadeSlideUp} className="space-y-4">
       {/* Header da semana */}
-      <div className="flex items-center justify-between bg-white border-2 border-[#e2ebe6] rounded-sm p-4">
+      <div className="flex flex-col gap-4 rounded-3xl border border-[#d7f3ea] bg-white p-4 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-900">
         <div className="flex items-center gap-2">
           <button
             onClick={goToPreviousWeek}
-            className="p-2 hover:bg-[#f0f4f2] rounded-sm transition-colors"
+            className="rounded-xl border border-[#d7f3ea] p-2 text-[#0f766e] transition-colors hover:bg-[#ecfdf5] dark:border-slate-800 dark:text-[#67e8f9] dark:hover:bg-slate-800"
+            aria-label="Semana anterior"
           >
-            <ChevronLeft size={20} className="text-[#1a4a3a]" />
+            <ChevronLeft size={20} />
           </button>
           <h2
-            className="text-lg font-bold text-[#1a2a4a] min-w-[200px] text-center"
-            style={{ fontFamily: "var(--font-serif)" }}
+            className="min-w-[200px] text-center text-lg font-bold text-[#0f172a] dark:text-white"
           >
             {formatWeekRange()}
           </h2>
           <button
             onClick={goToNextWeek}
-            className="p-2 hover:bg-[#f0f4f2] rounded-sm transition-colors"
+            className="rounded-xl border border-[#d7f3ea] p-2 text-[#0f766e] transition-colors hover:bg-[#ecfdf5] dark:border-slate-800 dark:text-[#67e8f9] dark:hover:bg-slate-800"
+            aria-label="Próxima semana"
           >
-            <ChevronRight size={20} className="text-[#1a4a3a]" />
+            <ChevronRight size={20} />
           </button>
         </div>
         <Button variant="outline" onClick={goToToday}>
@@ -142,31 +143,35 @@ export default function AgendaCalendar({ onCreate }: Props) {
       </div>
 
       {/* Grid do calendário */}
-      <div className="bg-white border-2 border-[#e2ebe6] rounded-sm overflow-hidden">
+      <div className="overflow-x-auto rounded-3xl border border-[#d7f3ea] bg-white shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900">
         {/* Cabeçalho dos dias */}
-        <div className="grid grid-cols-8 border-b-2 border-[#e2ebe6]">
-          <div className="p-3 bg-[#f0f4f2] border-r border-[#e2ebe6]">
-            <span className="text-xs font-semibold text-[#4a6354] uppercase">Horário</span>
+        <div className="grid min-w-[920px] grid-cols-8 border-b border-[#d7f3ea] bg-[#f0fdf9] dark:border-slate-800 dark:bg-slate-900">
+          <div className="border-r border-[#d7f3ea] p-3 dark:border-slate-800">
+            <span className="text-xs font-semibold uppercase tracking-wide text-[#64748b] dark:text-slate-300">Horário</span>
           </div>
           {DAYS.map((day, index) => {
             const date = weekDates[index];
             const isToday = new Date().toDateString() === date.toDateString();
+            const formattedDate = date.toLocaleDateString("pt-BR", {
+              day: "2-digit",
+              month: "2-digit",
+            });
             return (
               <div
-                key={day}
-                className={`p-3 text-center border-r border-[#e2ebe6] last:border-r-0 ${
-                  isToday ? "bg-[#1a4a3a] text-white" : "bg-[#f0f4f2]"
+                key={date.toISOString()}
+                className={`border-r border-[#d7f3ea] p-3 text-center last:border-r-0 dark:border-slate-800 ${
+                  isToday ? "bg-[#0f766e] text-white" : ""
                 }`}
               >
                 <p
-                  className={`text-xs font-semibold uppercase ${
-                    isToday ? "text-white/80" : "text-[#4a6354]"
+                  className={`text-xs font-semibold uppercase tracking-wide ${
+                    isToday ? "text-white/80" : "text-[#64748b] dark:text-slate-300"
                   }`}
                 >
                   {day}
                 </p>
-                <p className={`text-sm font-bold ${isToday ? "text-white" : "text-[#1a2a4a]"}`}>
-                  {date.getDate()}
+                <p className={`mt-1 text-sm font-bold ${isToday ? "text-white" : "text-[#0f172a] dark:text-white"}`}>
+                  {formattedDate}
                 </p>
               </div>
             );
@@ -174,15 +179,15 @@ export default function AgendaCalendar({ onCreate }: Props) {
         </div>
 
         {/* Grid de horários */}
-        <div className="grid grid-cols-8">
+        <div className="grid min-w-[920px] grid-cols-8">
           {/* Coluna de horários */}
-          <div className="border-r border-[#e2ebe6]">
+          <div className="border-r border-[#d7f3ea] bg-[#f8fffc] dark:border-slate-800 dark:bg-slate-950/40">
             {HOURS.map((hour) => (
               <div
                 key={hour}
-                className="h-16 border-b border-[#e2ebe6] last:border-b-0 flex items-center justify-center"
+                className="flex h-20 items-center justify-center border-b border-[#e6fbf4] last:border-b-0 dark:border-slate-800"
               >
-                <span className="text-xs text-[#4a6354]">
+                <span className="text-xs font-medium text-[#64748b] dark:text-slate-300">
                   {hour.toString().padStart(2, "0")}:00
                 </span>
               </div>
@@ -191,19 +196,19 @@ export default function AgendaCalendar({ onCreate }: Props) {
 
           {/* Colunas dos dias */}
           {DAYS.map((_, dayIndex) => (
-            <div key={dayIndex} className="border-r border-[#e2ebe6] last:border-r-0">
+            <div key={weekDates[dayIndex].toISOString()} className="border-r border-[#d7f3ea] last:border-r-0 dark:border-slate-800">
               {HOURS.map((hour) => {
                 const slotAppointments = getAppointmentsForSlot(dayIndex, hour);
                 return (
                   <div
                     key={hour}
-                    className="h-16 border-b border-[#e2ebe6] last:border-b-0 p-1 relative hover:bg-[#f8faf9] transition-colors cursor-pointer"
+                    className="relative h-20 cursor-pointer border-b border-[#e6fbf4] p-1.5 transition-colors last:border-b-0 hover:bg-[#ecfdf5]/70 dark:border-slate-800 dark:hover:bg-slate-800/70"
                     onClick={handleSlotClick}
                   >
                     {slotAppointments.map((apt) => (
                       <div
                         key={apt.id}
-                        className={`text-xs p-1.5 rounded-sm border cursor-pointer truncate ${getAppointmentStyle(
+                        className={`cursor-pointer truncate rounded-xl border px-2 py-1.5 text-xs shadow-sm transition-transform hover:-translate-y-0.5 ${getAppointmentStyle(
                           apt.status
                         )}`}
                         onClick={(e) => {
@@ -230,18 +235,18 @@ export default function AgendaCalendar({ onCreate }: Props) {
       </div>
 
       {/* Legenda */}
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-[#d7f3ea] bg-white px-4 py-3 text-sm shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div className="flex items-center gap-2">
-          <span className="w-4 h-4 rounded-sm bg-[#e8f0ec] border border-[#1a4a3a]"></span>
-          <span className="text-[#4a6354]">Agendado</span>
+          <span className="h-4 w-4 rounded-md border border-cyan-200 bg-cyan-50"></span>
+          <span className="text-[#64748b] dark:text-slate-300">Agendado</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-4 h-4 rounded-sm bg-green-50 border border-green-500"></span>
-          <span className="text-[#4a6354]">Completo</span>
+          <span className="h-4 w-4 rounded-md border border-emerald-200 bg-emerald-50"></span>
+          <span className="text-[#64748b] dark:text-slate-300">Completo</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-4 h-4 rounded-sm bg-gray-100 border border-gray-300"></span>
-          <span className="text-[#4a6354]">Cancelado</span>
+          <span className="h-4 w-4 rounded-md border border-slate-200 bg-slate-50"></span>
+          <span className="text-[#64748b] dark:text-slate-300">Cancelado</span>
         </div>
       </div>
     </motion.div>

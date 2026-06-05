@@ -25,11 +25,11 @@ export function StatusBadge({ status, mapping }: StatusBadgeProps) {
   if (!status) return <span className="text-gray-400">-</span>;
 
   const config = mapping[status];
-  const className = config?.className ?? "";
+  const className = config?.className ?? "border-slate-200 bg-slate-50 text-slate-700";
   const label = config?.label ?? status;
 
   return (
-    <span className={`px-2 py-1 rounded-sm text-xs font-semibold border-2 ${className}`}>
+    <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${className}`}>
       {label}
     </span>
   );

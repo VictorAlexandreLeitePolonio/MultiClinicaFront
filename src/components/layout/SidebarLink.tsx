@@ -25,7 +25,7 @@ export function SidebarLink({ href, label, icon, collapsed }: SidebarLinkProps) 
       {isActive && (
         <motion.div
           layoutId="active-indicator"
-          className="absolute left-0 top-0 bottom-0 w-1 bg-[#5a9c94] rounded-full"
+          className="absolute bottom-2 left-0 top-2 w-1 rounded-full bg-[#14b8a6]"
           initial={false}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
         />
@@ -33,15 +33,14 @@ export function SidebarLink({ href, label, icon, collapsed }: SidebarLinkProps) 
       <Link
         href={href}
         title={collapsed ? label : undefined}
-        className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium transition-all
+        className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all
           ${collapsed ? "justify-center" : ""}
           ${isActive
-            ? "bg-[#5a9c94] text-white border-2 border-[#4a8880] shadow-[2px_2px_0_0_#4a8880]"
-            : "text-white/70 hover:bg-white/10 hover:text-white border-2 border-transparent"
+            ? "border-[#a7f3d0] bg-[#ecfdf5] text-[#0f766e] shadow-[0_12px_26px_-22px_rgba(20,184,166,0.9)] dark:border-[#0f766e] dark:bg-slate-900 dark:text-[#67e8f9]"
+            : "border-transparent text-[#64748b] hover:border-[#d7f3ea] hover:bg-[#f8fffc] hover:text-[#0f766e] dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-900 dark:hover:text-white"
           }`}
-        style={{ fontFamily: "var(--font-serif)" }}
       >
-        <span className={isActive ? "opacity-100" : "opacity-70"}>{icon}</span>
+        <span className={isActive ? "opacity-100" : "opacity-75"}>{icon}</span>
         {!collapsed && <span>{label}</span>}
       </Link>
     </motion.div>

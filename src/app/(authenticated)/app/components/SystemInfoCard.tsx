@@ -16,49 +16,42 @@ export function SystemInfoCard() {
   return (
     <motion.div
       variants={fadeSlideUp}
-      className="bg-white rounded-sm border-2 border-[#1a2a4a] p-6 shadow-[4px_4px_0_0_#1a2a4a]"
+      className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900"
     >
       <div className="flex items-center gap-3 mb-4">
         <div 
-          className="w-10 h-10 rounded-sm flex items-center justify-center"
-          style={{
-            background: "linear-gradient(135deg, #1a4a3a 0%, #143d2f 100%)",
-            border: "2px solid #1a2a4a",
-          }}
+          className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#14b8a6] to-[#06b6d4] shadow-[0_16px_34px_-24px_rgba(20,184,166,0.9)]"
         >
               <span className="text-white font-bold text-sm">MC</span>
         </div>
         <div>
           <h3 
-            className="text-lg font-bold text-[#1a2a4a]"
-            style={{ fontFamily: "var(--font-serif)" }}
+            className="text-lg font-bold text-[#0f172a] dark:text-white"
           >
             MultiClinica
           </h3>
-          <p className="text-xs text-[#1a4a3a]">Sistema de Gestão</p>
+          <p className="text-xs font-medium text-[#0f766e] dark:text-[#67e8f9]">Sistema de Gestão</p>
         </div>
       </div>
       
       <p 
-        className="text-sm text-[#4a6354] mb-5 leading-relaxed"
-        style={{ fontFamily: "var(--font-serif)" }}
+        className="mb-5 text-sm leading-relaxed text-[#64748b] dark:text-slate-300"
       >
         Sistema completo para gestão de clínicas de fisioterapia. 
         Organize sua rotina, acompanhe seus pacientes e gerencie 
         toda a operação em um só lugar.
       </p>
       
-      <div className="h-px bg-[#e2ebe6] my-4" />
+      <div className="my-4 h-px bg-[#d7f3ea] dark:bg-slate-800" />
       
       <ul className="space-y-3">
-        {features.map((feature, index) => (
-          <li key={index} className="flex items-start gap-3">
-            <div className="w-5 h-5 rounded-sm bg-[#f0f4f2] border border-[#e2ebe6] flex items-center justify-center flex-shrink-0 mt-0.5">
-              <span className="text-[#1a4a3a]">{feature.icon}</span>
+        {features.map((feature) => (
+          <li key={feature.text} className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg border border-[#a7f3d0] bg-[#ecfdf5]">
+              <span className="text-[#0f766e]">{feature.icon}</span>
             </div>
             <span 
-              className="text-sm text-[#1a2a4a]"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="text-sm text-[#0f172a] dark:text-white"
             >
               {feature.text}
             </span>

@@ -69,13 +69,23 @@ export function DataTable<T>({
 
   if (loading) {
     return (
-      <div className="overflow-hidden border-2 border-[#d0e8e6] rounded-sm">
-        <div className="flex min-h-40 items-center justify-center p-6">
-          <Loader2
-            size={28}
-            className="animate-spin text-[#5a9c94]"
-            aria-label="Carregando dados"
-          />
+      <div className="overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900">
+        <div className="border-b border-[#d7f3ea] bg-[#f0fdf9] px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
+          <div className="h-3 w-40 animate-pulse rounded-full bg-[#a7f3d0]/70 dark:bg-slate-700" />
+        </div>
+        <div className="divide-y divide-[#e6fbf4] dark:divide-slate-800">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div key={index} className="grid grid-cols-4 gap-4 px-4 py-4">
+              <div className="h-3 animate-pulse rounded-full bg-[#d7f3ea] dark:bg-slate-800" />
+              <div className="h-3 animate-pulse rounded-full bg-[#d7f3ea] dark:bg-slate-800" />
+              <div className="h-3 animate-pulse rounded-full bg-[#d7f3ea] dark:bg-slate-800" />
+              <div className="h-3 animate-pulse rounded-full bg-[#d7f3ea] dark:bg-slate-800" />
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center justify-center gap-2 border-t border-[#d7f3ea] px-4 py-4 text-sm font-medium text-[#0f766e] dark:border-slate-800 dark:text-[#67e8f9]">
+          <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+          <span>Carregando dados...</span>
         </div>
       </div>
     );
@@ -83,7 +93,7 @@ export function DataTable<T>({
 
   if (error) {
     return (
-      <div className="rounded-sm border-2 border-red-200 bg-red-50 p-6 text-center">
+      <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center shadow-sm dark:border-red-900 dark:bg-red-950/40">
         <p className="text-sm font-semibold text-red-700">{error}</p>
         {onRetry && (
           <div className="mx-auto mt-4 max-w-48">
@@ -98,26 +108,22 @@ export function DataTable<T>({
 
   if (data.length === 0) {
     return (
-      <p 
-        className="text-[#4a6354] py-8 text-center"
-        style={{ fontFamily: "var(--font-serif)" }}
-      >
-        {emptyMessage}
-      </p>
+      <div className="rounded-2xl border border-dashed border-[#a7f3d0] bg-white/75 px-6 py-10 text-center shadow-sm dark:border-slate-700 dark:bg-slate-900/75">
+        <p className="text-sm font-medium text-[#64748b] dark:text-slate-300">{emptyMessage}</p>
+      </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto border-2 border-[#d0e8e6] rounded-sm">
+    <div className="overflow-x-auto rounded-2xl border border-[#d7f3ea] bg-white shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900">
       <table className="w-full text-sm">
-        <thead className="bg-[#e8f4f3]">
-          <tr className="border-b-2 border-[#d0e8e6]">
+        <thead className="bg-[#f0fdf9] dark:bg-slate-900">
+          <tr className="border-b border-[#d7f3ea] dark:border-slate-800">
             {table.getHeaderGroups().map((headerGroup) =>
               headerGroup.headers.map((header) => (
               <th
                 key={header.id}
-                className={`text-left py-3 px-4 font-semibold text-[#1e2d4a] uppercase text-xs tracking-wider ${(header.column.columnDef.meta as { className?: string } | undefined)?.className || ""}`}
-                style={{ fontFamily: "var(--font-serif)" }}
+                className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#64748b] dark:text-slate-300 ${(header.column.columnDef.meta as { className?: string } | undefined)?.className || ""}`}
               >
                 {flexRender(header.column.columnDef.header, header.getContext())}
               </th>
@@ -134,14 +140,13 @@ export function DataTable<T>({
             <motion.tr
               key={row.id}
               variants={fadeSlideUp}
-              className={`border-b border-[#d0e8e6] hover:bg-[#f0f9f8] transition-colors ${onRowClick ? "cursor-pointer" : ""}`}
+              className={`border-b border-[#e6fbf4] transition-colors last:border-b-0 hover:bg-[#ecfdf5] dark:border-slate-800 dark:hover:bg-slate-800/70 ${onRowClick ? "cursor-pointer" : ""}`}
               onClick={() => onRowClick?.(row.original)}
             >
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  className={`py-3 px-4 text-[#1a2a4a] ${(cell.column.columnDef.meta as { className?: string } | undefined)?.className || ""}`}
-                  style={{ fontFamily: "var(--font-serif)" }}
+                  className={`px-4 py-3 text-[#0f172a] dark:text-white ${(cell.column.columnDef.meta as { className?: string } | undefined)?.className || ""}`}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>

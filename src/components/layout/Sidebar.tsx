@@ -73,20 +73,20 @@ export function Sidebar({ area }: SidebarProps) {
     <motion.aside
       animate={{ width: collapsed ? 72 : 256 }}
       transition={{ type: "spring", stiffness: 200, damping: 25 }}
-      className="flex flex-col h-screen sticky top-0 bg-[#1e2d4a] border-r-2 border-[#121d33] px-3 py-6 overflow-hidden"
+      className="sticky top-0 flex h-screen flex-col overflow-hidden border-r border-[#d7f3ea] bg-white/95 px-3 py-6 shadow-[10px_0_40px_-34px_rgba(15,23,42,0.55)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/95"
     >
       {/* Logo + botão colapsar */}
       <div className={`flex items-center mb-2 px-1 ${collapsed ? "justify-center" : "justify-between"}`}>
         {!collapsed && (
           <div className="flex flex-col items-center gap-2 w-full">
-            <div className="flex h-14 w-14 items-center justify-center rounded-sm border-2 border-[#5a9c94] bg-white text-[#1e2d4a] shadow-[0_0_0_3px_rgba(90,156,148,0.2)]">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#a7f3d0] bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white shadow-[0_18px_34px_-24px_rgba(20,184,166,0.85)]">
               <Building2 size={28} />
             </div>
             <div className="text-center">
-              <p className="text-white text-xs font-bold tracking-widest uppercase" style={{ fontFamily: "var(--font-serif)" }}>
+              <p className="text-xs font-bold uppercase tracking-wide text-[#0f172a] dark:text-white">
                 MultiClinica
               </p>
-              <p className="text-[#5a9c94] text-[10px] tracking-widest uppercase">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-[#14b8a6]">
                 {area === "superadmin" ? "Painel Global" : user?.clinicName ?? "App Clínica"}
               </p>
             </div>
@@ -94,14 +94,14 @@ export function Sidebar({ area }: SidebarProps) {
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className={`p-1.5 rounded-sm text-white/60 hover:text-white hover:bg-white/10 transition-colors border border-transparent hover:border-white/20 ${collapsed ? "" : "ml-auto"}`}
+          className={`rounded-xl border border-transparent p-1.5 text-[#64748b] transition-colors hover:border-[#d7f3ea] hover:bg-[#ecfdf5] hover:text-[#0f766e] dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-900 dark:hover:text-white ${collapsed ? "" : "ml-auto"}`}
         >
           {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
       </div>
 
       {/* Separador */}
-      <div className="h-px bg-white/10 my-3 mx-2" />
+      <div className="mx-2 my-3 h-px bg-[#d7f3ea] dark:bg-slate-800" />
 
       {/* Módulos */}
       <nav className="flex flex-col gap-1 flex-1">
@@ -111,12 +111,12 @@ export function Sidebar({ area }: SidebarProps) {
       </nav>
 
       {/* Divisor */}
-      <div className="h-px bg-white/10 my-4 mx-2" />
+      <div className="mx-2 my-4 h-px bg-[#d7f3ea] dark:bg-slate-800" />
 
       {!collapsed && user && (
-        <div className="mb-3 rounded-sm border border-white/10 bg-white/5 px-3 py-2">
-          <p className="truncate text-xs font-semibold text-white">{user.name}</p>
-          <p className="truncate text-[11px] text-white/50">{getRoleLabel(user.role)}</p>
+        <div className="mb-3 rounded-2xl border border-[#d7f3ea] bg-[#f8fffc] px-3 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <p className="truncate text-xs font-semibold text-[#0f172a] dark:text-white">{user.name}</p>
+          <p className="truncate text-[11px] text-[#64748b] dark:text-slate-300">{getRoleLabel(user.role)}</p>
         </div>
       )}
 
@@ -125,10 +125,9 @@ export function Sidebar({ area }: SidebarProps) {
         whileHover={{ x: collapsed ? 0 : 2 }}
         onClick={handleLogout}
         disabled={isLoggingOut}
-        className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-semibold uppercase tracking-wider
-          text-white/60 hover:text-red-400 hover:bg-white/5 transition-colors border-2 border-transparent hover:border-red-400/30 disabled:cursor-wait disabled:opacity-60
+        className={`flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold
+          text-[#64748b] transition-colors hover:border-red-100 hover:bg-red-50 hover:text-red-600 disabled:cursor-wait disabled:opacity-60 dark:text-slate-300 dark:hover:border-red-900/60 dark:hover:bg-red-950/30 dark:hover:text-red-300
           ${collapsed ? "justify-center" : ""}`}
-        style={{ fontFamily: "var(--font-serif)" }}
         title={collapsed ? "Sair" : undefined}
       >
         <LogOut size={18} />

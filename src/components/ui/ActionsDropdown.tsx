@@ -102,12 +102,12 @@ export function ActionsDropdown({ actions, label = "Ações" }: ActionsDropdownP
     }
   };
 
-  const buttonBaseStyles = "w-full text-left px-3 py-2 text-xs font-medium rounded-sm transition-colors flex items-center gap-2";
+  const buttonBaseStyles = "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors";
   
   const variantStyles = {
-    default: "text-[#1a2a4a] hover:bg-[#f0f4f2]",
-    danger: "text-red-600 hover:bg-red-50",
-    success: "text-green-600 hover:bg-green-50",
+    default: "text-[#0f172a] hover:bg-[#ecfdf5] dark:text-white dark:hover:bg-slate-800",
+    danger: "text-red-600 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40",
+    success: "text-emerald-600 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950/40",
   };
 
   const dropdownContent = (
@@ -126,7 +126,7 @@ export function ActionsDropdown({ actions, label = "Ações" }: ActionsDropdownP
             width: position.width,
             zIndex: 9999,
           }}
-          className="bg-white border-2 border-[#e2ebe6] rounded-sm shadow-lg overflow-hidden"
+          className="overflow-hidden rounded-xl border border-[#d7f3ea] bg-white shadow-[0_20px_60px_-28px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-900"
         >
           <div className="py-1">
             {actions.map((action, index) => (
@@ -137,7 +137,6 @@ export function ActionsDropdown({ actions, label = "Ações" }: ActionsDropdownP
                 whileHover={action.disabled ? {} : hoverShift}
                 className={`${buttonBaseStyles} ${variantStyles[action.variant || "default"]} 
                   ${action.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
-                style={{ fontFamily: "var(--font-serif)" }}
               >
                 {action.icon && <span>{action.icon}</span>}
                 {action.label}
@@ -156,10 +155,7 @@ export function ActionsDropdown({ actions, label = "Ações" }: ActionsDropdownP
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ x: -1, y: -1 }}
         whileTap={{ x: 2, y: 2 }}
-        className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider
-          bg-white text-[#5a9c94] border-2 border-[#5a9c94] rounded-sm
-          shadow-[3px_3px_0_0_#5a9c94] hover:bg-[#e8f4f3] transition-all"
-        style={{ fontFamily: "var(--font-serif)" }}
+        className="flex items-center gap-1 rounded-xl border border-[#99f6e4] bg-white px-3 py-1.5 text-xs font-semibold text-[#0f766e] shadow-sm transition-all hover:border-[#14b8a6] hover:bg-[#ecfdf5] dark:border-slate-700 dark:bg-slate-900 dark:text-[#67e8f9] dark:hover:bg-slate-800"
       >
         <MoreVertical size={14} />
         {label}

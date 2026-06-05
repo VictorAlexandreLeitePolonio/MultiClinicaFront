@@ -12,7 +12,7 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, onBack, actions }: PageHeaderProps) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <motion.div 
         className="flex items-center gap-3"
         variants={slideFromLeft}
@@ -26,12 +26,11 @@ export function PageHeader({ title, onBack, actions }: PageHeaderProps) {
         )}
         <div>
           <h1 
-            className="text-2xl font-bold text-[#1a2a4a]"
-            style={{ fontFamily: "var(--font-serif)" }}
+            className="text-2xl font-bold tracking-tight text-[#0f172a] dark:text-white"
           >
             {title}
           </h1>
-          <div className="h-0.5 w-12 bg-[#5a9c94] mt-1 rounded-full" />
+          <div className="mt-2 h-1 w-14 rounded-full bg-gradient-to-r from-[#14b8a6] to-[#67e8f9]" />
         </div>
       </motion.div>
       {actions && <div className="flex gap-2">{actions}</div>}

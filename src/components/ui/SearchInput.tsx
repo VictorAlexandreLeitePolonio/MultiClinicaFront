@@ -19,7 +19,7 @@ export function SearchInput({ value, onChange, placeholder = "Buscar...", classN
     <div className={`relative ${className}`}>
       <motion.div
         animate={isFocused ? pulse : { scale: 1 }}
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5a9c94]"
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-[#14b8a6]"
       >
         <Search size={18} />
       </motion.div>
@@ -30,9 +30,7 @@ export function SearchInput({ value, onChange, placeholder = "Buscar...", classN
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
-        className="w-full max-w-sm pl-10 pr-4 py-2 bg-[#fdfcfa] border-2 border-[#e2ebe6] rounded-sm text-[#1a2a4a] placeholder:text-gray-400
-          focus:border-[#5a9c94] focus:shadow-[3px_3px_0_0_#5a9c94] focus:outline-none transition-all"
-        style={{ fontFamily: "var(--font-serif)" }}
+        className="w-full max-w-sm rounded-xl border border-[#d7f3ea] bg-white py-2.5 pl-10 pr-4 text-[#0f172a] shadow-sm transition-all placeholder:text-slate-400 focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
       />
     </div>
   );
