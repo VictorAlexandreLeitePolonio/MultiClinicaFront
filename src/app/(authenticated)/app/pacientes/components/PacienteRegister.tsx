@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -33,8 +34,25 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
     handleSubmit,
     trigger,
     formState: { errors },
-  } = useForm<PacienteFormData>({
+  } = useForm<
+    z.input<typeof PacienteSchema>,
+    unknown,
+    PacienteFormData
+  >({
     resolver: zodResolver(PacienteSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      cpf: "",
+      rg: "",
+      phone: "",
+      rua: "",
+      numero: "",
+      bairro: "",
+      cidade: "",
+      estado: "",
+      cep: "",
+    },
   });
 
   const onSubmit = async (data: PacienteFormData) => {

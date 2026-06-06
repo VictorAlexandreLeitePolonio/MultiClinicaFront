@@ -230,6 +230,8 @@ export interface PatientProfile {
   payments: PatientProfilePayment[];
 }
 
+export * from "./evolution";
+
 // ─── Módulo Financeiro ─────────────────────────────────────────────────────
 
 export interface Expense {

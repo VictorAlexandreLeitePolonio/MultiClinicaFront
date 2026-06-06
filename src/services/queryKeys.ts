@@ -37,6 +37,24 @@ export const queryKeys = {
     list: (params: unknown) => ["users", "list", params] as const,
     detail: (userId: number) => ["users", "detail", userId] as const,
   },
+  evolution: {
+    templates: {
+      all: ["evolution", "templates"] as const,
+      list: (params: unknown) => ["evolution", "templates", "list", params] as const,
+      detail: (templateId: number) => ["evolution", "templates", templateId] as const,
+      fields: (templateId: number) => ["evolution", "templates", templateId, "fields"] as const,
+    },
+    patientTreatments: (patientId: number) => ["evolution", "patients", patientId, "treatments"] as const,
+    patientTreatment: (patientId: number, treatmentId: number) =>
+      ["evolution", "patients", patientId, "treatments", treatmentId] as const,
+    patientEvolutions: (patientId: number, treatmentId: number, params: unknown) =>
+      ["evolution", "patients", patientId, "treatments", treatmentId, "evolutions", params] as const,
+    patientEvolution: (patientId: number, treatmentId: number, evolutionId: number) =>
+      ["evolution", "patients", patientId, "treatments", treatmentId, "evolutions", evolutionId] as const,
+    treatmentProgress: (patientId: number, treatmentId: number) =>
+      ["evolution", "patients", patientId, "treatments", treatmentId, "progress"] as const,
+    dashboardSummary: ["evolution", "dashboard-summary"] as const,
+  },
   superAdmin: {
     dashboard: ["superadmin", "dashboard"] as const,
     clinics: (params: unknown) => ["superadmin", "clinics", params] as const,

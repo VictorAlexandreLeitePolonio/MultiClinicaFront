@@ -6,10 +6,11 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable, Column } from "@/components/ui/DataTable";
 import { useGetPatientProfile } from "../hooks/profile";
 import { formatDate, formatCurrency, formatCPF, formatPhone } from "@/utils/formatters";
-import { Calendar, FileText, CreditCard, User, Phone, MapPin } from "lucide-react";
+import { Activity, Calendar, FileText, CreditCard, User, Phone, MapPin } from "lucide-react";
 import { fadeSlideUp, staggerContainer } from "@/lib/motion";
+import { PatientEvolutionSection } from "./evolution/PatientEvolutionSection";
 
-type TabType = "appointments" | "medicalRecords" | "payments";
+type TabType = "appointments" | "medicalRecords" | "payments" | "evolution";
 
 interface Props {
   id: number;
@@ -163,6 +164,7 @@ export default function PacienteProfile({ id, onBack }: Props) {
     { key: "appointments" as TabType, label: "Consultas", icon: Calendar, count: data.appointments.length },
     { key: "medicalRecords" as TabType, label: "Prontuários", icon: FileText, count: data.medicalRecords.length },
     { key: "payments" as TabType, label: "Pagamentos", icon: CreditCard, count: data.payments.length },
+    { key: "evolution" as TabType, label: "Evolução", icon: Activity, count: null },
   ];
 
   return (
@@ -242,13 +244,15 @@ export default function PacienteProfile({ id, onBack }: Props) {
               >
                 <Icon size={16} />
                 {tab.label}
-                <span
-                  className={`ml-1 px-1.5 py-0.5 rounded-sm text-xs ${
-                    isActive ? "bg-white/20" : "bg-[#f0f4f2]"
-                  }`}
-                >
-                  {tab.count}
-                </span>
+                {tab.count !== null && (
+                  <span
+                    className={`ml-1 px-1.5 py-0.5 rounded-sm text-xs ${
+                      isActive ? "bg-white/20" : "bg-[#f0f4f2]"
+                    }`}
+                  >
+                    {tab.count}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -286,6 +290,9 @@ export default function PacienteProfile({ id, onBack }: Props) {
             keyExtractor={(p) => p.id}
             emptyMessage="Nenhum pagamento encontrado."
           />
+        )}
+        {activeTab === "evolution" && (
+          <PatientEvolutionSection patientId={id} />
         )}
       </motion.div>
     </motion.div>

@@ -1,17 +1,19 @@
 import { z } from "zod";
 
+const textField = z.string({ error: "Campo inválido." }).default("");
+
 export const PacienteSchema = z.object({
-  name: z.string(),
-  email: z.union([z.string().email("E-mail inválido"), z.literal("")]),
-  cpf: z.string(),
-  rg: z.string(),
-  phone: z.string(),
-  rua: z.string(),
-  numero: z.string(),
-  bairro: z.string(),
-  cidade: z.string(),
-  estado: z.string(),
-  cep: z.string(),
+  name: textField,
+  email: z.union([z.string().email("E-mail inválido"), z.literal("")]).default(""),
+  cpf: textField,
+  rg: textField,
+  phone: textField,
+  rua: textField,
+  numero: textField,
+  bairro: textField,
+  cidade: textField,
+  estado: textField,
+  cep: textField,
 });
 
 export type PacienteFormData = z.infer<typeof PacienteSchema>;

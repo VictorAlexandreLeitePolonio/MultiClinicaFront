@@ -20,7 +20,7 @@ interface FormFieldProps {
 }
 
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ label, error, id, disabled, value, onChange, onBlur, type = "text", ...rest }, ref) => {
+  ({ label, error, id, disabled, value, onChange, onBlur, type = "text", placeholder, ...rest }, ref) => {
     return (
       <motion.div variants={fadeSlideUp} className="flex flex-col gap-2">
         <label
@@ -36,6 +36,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
           name={rest.name}
           type={type}
           step={rest.step}
+          placeholder={placeholder}
           disabled={disabled}
           {...(value !== undefined ? { value } : {})}
           onChange={onChange}

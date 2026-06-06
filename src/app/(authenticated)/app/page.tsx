@@ -7,6 +7,7 @@ import { GreetingBanner } from "./components/GreetingBanner";
 import { AppointmentCard } from "./components/AppointmentCard";
 import { AppointmentSkeleton } from "./components/AppointmentSkeleton";
 import { ClinicDashboardActions } from "./components/ClinicDashboardActions";
+import { EvolutionSummaryCard } from "./components/EvolutionSummaryCard";
 import { useTodayAppointments } from "./hooks/useTodayAppointments";
 import { useMonthlyBalance } from "./financeiro/hooks/balance";
 import { useAuth } from "@/contexts/AuthContext";
@@ -68,6 +69,8 @@ export default function BemVindoPage() {
       )}
 
       {user?.role && <ClinicDashboardActions role={user.role} />}
+
+      {user?.role && user.role !== "SuperAdmin" && <EvolutionSummaryCard />}
 
       {/* Card de balanço financeiro - apenas para Administrador */}
       {user?.role === "Administrador" && (

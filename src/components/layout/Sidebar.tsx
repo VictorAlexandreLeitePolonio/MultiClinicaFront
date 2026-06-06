@@ -12,6 +12,7 @@ import {
   Users,
   Calendar,
   FileText,
+  Activity,
   CreditCard,
   ClipboardList,
   Shield,
@@ -27,6 +28,7 @@ const baseModules = [
   { href: "/app/pacientes", label: "Pacientes", icon: <Users size={18} />, roles: ["Administrador", "Profissional", "Recepcao"] },
   { href: "/app/agenda", label: "Agenda", icon: <Calendar size={18} />, roles: ["Administrador", "Profissional", "Recepcao"] },
   { href: "/app/prontuarios", label: "Prontuários", icon: <FileText size={18} />, roles: ["Administrador", "Profissional"] },
+  { href: "/app/modelos-evolucao", label: "Modelos Evolução", icon: <Activity size={18} />, roles: ["Administrador", "Profissional", "Recepcao"] },
 ];
 
 const adminModules = [

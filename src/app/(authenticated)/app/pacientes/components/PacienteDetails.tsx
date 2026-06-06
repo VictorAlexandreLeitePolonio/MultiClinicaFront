@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -37,7 +38,11 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<PacienteFormData>({
+  } = useForm<
+    z.input<typeof PacienteSchema>,
+    unknown,
+    PacienteFormData
+  >({
     resolver: zodResolver(PacienteSchema),
     defaultValues: {
       name: "",

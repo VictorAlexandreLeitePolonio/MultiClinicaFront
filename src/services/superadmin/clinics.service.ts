@@ -27,7 +27,7 @@ export async function getSuperAdminClinics(
       params,
     },
   )
-
+  console.log('Fetched clinics:', response.data)
   return normalizePagedResult<SuperAdminClinic>(response.data, params.pageSize)
 }
 
@@ -68,7 +68,7 @@ export async function createSuperAdminClinic(
     '/api/superadmin/clinicas',
     payload,
   )
-
+  console.log('Created clinic:', response.data)
   return response.data
 }
 
@@ -86,7 +86,10 @@ export async function getSuperAdminClinicUsers(
     { params },
   )
 
-  return normalizePagedResult<SuperAdminClinicUser>(response.data, params.pageSize)
+  return normalizePagedResult<SuperAdminClinicUser>(
+    response.data,
+    params.pageSize,
+  )
 }
 
 export interface ConfigureClinicBillingPayload {
