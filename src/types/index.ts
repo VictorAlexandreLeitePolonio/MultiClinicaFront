@@ -177,6 +177,22 @@ export interface MedicalRecord {
   contrato: string;
   orientacaoDomiciliar: string;
   createdAt: string;
+  attachments: ClinicalAttachment[];
+}
+
+export type ClinicalAttachmentType = "Contract" | "Exam" | "Other";
+
+export interface ClinicalAttachment {
+  id: number;
+  patientId: number;
+  medicalRecordId: number | null;
+  type: ClinicalAttachmentType;
+  originalFileName: string;
+  objectKey: string;
+  contentType: string;
+  size: number;
+  uploadedByUserId: number;
+  uploadedAt: string;
 }
 
 // ─── Perfil do Paciente (360°) ─────────────────────────────────────────────

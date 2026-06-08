@@ -2,18 +2,28 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { uploadMedicalRecordExame } from "@/services/attachments/attachments.service";
+import { uploadMedicalRecordAttachment } from "@/services/attachments/attachments.service";
 import { getApiErrorMessage } from "@/utils/apiError";
+import { ClinicalAttachment } from "@/types";
 
 export function useUploadExame() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const uploadExame = async (id: number, file: File): Promise<string | null> => {
+  const uploadExame = async (
+    medicalRecordId: number,
+    patientId: number,
+    file: File
+  ): Promise<ClinicalAttachment | null> => {
     setLoading(true);
     setError(null);
     try {
-      return await uploadMedicalRecordExame(id, file);
+      return await uploadMedicalRecordAttachment({
+        medicalRecordId,
+        patientId,
+        type: "Exam",
+        file,
+      });
     } catch (err) {
       const message = getApiErrorMessage(err, "Erro ao fazer upload do exame.");
       setError(message);

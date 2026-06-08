@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const apiBaseUrl = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5045";
+
 const nextConfig: NextConfig = {
   reactCompiler: true,
   turbopack: {
@@ -9,7 +11,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/backend/:path*",
-        destination: `${process.env.API_BASE_URL ?? "http://localhost:5045"}/:path*`,
+        destination: `${apiBaseUrl}/:path*`,
       },
     ];
   },

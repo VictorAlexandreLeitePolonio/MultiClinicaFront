@@ -126,7 +126,7 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
       // 2. Upload do contrato se selecionado
       if (contratoFile) {
         try {
-          await uploadContrato(record.id, contratoFile);
+          await uploadContrato(record.id, record.patientId, contratoFile);
           toast.success("Contrato enviado com sucesso!");
         } catch {
           toast.error("Prontuário criado, mas houve erro ao enviar o contrato.");
@@ -136,7 +136,7 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
       // 3. Upload do exame se selecionado
       if (exameFile) {
         try {
-          await uploadExame(record.id, exameFile);
+          await uploadExame(record.id, record.patientId, exameFile);
           toast.success("Exame enviado com sucesso!");
         } catch {
           toast.error("Prontuário criado, mas houve erro ao enviar o exame.");

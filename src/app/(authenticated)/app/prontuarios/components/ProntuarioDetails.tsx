@@ -5,6 +5,9 @@ import { motion } from "motion/react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useProntuarioById } from "../hooks/getId";
 import { FileText, Image as ImageIcon, UserCircle } from "lucide-react";
+import { getAttachmentDownloadUrl } from "@/services/attachments/attachments.service";
+import { ClinicalAttachment } from "@/types";
+import { toast } from "sonner";
 
 interface Props {
   id: number;
@@ -13,6 +16,15 @@ interface Props {
 
 export default function ProntuarioDetails({ id, onBack }: Props) {
   const { record, loading, error } = useProntuarioById(id);
+
+  const openAttachment = async (attachment: ClinicalAttachment) => {
+    try {
+      const url = await getAttachmentDownloadUrl(attachment.id);
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch {
+      toast.error("Erro ao gerar link temporário do anexo.");
+    }
+  };
 
   if (loading) {
     return (
@@ -31,6 +43,8 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
       </div>
     );
   }
+
+  const attachments = record.attachments ?? [];
 
   return (
     <div className="space-y-6">
@@ -153,7 +167,7 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
       </motion.section>
 
       {/* Documentos */}
-      {(record.contrato || record.examesImagem) && (
+      {(attachments.length > 0 || record.contrato || record.examesImagem) && (
         <motion.section
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -162,6 +176,27 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
         >
           <h2 className="text-lg font-bold text-[#1a2a4a] mb-4">Documentos</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {attachments.map((attachment) => {
+              const isExam = attachment.type === "Exam";
+              const Icon = isExam ? ImageIcon : FileText;
+
+              return (
+                <button
+                  key={attachment.id}
+                  type="button"
+                  onClick={() => void openAttachment(attachment)}
+                  className="flex items-center gap-3 p-4 text-left border-2 border-[#e2ebe6] rounded-sm hover:border-[#1a4a3a] transition-colors"
+                >
+                  <Icon className="w-10 h-10 text-[#1a4a3a]" />
+                  <div className="min-w-0">
+                    <p className="font-medium text-[#1b2e4b] truncate">
+                      {attachment.originalFileName || (isExam ? "Exame de Imagem" : "Contrato")}
+                    </p>
+                    <p className="text-xs text-[#4a6354]">Clique para abrir link temporário</p>
+                  </div>
+                </button>
+              );
+            })}
             {record.contrato && (
               <a
                 href={record.contrato}
