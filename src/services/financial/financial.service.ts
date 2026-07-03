@@ -1,6 +1,7 @@
 import api from "@/lib/api";
 import { normalizePagedResult } from "@/lib/pagination";
 import { CreateExpenseDto, Expense, FinancialBalance, PagedResult } from "@/types";
+import { toApiReferenceMonth } from "@/utils/formatters";
 
 export interface GetExpensesParams {
   title?: string;
@@ -12,7 +13,7 @@ export interface GetExpensesParams {
 export type BalanceHistoryPeriod = 1 | 3 | 6 | 12;
 
 export async function getMonthlyFinancialBalance(month: string): Promise<FinancialBalance> {
-  const response = await api.get<FinancialBalance>(`/api/financial/balance/${month}`);
+  const response = await api.get<FinancialBalance>(`/api/financial/balance/${toApiReferenceMonth(month)}`);
 
   return response.data;
 }
@@ -28,8 +29,11 @@ export async function getFinancialBalanceHistory(
 }
 
 export async function getExpenses(params: GetExpensesParams): Promise<PagedResult<Expense>> {
+  const apiParams = params.month
+    ? { ...params, month: toApiReferenceMonth(params.month) }
+    : params;
   const response = await api.get<PagedResult<Expense> | Expense[]>("/api/financial/expenses", {
-    params,
+    params: apiParams,
   });
 
   return normalizePagedResult<Expense>(response.data, params.pageSize);
@@ -42,13 +46,19 @@ export async function getExpenseById(id: number): Promise<Expense> {
 }
 
 export async function createExpense(payload: CreateExpenseDto): Promise<Expense> {
-  const response = await api.post<Expense>("/api/financial/expenses", payload);
+  const response = await api.post<Expense>("/api/financial/expenses", {
+    ...payload,
+    referenceMonth: toApiReferenceMonth(payload.referenceMonth),
+  });
 
   return response.data;
 }
 
 export async function updateExpense(id: number, payload: CreateExpenseDto): Promise<Expense> {
-  const response = await api.put<Expense>(`/api/financial/expenses/${id}`, payload);
+  const response = await api.put<Expense>(`/api/financial/expenses/${id}`, {
+    ...payload,
+    referenceMonth: toApiReferenceMonth(payload.referenceMonth),
+  });
 
   return response.data;
 }

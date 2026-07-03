@@ -201,6 +201,36 @@ export function unformatReferenceMonth(monthString: string): string {
 }
 
 /**
+ * Converte referenceMonth interno (YYYY-MM) para o formato esperado pela API (MM-YYYY)
+ */
+export function toApiReferenceMonth(yyyyMM: string): string {
+  if (/^(0[1-9]|1[0-2])-\d{4}$/.test(yyyyMM)) return yyyyMM
+  const [year, month] = yyyyMM.split('-')
+  if (!year || !month) return yyyyMM
+  return `${month}-${year}`
+}
+
+/**
+ * Converte referenceMonth vindo da API (MM-YYYY) para o formato interno (YYYY-MM)
+ */
+export function fromApiReferenceMonth(mmYYYY: string): string {
+  if (/^\d{4}-(0[1-9]|1[0-2])$/.test(mmYYYY)) return mmYYYY
+  const [month, year] = mmYYYY.split('-')
+  if (!month || !year) return mmYYYY
+  return `${year}-${month}`
+}
+
+/**
+ * Formata mês de referência progressivamente: 032026 -> 03-2026
+ */
+export function formatMonthReference(value: string): string {
+  if (!value) return ''
+  const digits = value.replace(/\D/g, '').slice(0, 6)
+  if (digits.length <= 2) return digits
+  return `${digits.slice(0, 2)}-${digits.slice(2)}`
+}
+
+/**
  * Verifica se CPF é válido (algoritmo de validação)
  */
 export function isValidCPF(cpf: string): boolean {
