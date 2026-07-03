@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
@@ -14,7 +14,8 @@ import { toast } from "sonner";
 import { usePacienteById } from "../hooks/getId";
 import { usePacienteUpdate } from "../hooks/update";
 import { Eye, Edit3, Save, X } from "lucide-react";
-import { formatCPF, unformatCPF, formatRG, unformatRG, formatCEP, unformatCEP, formatPhone, unformatPhone } from "@/utils/formatters";
+import { maskCPF, maskRG, maskPhone } from "@/utils/masks";
+import { unformatCPF, unformatRG, formatCEP, unformatCEP, unformatPhone } from "@/utils/formatters";
 
 interface Props {
   id: number;
@@ -34,6 +35,7 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
 
   const {
     handleSubmit,
+    control,
     reset,
     setValue,
     watch,
@@ -62,9 +64,6 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
   // Watch all values
   const name = watch("name");
   const email = watch("email");
-  const cpf = watch("cpf");
-  const rg = watch("rg");
-  const phone = watch("phone");
   const rua = watch("rua");
   const numero = watch("numero");
   const bairro = watch("bairro");
@@ -78,9 +77,9 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
       reset({
         name: data.name ?? "",
         email: data.email ?? "",
-        cpf: data.cpf ?? "",
-        rg: data.rg || "",
-        phone: data.phone ?? "",
+        cpf: maskCPF(data.cpf ?? ""),
+        rg: maskRG(data.rg || ""),
+        phone: maskPhone(data.phone ?? ""),
         rua: data.rua ?? "",
         numero: data.numero ?? "",
         bairro: data.bairro ?? "",
@@ -121,9 +120,9 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
       reset({
         name: data.name ?? "",
         email: data.email ?? "",
-        cpf: data.cpf ?? "",
-        rg: data.rg || "",
-        phone: data.phone ?? "",
+        cpf: maskCPF(data.cpf ?? ""),
+        rg: maskRG(data.rg || ""),
+        phone: maskPhone(data.phone ?? ""),
         rua: data.rua ?? "",
         numero: data.numero ?? "",
         bairro: data.bairro ?? "",
@@ -138,7 +137,7 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
     return (
       <div className="space-y-6 max-w-3xl">
         <PageHeader title="Detalhes do Paciente" onBack={onBack} />
-        <p className="text-[#4a6354]" style={{ fontFamily: "var(--font-serif)" }}>
+        <p className="text-gray-600 dark:text-slate-300">
           Carregando...
         </p>
       </div>
@@ -184,29 +183,23 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`flex items-center gap-2 px-4 py-3 rounded-sm border-2 ${
+        className={`flex items-center gap-2 px-4 py-3 rounded-xl border ${
           isEditing
-            ? "bg-[#1a4a3a]/10 border-[#1a4a3a]"
-            : "bg-[#f0f4f2] border-[#e2ebe6]"
+            ? "bg-primary-dark/10 border-primary-dark"
+            : "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700"
         }`}
       >
         {isEditing ? (
           <>
-            <Edit3 size={18} className="text-[#1a4a3a]" />
-            <span
-              className="text-sm font-semibold text-[#1a4a3a]"
-              style={{ fontFamily: "var(--font-serif)" }}
-            >
+            <Edit3 size={18} className="text-primary-dark" />
+            <span className="text-sm font-semibold text-primary-dark">
               Modo Edição — Você pode alterar os dados abaixo
             </span>
           </>
         ) : (
           <>
-            <Eye size={18} className="text-[#4a6354]" />
-            <span
-              className="text-sm font-semibold text-[#4a6354]"
-              style={{ fontFamily: "var(--font-serif)" }}
-            >
+            <Eye size={18} className="text-gray-600 dark:text-slate-300" />
+            <span className="text-sm font-semibold text-gray-600 dark:text-slate-300">
               Modo Visualização — Clique em &quot;Editar&quot; para modificar
             </span>
           </>
@@ -233,40 +226,53 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
             value={email || ""}
             onChange={(e) => setValue("email", e.target.value, { shouldValidate: true })}
           />
-          <FormField
-            label="CPF"
-            id="cpf"
+          <Controller
+            control={control}
             name="cpf"
-            error={errors.cpf?.message}
-            disabled={!isEditing}
-            value={formatCPF(cpf || "")}
-            onChange={(e) => {
-              const raw = unformatCPF(e.target.value);
-              if (raw.length <= 11) setValue("cpf", raw, { shouldValidate: true });
-            }}
+            render={({ field }) => (
+              <FormField
+                label="CPF"
+                id="cpf"
+                name="cpf"
+                error={errors.cpf?.message}
+                disabled={!isEditing}
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(maskCPF(e.target.value))}
+                onBlur={field.onBlur}
+              />
+            )}
           />
-          <FormField
-            label="RG"
-            id="rg"
+          <Controller
+            control={control}
             name="rg"
-            disabled={!isEditing}
-            value={formatRG(rg || "")}
-            onChange={(e) => {
-              const raw = unformatRG(e.target.value);
-              if (raw.length <= 9) setValue("rg", raw, { shouldValidate: true });
-            }}
+            render={({ field }) => (
+              <FormField
+                label="RG"
+                id="rg"
+                name="rg"
+                error={errors.rg?.message}
+                disabled={!isEditing}
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(maskRG(e.target.value))}
+                onBlur={field.onBlur}
+              />
+            )}
           />
-          <FormField
-            label="Telefone"
-            id="phone"
+          <Controller
+            control={control}
             name="phone"
-            error={errors.phone?.message}
-            disabled={!isEditing}
-            value={formatPhone(phone || "")}
-            onChange={(e) => {
-              const raw = unformatPhone(e.target.value);
-              if (raw.length <= 11) setValue("phone", raw, { shouldValidate: true });
-            }}
+            render={({ field }) => (
+              <FormField
+                label="Telefone"
+                id="phone"
+                name="phone"
+                error={errors.phone?.message}
+                disabled={!isEditing}
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(maskPhone(e.target.value))}
+                onBlur={field.onBlur}
+              />
+            )}
           />
         </FormSection>
 

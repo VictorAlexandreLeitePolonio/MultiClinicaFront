@@ -47,18 +47,12 @@ export function StatusToggleModal({
               initial="hidden"
               animate="show"
               exit="exit"
-              className="bg-white rounded-sm border-2 border-[#1a2a4a] shadow-[8px_8px_0_0_#1a2a4a] p-6 max-w-md w-full"
+              className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-700 dark:bg-slate-900"
             >
-              <h2 
-                className="text-xl font-bold text-[#1a2a4a] mb-2"
-                style={{ fontFamily: "var(--font-serif)" }}
-              >
+              <h2 className="text-xl font-bold text-secondary dark:text-slate-50 mb-2">
                 {isActive ? "Inativar" : "Ativar"} {entityLabel}
               </h2>
-              <p 
-                className="text-[#4a6354] mb-6"
-                style={{ fontFamily: "var(--font-serif)" }}
-              >
+              <p className="text-gray-600 dark:text-slate-300 mb-6">
                 Tem certeza que deseja <strong>{action}</strong> o {entityLabel.toLowerCase()}{" "}
                 <strong>{name}</strong>?
               </p>

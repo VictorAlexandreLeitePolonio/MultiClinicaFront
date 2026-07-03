@@ -92,7 +92,7 @@ export default function ProntuarioList({ onCreate, onViewCards, onViewDetails }:
       render: (r) => (
         <button
           onClick={() => onViewCards(r.patientId)}
-          className="text-[#1a4a3a] hover:underline font-medium"
+          className="text-primary-dark hover:underline font-medium"
         >
           {r.patientName}
         </button>
@@ -144,9 +144,9 @@ export default function ProntuarioList({ onCreate, onViewCards, onViewDetails }:
       />
 
       {/* Filtros em linha */}
-      <div className="flex flex-wrap items-end gap-3 p-4 bg-[#f8faf9] rounded-sm border border-[#e2ebe6]">
+      <div className="flex flex-wrap items-end gap-3 p-4 bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700">
         <div className="flex-1 min-w-50">
-          <label className="block text-xs font-medium text-[#4a6354] mb-1">
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">
             Nome do Paciente
           </label>
           <input
@@ -154,30 +154,30 @@ export default function ProntuarioList({ onCreate, onViewCards, onViewDetails }:
             value={patientName}
             onChange={(e) => setPatientName(e.target.value)}
             placeholder="Buscar paciente..."
-            className="w-full h-10 px-3 rounded-sm border-2 border-[#e2ebe6] bg-white text-[#1b2e4b] focus:border-[#1a4a3a] focus:outline-none"
+            className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
           />
         </div>
 
         <div className="w-45">
-          <label className="block text-xs font-medium text-[#4a6354] mb-1">
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">
             Data de Criação
           </label>
           <input
             type="date"
             value={createdAt}
             onChange={(e) => setCreatedAt(e.target.value)}
-            className="w-full h-10 px-3 rounded-sm border-2 border-[#e2ebe6] bg-white text-[#1b2e4b] focus:border-[#1a4a3a] focus:outline-none"
+            className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
           />
         </div>
 
         <div className="w-50">
-          <label className="block text-xs font-medium text-[#4a6354] mb-1">
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">
             Profissional
           </label>
           <select
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
-            className="w-full h-10 px-3 rounded-sm border-2 border-[#e2ebe6] bg-white text-[#1b2e4b] focus:border-[#1a4a3a] focus:outline-none"
+            className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
           >
             <option value="">Todos</option>
             {users.map((u) => (

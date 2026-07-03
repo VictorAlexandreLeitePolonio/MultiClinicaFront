@@ -50,10 +50,10 @@ export default function PlanoList({ onCreate, onViewDetails }: Props) {
       label: "Tipo",
       render: (p) => (
         <span
-          className={`px-2 py-1 rounded-sm text-xs font-semibold border-2 ${
+          className={`px-2 py-1 rounded-full text-xs font-semibold border ${
             p.tipoPlano === "Mensal"
-              ? "bg-[#1a4a3a] text-white border-[#143d2f]"
-              : "bg-[#1a2a4a] text-white border-[#121d33]"
+              ? "bg-primary-dark text-white border-primary-dark"
+              : "bg-secondary text-white border-secondary"
           }`}
         >
           {p.tipoPlano}

@@ -115,24 +115,24 @@ export function PatientEvolutionForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="space-y-4 rounded-2xl border border-[#d7f3ea] bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+    <form onSubmit={handleSubmit(submit)} className="space-y-4 rounded-2xl border border-gray-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
       <div className="grid gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <label htmlFor="evolution-date" className="text-sm font-semibold text-[#0f172a] dark:text-white">Data</label>
+          <label htmlFor="evolution-date" className="text-sm font-semibold text-secondary dark:text-white">Data</label>
           <input
             id="evolution-date"
             type="date"
-            className="rounded-xl border border-[#d7f3ea] bg-white px-4 py-3 text-sm text-[#0f172a] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+            className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-secondary dark:border-slate-800 dark:bg-slate-900 dark:text-white"
             {...register("date")}
           />
           {errors.date?.message && <span className="text-xs font-medium text-red-600">{errors.date.message}</span>}
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="evolution-status" className="text-sm font-semibold text-[#0f172a] dark:text-white">Status</label>
+          <label htmlFor="evolution-status" className="text-sm font-semibold text-secondary dark:text-white">Status</label>
           <select
             id="evolution-status"
-            className="rounded-xl border border-[#d7f3ea] bg-white px-4 py-3 text-sm text-[#0f172a] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+            className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-secondary dark:border-slate-800 dark:bg-slate-900 dark:text-white"
             {...register("status")}
           >
             <option value="Completed">Concluída</option>
@@ -144,17 +144,17 @@ export function PatientEvolutionForm({
       <div className="grid gap-4 md:grid-cols-2">
         {activeFields.map((field) => (
           <div key={field.id} className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-[#0f172a] dark:text-white">
+            <label className="text-sm font-semibold text-secondary dark:text-white">
               {field.label}
               {status === "Completed" && field.required && <span className="ml-1 text-red-600">*</span>}
             </label>
             {field.type === "Boolean" ? (
-              <label className="flex h-12 items-center gap-3 rounded-xl border border-[#d7f3ea] px-4 text-sm text-[#0f172a] dark:border-slate-800 dark:text-white">
+              <label className="flex h-12 items-center gap-3 rounded-xl border border-gray-200 px-4 text-sm text-secondary dark:border-slate-800 dark:text-white">
                 <input
                   type="checkbox"
                   checked={Boolean(fieldValues[field.id])}
                   onChange={(event) => handleValueChange(field.id, event.target.checked)}
-                  className="h-4 w-4 accent-[#14b8a6]"
+                  className="h-4 w-4 accent-primary"
                 />
                 Sim
               </label>
@@ -163,13 +163,13 @@ export function PatientEvolutionForm({
                 rows={3}
                 value={String(fieldValues[field.id] ?? "")}
                 onChange={(event) => handleValueChange(field.id, event.target.value)}
-                className="rounded-xl border border-[#d7f3ea] bg-white px-4 py-3 text-sm text-[#0f172a] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-secondary dark:border-slate-800 dark:bg-slate-900 dark:text-white"
               />
             ) : field.type === "SelectScore" ? (
               <select
                 value={String(fieldValues[field.id] ?? "")}
                 onChange={(event) => handleValueChange(field.id, event.target.value)}
-                className="rounded-xl border border-[#d7f3ea] bg-white px-4 py-3 text-sm text-[#0f172a] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-secondary dark:border-slate-800 dark:bg-slate-900 dark:text-white"
               >
                 <option value="">Selecione</option>
                 {getSelectOptions(field.optionsJson).map((option) => (
@@ -184,11 +184,11 @@ export function PatientEvolutionForm({
                 max={field.maxValue ?? undefined}
                 value={String(fieldValues[field.id] ?? "")}
                 onChange={(event) => handleValueChange(field.id, event.target.value)}
-                className="rounded-xl border border-[#d7f3ea] bg-white px-4 py-3 text-sm text-[#0f172a] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-secondary dark:border-slate-800 dark:bg-slate-900 dark:text-white"
               />
             )}
             {isNumericEvolutionField(field.type) && (
-              <span className="text-xs text-[#64748b] dark:text-slate-300">
+              <span className="text-xs text-gray-600 dark:text-slate-300">
                 {[field.unit !== "None" ? field.unit : null, field.targetValue !== null ? `Meta: ${field.targetValue}` : null].filter(Boolean).join(" · ")}
               </span>
             )}
@@ -204,10 +204,10 @@ export function PatientEvolutionForm({
           ["nextGuidance", "Próxima orientação"],
         ] as const).map(([name, label]) => (
           <div key={name} className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-[#0f172a] dark:text-white">{label}</label>
+            <label className="text-sm font-semibold text-secondary dark:text-white">{label}</label>
             <textarea
               rows={3}
-              className="rounded-xl border border-[#d7f3ea] bg-white px-4 py-3 text-sm text-[#0f172a] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+              className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-secondary dark:border-slate-800 dark:bg-slate-900 dark:text-white"
               {...register(name)}
             />
           </div>

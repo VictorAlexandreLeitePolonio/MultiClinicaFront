@@ -47,13 +47,13 @@ export default function SuperAdminDashboardPage() {
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-8">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-wide text-[#5a9c94]">
+        <p className="text-sm font-semibold uppercase tracking-wide text-primary-dark">
           SuperAdmin
         </p>
-        <h1 className="mt-1 text-2xl font-bold text-[#1a2a4a] dark:text-slate-50">
+        <h1 className="mt-1 text-2xl font-bold text-secondary dark:text-slate-50">
           Painel global MultiClinica
         </h1>
-        <p className="mt-2 max-w-2xl text-sm text-[#4a6354] dark:text-slate-300">
+        <p className="mt-2 max-w-2xl text-sm text-gray-600 dark:text-slate-300">
           Visão inicial para operação comercial e saúde da base de clínicas.
         </p>
       </div>

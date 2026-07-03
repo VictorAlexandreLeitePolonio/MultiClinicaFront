@@ -49,12 +49,12 @@ export function CreateClinicUserDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-md rounded-sm border-2 border-[#1a2a4a] bg-white p-6 shadow-[6px_6px_0_0_rgba(26,42,74,0.25)] dark:border-slate-700 dark:bg-slate-900"
+        className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-700 dark:bg-slate-900"
       >
-        <h2 className="text-lg font-bold text-[#1a2a4a] dark:text-slate-50">
+        <h2 className="text-lg font-bold text-secondary dark:text-slate-50">
           Novo usuário
         </h2>
-        <p className="mt-2 text-sm text-[#4a6354] dark:text-slate-300">
+        <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">
           Crie um usuário operacional vinculado a esta clínica.
         </p>
 
@@ -66,14 +66,14 @@ export function CreateClinicUserDialog({
           <div className="flex flex-col gap-2">
             <label
               htmlFor="clinic-user-role"
-              className="text-sm font-semibold uppercase tracking-wide text-[#1a2a4a]"
+              className="text-sm font-semibold uppercase tracking-wide text-secondary dark:text-white"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               Perfil
             </label>
             <select
               id="clinic-user-role"
-              className="w-full rounded-sm border-2 border-[#e2ebe6] bg-[#fdfcfa] px-4 py-3 text-[#1a2a4a] transition-all duration-150 focus:border-[#5a9c94] focus:shadow-[3px_3px_0_0_#5a9c94] focus:outline-none"
+              className="w-full rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-secondary dark:text-white transition-all duration-150 focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
               style={{ fontFamily: "var(--font-serif)" }}
               {...register("role")}
             >

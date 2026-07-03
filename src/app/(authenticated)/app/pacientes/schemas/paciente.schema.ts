@@ -1,13 +1,30 @@
+import { isValidCPF } from "@/utils/formatters";
 import { z } from "zod";
 
 const textField = z.string({ error: "Campo inválido." }).default("");
+const cpfField = z
+  .string()
+  .min(1, "CPF é obrigatório")
+  .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "CPF inválido")
+  .refine((value) => isValidCPF(value), "CPF inválido");
+const rgField = z
+  .string()
+  .default("")
+  .refine(
+    (value) => value === "" || /^\d{2}\.\d{3}\.\d{3}-\d{1}$/.test(value),
+    "RG inválido",
+  );
+const phoneField = z
+  .string()
+  .min(1, "Telefone é obrigatório")
+  .regex(/^\(\d{2}\) \d{4,5}-\d{4}$/, "Telefone inválido");
 
 export const PacienteSchema = z.object({
   name: textField,
   email: z.union([z.string().email("E-mail inválido"), z.literal("")]).default(""),
-  cpf: textField,
-  rg: textField,
-  phone: textField,
+  cpf: cpfField,
+  rg: rgField,
+  phone: phoneField,
   rua: textField,
   numero: textField,
   bairro: textField,

@@ -8,7 +8,7 @@ export function AppointmentSkeleton() {
   return (
     <motion.div 
       variants={fadeSlideUp}
-      className="bg-white rounded-sm border-2 border-[#e2ebe6] p-4 flex justify-between items-center"
+      className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 flex justify-between items-center"
     >
       <div className="flex items-center gap-3">
         <Skeleton className="w-10 h-10 rounded-sm" />

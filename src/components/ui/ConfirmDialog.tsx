@@ -26,24 +26,26 @@ export function ConfirmDialog({
     <Dialog.Root open={open} onOpenChange={(nextOpen) => !nextOpen && onCancel()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-sm border-2 border-[#1a2a4a] bg-white p-6 shadow-[6px_6px_0_0_rgba(26,42,74,0.25)] dark:border-slate-700 dark:bg-slate-900">
-        <Dialog.Title className="text-lg font-bold text-[#1a2a4a] dark:text-slate-50">
-          {title}
-        </Dialog.Title>
-        <Dialog.Description className="mt-2 text-sm text-[#4a6354] dark:text-slate-300">
-          {description}
-        </Dialog.Description>
-        <div className="mt-6 flex gap-3">
-          <Dialog.Close asChild>
-            <Button type="button" variant="outline" disabled={loading}>
-              Cancelar
-            </Button>
-          </Dialog.Close>
-          <Button type="button" variant="danger" loading={loading} onClick={onConfirm}>
-            {confirmLabel}
-          </Button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <Dialog.Content className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-700 dark:bg-slate-900">
+            <Dialog.Title className="text-lg font-bold text-secondary dark:text-slate-50">
+              {title}
+            </Dialog.Title>
+            <Dialog.Description className="mt-2 text-sm text-gray-600 dark:text-slate-300">
+              {description}
+            </Dialog.Description>
+            <div className="mt-6 flex gap-3">
+              <Dialog.Close asChild>
+                <Button type="button" variant="outline" disabled={loading}>
+                  Cancelar
+                </Button>
+              </Dialog.Close>
+              <Button type="button" variant="danger" loading={loading} onClick={onConfirm}>
+                {confirmLabel}
+              </Button>
+            </div>
+          </Dialog.Content>
         </div>
-        </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
   );

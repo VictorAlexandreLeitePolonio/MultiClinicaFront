@@ -95,8 +95,7 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
           {/* Select Tipo Plano */}
           <div className="flex flex-col gap-2">
             <label
-              className="text-sm font-semibold text-[#1a2a4a] uppercase tracking-wider"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
             >
               Tipo de Plano *
             </label>
@@ -107,9 +106,8 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
                   shouldValidate: true,
                 })
               }
-              className="w-full px-4 py-3 bg-white border-2 border-[#e2ebe6] rounded-sm text-[#1a2a4a]
-                focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none transition-all"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
+                focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
             >
               {tipoPlanoOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -122,8 +120,7 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
           {/* Select Tipo Sessão */}
           <div className="flex flex-col gap-2">
             <label
-              className="text-sm font-semibold text-[#1a2a4a] uppercase tracking-wider"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
             >
               Tipo de Sessão *
             </label>
@@ -142,9 +139,8 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
                   { shouldValidate: true },
                 )
               }
-              className="w-full px-4 py-3 bg-white border-2 border-[#e2ebe6] rounded-sm text-[#1a2a4a]
-                focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none transition-all"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
+                focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
             >
               {tipoSessaoOptions.map((opt) => (
                 <option key={opt} value={opt}>

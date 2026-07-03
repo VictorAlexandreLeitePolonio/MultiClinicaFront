@@ -198,14 +198,14 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
         title="Agenda"
         actions={
           <div className="flex flex-wrap gap-2">
-            <div className="inline-flex overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="inline-flex overflow-hidden rounded-2xl border border-gray-200 bg-white p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <button
                 type="button"
                 onClick={() => onChangeViewMode?.("list")}
                 className={`relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
                   viewMode === "list"
-                    ? "bg-[#0f766e] text-white shadow-[0_12px_26px_-20px_rgba(15,118,110,0.9)]"
-                    : "text-[#64748b] hover:bg-[#ecfdf5] hover:text-[#0f766e] dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                    ? "bg-primary-dark text-white shadow-[0_12px_26px_-20px_rgba(15,118,110,0.9)]"
+                    : "text-gray-600 hover:bg-sidebar-active hover:text-primary-dark dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                 }`}
                 aria-pressed={viewMode === "list"}
               >
@@ -217,8 +217,8 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
                 onClick={() => onChangeViewMode?.("calendar")}
                 className={`relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
                   viewMode === "calendar"
-                    ? "bg-[#0f766e] text-white shadow-[0_12px_26px_-20px_rgba(15,118,110,0.9)]"
-                    : "text-[#64748b] hover:bg-[#ecfdf5] hover:text-[#0f766e] dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                    ? "bg-primary-dark text-white shadow-[0_12px_26px_-20px_rgba(15,118,110,0.9)]"
+                    : "text-gray-600 hover:bg-sidebar-active hover:text-primary-dark dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                 }`}
                 aria-pressed={viewMode === "calendar"}
               >

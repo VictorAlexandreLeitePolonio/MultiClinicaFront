@@ -17,6 +17,7 @@ import { usePacienteDelete } from "../hooks/delete";
 import { toast } from "sonner";
 import { usePacienteChangeStatus } from "../hooks/changeStatus";
 import { Patient } from "@/types";
+import { formatCPF, formatPhone } from "@/utils/formatters";
 
 interface Props {
   onCreate: () => void;
@@ -125,8 +126,8 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
   const columns: Column<Patient>[] = [
     { key: "name", label: "Nome" },
     { key: "email", label: "E-mail" },
-    { key: "cpf", label: "CPF" },
-    { key: "phone", label: "Telefone" },
+    { key: "cpf", label: "CPF", render: (p) => formatCPF(p.cpf ?? "") || "-" },
+    { key: "phone", label: "Telefone", render: (p) => formatPhone(p.phone ?? "") || "-" },
     { key: "cidade", label: "Cidade" },
     {
       key: "appointmentStatus",
@@ -161,9 +162,9 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
       label: "Status",
       render: (p) => (
         <span
-          className={`px-2 py-1 rounded-sm text-xs font-semibold border-2 ${
+          className={`px-2 py-1 rounded-full text-xs font-semibold border ${
             p.isActive
-              ? "bg-[#1a4a3a] text-white border-[#143d2f]"
+              ? "bg-primary-dark text-white border-primary-dark"
               : "bg-red-100 text-red-700 border-red-200"
           }`}
         >

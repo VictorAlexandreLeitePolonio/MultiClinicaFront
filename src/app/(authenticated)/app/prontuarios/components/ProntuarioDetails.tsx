@@ -30,7 +30,7 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
     return (
       <div className="space-y-6">
         <PageHeader title="Detalhes do Prontuário" onBack={onBack} />
-        <p className="text-[#4a6354]">Carregando...</p>
+        <p className="text-gray-600 dark:text-slate-300">Carregando...</p>
       </div>
     );
   }
@@ -54,32 +54,32 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-5 bg-white border-2 border-[#e2ebe6] rounded-sm"
+        className="p-5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl"
       >
-        <h2 className="text-lg font-bold text-[#1a2a4a] mb-4 flex items-center gap-2">
-          <UserCircle size={20} className="text-[#1a4a3a]" />
+        <h2 className="text-lg font-bold text-secondary dark:text-white mb-4 flex items-center gap-2">
+          <UserCircle size={20} className="text-primary-dark" />
           Identificação
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <span className="text-sm text-[#4a6354]">Paciente</span>
-            <p className="font-medium text-[#1b2e4b]">{record.patientName}</p>
+            <span className="text-sm text-gray-600 dark:text-slate-300">Paciente</span>
+            <p className="font-medium text-secondary dark:text-white">{record.patientName}</p>
           </div>
           <div>
-            <span className="text-sm text-[#4a6354]">Profissional</span>
-            <p className="font-medium text-[#1b2e4b]">{record.userName}</p>
+            <span className="text-sm text-gray-600 dark:text-slate-300">Profissional</span>
+            <p className="font-medium text-secondary dark:text-white">{record.userName}</p>
           </div>
           <div>
-            <span className="text-sm text-[#4a6354]">Título</span>
-            <p className="font-medium text-[#1b2e4b]">{record.titulo}</p>
+            <span className="text-sm text-gray-600 dark:text-slate-300">Título</span>
+            <p className="font-medium text-secondary dark:text-white">{record.titulo}</p>
           </div>
           <div>
-            <span className="text-sm text-[#4a6354]">Sessão</span>
-            <p className="font-medium text-[#1b2e4b]">{record.sessao || "-"}</p>
+            <span className="text-sm text-gray-600 dark:text-slate-300">Sessão</span>
+            <p className="font-medium text-secondary dark:text-white">{record.sessao || "-"}</p>
           </div>
           <div>
-            <span className="text-sm text-[#4a6354]">Data</span>
-            <p className="font-medium text-[#1b2e4b]">
+            <span className="text-sm text-gray-600 dark:text-slate-300">Data</span>
+            <p className="font-medium text-secondary dark:text-white">
               {new Date(record.createdAt).toLocaleDateString("pt-BR")}
             </p>
           </div>
@@ -91,40 +91,40 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="p-5 bg-white border-2 border-[#e2ebe6] rounded-sm"
+        className="p-5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl"
       >
-        <h2 className="text-lg font-bold text-[#1a2a4a] mb-4">Anamnese</h2>
+        <h2 className="text-lg font-bold text-secondary dark:text-white mb-4">Anamnese</h2>
         <div className="space-y-4">
           <div>
-            <span className="text-sm text-[#4a6354]">Queixa Principal</span>
-            <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.queixaPrincipal}</p>
+            <span className="text-sm text-gray-600 dark:text-slate-300">Queixa Principal</span>
+            <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.queixaPrincipal}</p>
           </div>
           <div>
-            <span className="text-sm text-[#4a6354]">Patologia</span>
-            <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.patologia}</p>
+            <span className="text-sm text-gray-600 dark:text-slate-300">Patologia</span>
+            <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.patologia}</p>
           </div>
           {record.doencaAntiga && (
             <div>
-              <span className="text-sm text-[#4a6354]">Doença Antiga</span>
-              <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.doencaAntiga}</p>
+              <span className="text-sm text-gray-600 dark:text-slate-300">Doença Antiga</span>
+              <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.doencaAntiga}</p>
             </div>
           )}
           {record.doencaAtual && (
             <div>
-              <span className="text-sm text-[#4a6354]">Doença Atual</span>
-              <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.doencaAtual}</p>
+              <span className="text-sm text-gray-600 dark:text-slate-300">Doença Atual</span>
+              <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.doencaAtual}</p>
             </div>
           )}
           {record.habitos && (
             <div>
-              <span className="text-sm text-[#4a6354]">Hábitos</span>
-              <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.habitos}</p>
+              <span className="text-sm text-gray-600 dark:text-slate-300">Hábitos</span>
+              <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.habitos}</p>
             </div>
           )}
           {record.outrasDoencas && (
             <div>
-              <span className="text-sm text-[#4a6354]">Outras Doenças</span>
-              <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.outrasDoencas}</p>
+              <span className="text-sm text-gray-600 dark:text-slate-300">Outras Doenças</span>
+              <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.outrasDoencas}</p>
             </div>
           )}
         </div>
@@ -135,32 +135,32 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="p-5 bg-white border-2 border-[#e2ebe6] rounded-sm"
+        className="p-5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl"
       >
-        <h2 className="text-lg font-bold text-[#1a2a4a] mb-4">Exame Físico</h2>
+        <h2 className="text-lg font-bold text-secondary dark:text-white mb-4">Exame Físico</h2>
         <div className="space-y-4">
           {record.examesFisicos && (
             <div>
-              <span className="text-sm text-[#4a6354]">Exames Físicos</span>
-              <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.examesFisicos}</p>
+              <span className="text-sm text-gray-600 dark:text-slate-300">Exames Físicos</span>
+              <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.examesFisicos}</p>
             </div>
           )}
           {record.sinaisVitais && (
             <div>
-              <span className="text-sm text-[#4a6354]">Sinais Vitais</span>
-              <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.sinaisVitais}</p>
+              <span className="text-sm text-gray-600 dark:text-slate-300">Sinais Vitais</span>
+              <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.sinaisVitais}</p>
             </div>
           )}
           {record.medicamentos && (
             <div>
-              <span className="text-sm text-[#4a6354]">Medicamentos</span>
-              <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.medicamentos}</p>
+              <span className="text-sm text-gray-600 dark:text-slate-300">Medicamentos</span>
+              <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.medicamentos}</p>
             </div>
           )}
           {record.cirurgias && (
             <div>
-              <span className="text-sm text-[#4a6354]">Cirurgias</span>
-              <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.cirurgias}</p>
+              <span className="text-sm text-gray-600 dark:text-slate-300">Cirurgias</span>
+              <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.cirurgias}</p>
             </div>
           )}
         </div>
@@ -172,9 +172,9 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="p-5 bg-white border-2 border-[#e2ebe6] rounded-sm"
+          className="p-5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl"
         >
-          <h2 className="text-lg font-bold text-[#1a2a4a] mb-4">Documentos</h2>
+          <h2 className="text-lg font-bold text-secondary dark:text-white mb-4">Documentos</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {attachments.map((attachment) => {
               const isExam = attachment.type === "Exam";
@@ -185,14 +185,14 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
                   key={attachment.id}
                   type="button"
                   onClick={() => void openAttachment(attachment)}
-                  className="flex items-center gap-3 p-4 text-left border-2 border-[#e2ebe6] rounded-sm hover:border-[#1a4a3a] transition-colors"
+                  className="flex items-center gap-3 p-4 text-left border border-gray-200 dark:border-slate-700 rounded-xl hover:border-primary-dark transition-colors"
                 >
-                  <Icon className="w-10 h-10 text-[#1a4a3a]" />
+                  <Icon className="w-10 h-10 text-primary-dark" />
                   <div className="min-w-0">
-                    <p className="font-medium text-[#1b2e4b] truncate">
+                    <p className="font-medium text-secondary dark:text-white truncate">
                       {attachment.originalFileName || (isExam ? "Exame de Imagem" : "Contrato")}
                     </p>
-                    <p className="text-xs text-[#4a6354]">Clique para abrir link temporário</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-300">Clique para abrir link temporário</p>
                   </div>
                 </button>
               );
@@ -202,12 +202,12 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
                 href={record.contrato}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-4 border-2 border-[#e2ebe6] rounded-sm hover:border-[#1a4a3a] transition-colors"
+                className="flex items-center gap-3 p-4 border border-gray-200 dark:border-slate-700 rounded-xl hover:border-primary-dark transition-colors"
               >
-                <FileText className="w-10 h-10 text-[#1a4a3a]" />
+                <FileText className="w-10 h-10 text-primary-dark" />
                 <div>
-                  <p className="font-medium text-[#1b2e4b]">Contrato</p>
-                  <p className="text-xs text-[#4a6354]">Clique para visualizar o PDF</p>
+                  <p className="font-medium text-secondary dark:text-white">Contrato</p>
+                  <p className="text-xs text-gray-600 dark:text-slate-300">Clique para visualizar o PDF</p>
                 </div>
               </a>
             )}
@@ -216,12 +216,12 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
                 href={record.examesImagem}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-4 border-2 border-[#e2ebe6] rounded-sm hover:border-[#1a4a3a] transition-colors"
+                className="flex items-center gap-3 p-4 border border-gray-200 dark:border-slate-700 rounded-xl hover:border-primary-dark transition-colors"
               >
-                <ImageIcon className="w-10 h-10 text-[#1a4a3a]" />
+                <ImageIcon className="w-10 h-10 text-primary-dark" />
                 <div>
-                  <p className="font-medium text-[#1b2e4b]">Exame de Imagem</p>
-                  <p className="text-xs text-[#4a6354]">Clique para visualizar</p>
+                  <p className="font-medium text-secondary dark:text-white">Exame de Imagem</p>
+                  <p className="text-xs text-gray-600 dark:text-slate-300">Clique para visualizar</p>
                 </div>
               </a>
             )}
@@ -235,7 +235,7 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
                 width={640}
                 height={384}
                 unoptimized
-                className="max-w-full max-h-96 object-contain rounded-sm border border-[#e2ebe6]"
+                className="max-w-full max-h-96 object-contain rounded-xl border border-gray-200 dark:border-slate-700"
               />
             </div>
           )}
@@ -248,12 +248,12 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-5 bg-white border-2 border-[#e2ebe6] rounded-sm"
+          className="p-5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl"
         >
-          <h2 className="text-lg font-bold text-[#1a2a4a] mb-4">Orientações</h2>
+          <h2 className="text-lg font-bold text-secondary dark:text-white mb-4">Orientações</h2>
           <div>
-            <span className="text-sm text-[#4a6354]">Orientação Domiciliar</span>
-            <p className="text-[#1b2e4b] whitespace-pre-wrap">{record.orientacaoDomiciliar}</p>
+            <span className="text-sm text-gray-600 dark:text-slate-300">Orientação Domiciliar</span>
+            <p className="text-secondary dark:text-white whitespace-pre-wrap">{record.orientacaoDomiciliar}</p>
           </div>
         </motion.section>
       )}

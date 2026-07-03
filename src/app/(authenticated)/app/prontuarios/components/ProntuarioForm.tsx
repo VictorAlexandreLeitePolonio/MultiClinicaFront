@@ -159,13 +159,13 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <FormSection title="Informações Gerais">
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold tracking-wide uppercase text-[#1a2a4a]">
+            <label className="text-sm font-semibold tracking-wide uppercase text-secondary dark:text-white">
               Paciente *
             </label>
             <select
               {...register("patientId", { valueAsNumber: true })}
               disabled={loadingPatients || !!preselectedPatientId}
-              className="w-full h-10 px-3 rounded-sm border-2 border-[#e2ebe6] bg-white text-[#1b2e4b] focus:border-[#1a4a3a] focus:outline-none disabled:opacity-50"
+              className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none disabled:opacity-50"
             >
               <option value={0}>Selecione um paciente</option>
               {patients.map((p) => (
@@ -210,22 +210,22 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Contrato PDF */}
             <div>
-              <label className="block text-sm font-medium text-[#1b2e4b] mb-2">
+              <label className="block text-sm font-medium text-secondary dark:text-white mb-2">
                 Contrato (PDF)
               </label>
               {!contratoFile ? (
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#e2ebe6] rounded-sm bg-[#f8faf9] cursor-pointer hover:border-[#1a4a3a] transition-colors">
-                  <FileText className="w-8 h-8 text-[#4a6354] mb-2" />
-                  <p className="text-sm text-[#4a6354]">Clique para selecionar PDF</p>
+                <label className="flex flex-col items-center justify-center w-full h-32 border border-dashed border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 cursor-pointer hover:border-primary-dark transition-colors">
+                  <FileText className="w-8 h-8 text-gray-600 dark:text-slate-300 mb-2" />
+                  <p className="text-sm text-gray-600 dark:text-slate-300">Clique para selecionar PDF</p>
                   <input type="file" accept=".pdf" className="hidden" onChange={handleContratoChange} />
                 </label>
               ) : (
-                <div className="flex items-center justify-between p-4 border-2 border-[#e2ebe6] rounded-sm bg-[#f8faf9]">
+                <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900">
                   <div className="flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-[#1a4a3a]" />
-                    <span className="text-sm text-[#1b2e4b] truncate max-w-50">{contratoFile.name}</span>
+                    <FileText className="w-5 h-5 text-primary-dark" />
+                    <span className="text-sm text-secondary dark:text-white truncate max-w-50">{contratoFile.name}</span>
                   </div>
-                  <button type="button" onClick={removeContrato} className="p-1 hover:bg-red-100 rounded-sm">
+                  <button type="button" onClick={removeContrato} className="p-1 hover:bg-red-100 rounded-xl">
                     <X className="w-4 h-4 text-red-500" />
                   </button>
                 </div>
@@ -234,13 +234,13 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
 
             {/* Exame de Imagem */}
             <div>
-              <label className="block text-sm font-medium text-[#1b2e4b] mb-2">
+              <label className="block text-sm font-medium text-secondary dark:text-white mb-2">
                 Exame de Imagem (JPG/PNG)
               </label>
               {!exameFile ? (
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#e2ebe6] rounded-sm bg-[#f8faf9] cursor-pointer hover:border-[#1a4a3a] transition-colors">
-                  <ImageIcon aria-hidden="true" className="w-8 h-8 text-[#4a6354] mb-2" />
-                  <p className="text-sm text-[#4a6354]">Clique para selecionar imagem</p>
+                <label className="flex flex-col items-center justify-center w-full h-32 border border-dashed border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 cursor-pointer hover:border-primary-dark transition-colors">
+                  <ImageIcon aria-hidden="true" className="w-8 h-8 text-gray-600 dark:text-slate-300 mb-2" />
+                  <p className="text-sm text-gray-600 dark:text-slate-300">Clique para selecionar imagem</p>
                   <input type="file" accept="image/jpeg,image/png" className="hidden" onChange={handleExameChange} />
                 </label>
               ) : (
@@ -251,9 +251,9 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
                     width={320}
                     height={128}
                     unoptimized
-                    className="w-full h-32 object-cover rounded-sm border-2 border-[#e2ebe6]"
+                    className="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700"
                   />
-                  <button type="button" onClick={removeExame} className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-sm hover:bg-red-100">
+                  <button type="button" onClick={removeExame} className="absolute top-2 right-2 p-1 bg-white dark:bg-slate-900 rounded-full shadow-sm hover:bg-red-100">
                     <X className="w-4 h-4 text-red-500" />
                   </button>
                 </div>

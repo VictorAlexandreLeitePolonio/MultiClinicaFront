@@ -99,7 +99,7 @@ export function PatientEvolutionSection({ patientId }: PatientEvolutionSectionPr
               setEditingEvolution(evolution);
               setShowEvolutionForm(true);
             }}
-            className="rounded-xl border border-[#d7f3ea] px-3 py-2 text-xs font-semibold text-[#0f766e] hover:bg-[#ecfdf5] dark:border-slate-800"
+            className="rounded-xl border border-gray-200 px-3 py-2 text-xs font-semibold text-primary-dark hover:bg-sidebar-active dark:border-slate-800"
           >
             Editar
           </button>
@@ -170,8 +170,8 @@ export function PatientEvolutionSection({ patientId }: PatientEvolutionSectionPr
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Acompanhamentos</h2>
-          <p className="text-sm text-[#64748b] dark:text-slate-300">
+          <h2 className="text-lg font-bold text-secondary dark:text-white">Acompanhamentos</h2>
+          <p className="text-sm text-gray-600 dark:text-slate-300">
             Histórico de evolução clínica do paciente.
           </p>
         </div>
@@ -207,20 +207,20 @@ export function PatientEvolutionSection({ patientId }: PatientEvolutionSectionPr
       />
 
       {selectedTreatment && (
-        <div className="space-y-5 rounded-2xl border border-[#d7f3ea] bg-[#f8fffc] p-5 dark:border-slate-800 dark:bg-slate-950/40">
+        <div className="space-y-5 rounded-2xl border border-gray-200 bg-background p-5 dark:border-slate-800 dark:bg-slate-950/40">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <FileText size={18} className="text-[#0f766e]" />
-                <h3 className="text-lg font-bold text-[#0f172a] dark:text-white">{selectedTreatment.title}</h3>
+                <FileText size={18} className="text-primary-dark" />
+                <h3 className="text-lg font-bold text-secondary dark:text-white">{selectedTreatment.title}</h3>
                 <StatusBadge status={selectedTreatment.status} mapping={treatmentStatusMapping} />
               </div>
-              <p className="mt-2 text-sm text-[#64748b] dark:text-slate-300">
+              <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">
                 Iniciado em {formatDate(selectedTreatment.startedAt)}
                 {selectedTreatment.endedAt ? ` · Encerrado em ${formatDate(selectedTreatment.endedAt)}` : ""}
               </p>
               {selectedTreatment.description && (
-                <p className="mt-2 text-sm text-[#0f172a] dark:text-white">{selectedTreatment.description}</p>
+                <p className="mt-2 text-sm text-secondary dark:text-white">{selectedTreatment.description}</p>
               )}
             </div>
 

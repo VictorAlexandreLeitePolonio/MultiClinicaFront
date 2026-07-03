@@ -49,17 +49,17 @@ export function BillingConfigDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-md rounded-sm border-2 border-[#1a2a4a] bg-white p-6 shadow-[6px_6px_0_0_rgba(26,42,74,0.25)] dark:border-slate-700 dark:bg-slate-900"
+        className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-700 dark:bg-slate-900"
       >
-        <h2 className="text-lg font-bold text-[#1a2a4a] dark:text-slate-50">
+        <h2 className="text-lg font-bold text-secondary dark:text-slate-50">
           Configurar cobrança
         </h2>
-        <p className="mt-2 text-sm text-[#4a6354] dark:text-slate-300">
+        <p className="mt-2 text-sm text-gray-600 dark:text-slate-300">
           Defina se a cobrança comercial da clínica está ativa e o valor mensal.
         </p>
 
         <div className="mt-5 space-y-4">
-          <label className="flex items-center gap-3 rounded-sm border-2 border-[#e2ebe6] bg-white px-4 py-3 text-sm font-semibold text-[#1a2a4a]">
+          <label className="flex items-center gap-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm font-semibold text-secondary dark:text-white">
             <input
               type="checkbox"
               checked={cobrancaAtiva}

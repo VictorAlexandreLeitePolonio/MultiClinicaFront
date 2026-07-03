@@ -100,13 +100,13 @@ export function ClinicDashboardActions({ role }: ClinicDashboardActionsProps) {
   return (
     <section className="flex flex-col gap-4">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-[#5a9c94] dark:text-[#7bbfb8]">
+        <p className="text-xs font-semibold uppercase tracking-wider text-primary-dark dark:text-primary-light">
           {copy.title}
         </p>
-        <h2 className="mt-1 text-lg font-bold text-[#1a2a4a] dark:text-slate-50">
+        <h2 className="mt-1 text-lg font-bold text-secondary dark:text-slate-50">
           Atalhos prioritários
         </h2>
-        <p className="mt-1 text-sm text-[#4a6354] dark:text-slate-300">{copy.description}</p>
+        <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">{copy.description}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -118,21 +118,21 @@ export function ClinicDashboardActions({ role }: ClinicDashboardActionsProps) {
               key={action.href}
               href={action.href}
               aria-label={`Abrir ${action.title}`}
-              className="group rounded-sm border-2 border-[#e2ebe6] bg-white p-5 shadow-[2px_2px_0_0_#e2ebe6] transition-colors hover:border-[#5a9c94] dark:border-slate-800 dark:bg-slate-900 dark:shadow-[2px_2px_0_0_#334155]"
+              className="group rounded-xl border border-gray-200 bg-white p-5 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] transition-colors hover:border-primary-dark dark:border-slate-800 dark:bg-slate-900"
             >
               <div className="flex items-start justify-between gap-4">
-                <div className="rounded-sm bg-[#e8f4f3] p-2 text-[#1a4a3a] dark:bg-slate-800 dark:text-[#7bbfb8]">
+                <div className="rounded-xl bg-primary-muted p-2 text-primary-dark dark:bg-slate-800 dark:text-primary-light">
                   <Icon size={20} />
                 </div>
                 <ArrowRight
                   size={16}
-                  className="text-[#5a9c94] transition-transform group-hover:translate-x-1"
+                  className="text-primary-dark transition-transform group-hover:translate-x-1"
                 />
               </div>
-              <h3 className="mt-4 text-base font-bold text-[#1a2a4a] dark:text-slate-50">
+              <h3 className="mt-4 text-base font-bold text-secondary dark:text-slate-50">
                 {action.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#4a6354] dark:text-slate-300">
+              <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-slate-300">
                 {action.description}
               </p>
             </Link>

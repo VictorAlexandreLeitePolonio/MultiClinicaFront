@@ -76,11 +76,11 @@ function getBillingStatus(data: { isBlockedByBilling: boolean; cobrancaAtiva: bo
 
 function InfoRow({ label, value }: { label: string; value: string | number | null | undefined }) {
   return (
-    <div className="rounded-sm border-2 border-[#e2ebe6] bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-      <p className="text-xs font-semibold uppercase tracking-wide text-[#6b7280] dark:text-slate-400">
+    <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+      <p className="text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-slate-400">
         {label}
       </p>
-      <p className="mt-1 text-sm font-semibold text-[#1a2a4a] dark:text-slate-50">
+      <p className="mt-1 text-sm font-semibold text-secondary dark:text-slate-50">
         {value || "-"}
       </p>
     </div>

@@ -91,19 +91,15 @@ export default function ExpenseRegister({ onBack, onSave }: Props) {
 
           {/* Textarea para descrição */}
           <div className="flex flex-col gap-2">
-            <label
-              className="text-sm font-semibold text-[#1a2a4a] uppercase tracking-wider"
-              style={{ fontFamily: "var(--font-serif)" }}
-            >
+            <label className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider">
               Descrição *
             </label>
             <textarea
               value={description || ""}
               onChange={(e) => setValue("description", e.target.value, { shouldValidate: true })}
               rows={4}
-              className="w-full px-4 py-3 bg-white border-2 border-[#e2ebe6] rounded-sm text-[#1a2a4a]
-                focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none transition-all resize-none"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
+                focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all resize-none"
               placeholder="Descreva o gasto em detalhes..."
             />
             {errors.description && (

@@ -40,7 +40,7 @@ export function ThemeToggle() {
         disabled={isChanging}
         aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
         title={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
-        className="inline-flex h-9 w-9 items-center justify-center rounded-sm border-2 border-[#d8d2c8] bg-white text-[#1a2a4a] shadow-[2px_2px_0_0_#d8d2c8] transition-colors hover:bg-[#e8f4f3] disabled:cursor-wait disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:shadow-[2px_2px_0_0_#334155] dark:hover:bg-slate-800"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 bg-white text-secondary shadow-sm transition-colors hover:bg-primary-muted disabled:cursor-wait disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
       >
         {isChanging ? (
           <Loader2 size={16} className="animate-spin" />
@@ -57,12 +57,12 @@ export function ThemeToggle() {
           aria-live="polite"
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/85 px-4 backdrop-blur-sm dark:bg-slate-950/85"
         >
-          <div className="flex w-full max-w-xs flex-col items-center rounded-sm border-2 border-[#5a9c94] bg-white p-6 text-center text-[#1a2a4a] shadow-[6px_6px_0_0_rgba(26,42,74,0.25)] dark:border-[#7bbfb8] dark:bg-slate-900 dark:text-white dark:shadow-[6px_6px_0_0_rgba(123,191,184,0.2)]">
-            <Loader2 className="mb-3 h-8 w-8 animate-spin text-[#5a9c94] dark:text-[#7bbfb8]" aria-hidden="true" />
+          <div className="flex w-full max-w-xs flex-col items-center rounded-xl border border-primary-dark bg-white p-6 text-center text-secondary shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-primary-light dark:bg-slate-900 dark:text-white">
+            <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary-dark dark:text-primary-light" aria-hidden="true" />
             <p className="text-sm font-bold uppercase tracking-wide">
               Alterando tema
             </p>
-            <p className="mt-2 text-sm text-[#4a6354] dark:text-white">
+            <p className="mt-2 text-sm text-gray-600 dark:text-white">
               Aplicando contraste e cores da interface.
             </p>
           </div>

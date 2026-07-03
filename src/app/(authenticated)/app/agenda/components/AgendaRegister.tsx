@@ -112,17 +112,15 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
           {/* Select de Paciente */}
           <div className="flex flex-col gap-2">
             <label
-              className="text-sm font-semibold text-[#1a2a4a] uppercase tracking-wider"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
             >
               Paciente *
             </label>
             <select
               value={patientId || 0}
               onChange={(e) => setValue("patientId", Number(e.target.value), { shouldValidate: true })}
-              className="w-full px-4 py-3 bg-white border-2 border-[#e2ebe6] rounded-sm text-[#1a2a4a]
-                focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none transition-all"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
+                focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
             >
               <option value={0}>{loadingPatients ? "Carregando..." : "Selecione um paciente"}</option>
               {patients.map((p) => (
@@ -139,8 +137,7 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
           {/* Data e Hora */}
           <div className="flex flex-col gap-2">
             <label
-              className="text-sm font-semibold text-[#1a2a4a] uppercase tracking-wider"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
             >
               Data e Hora *
             </label>
@@ -155,9 +152,8 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
                   setValue("appointmentDate", localValue, { shouldValidate: true });
                 }
               }}
-              className="w-full px-4 py-3 bg-white border-2 border-[#e2ebe6] rounded-sm text-[#1a2a4a]
-                focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none transition-all"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
+                focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
             />
             {errors.appointmentDate && (
               <span className="text-xs text-red-600">{errors.appointmentDate.message}</span>

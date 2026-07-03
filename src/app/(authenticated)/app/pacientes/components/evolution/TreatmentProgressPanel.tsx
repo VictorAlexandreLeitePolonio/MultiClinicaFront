@@ -68,12 +68,12 @@ export function TreatmentProgressPanel({
         {metrics.map((metric) => (
           <div
             key={metric.label}
-            className="rounded-2xl border border-[#d7f3ea] bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
+            className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
           >
-            <p className="text-xs font-semibold uppercase text-[#64748b] dark:text-slate-300">
+            <p className="text-xs font-semibold uppercase text-gray-600 dark:text-slate-300">
               {metric.label}
             </p>
-            <p className="mt-2 text-xl font-bold text-[#0f172a] dark:text-white">
+            <p className="mt-2 text-xl font-bold text-secondary dark:text-white">
               {metric.value}
             </p>
           </div>
@@ -81,7 +81,7 @@ export function TreatmentProgressPanel({
       </div>
 
       {data.charts.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-[#a7f3d0] bg-white/75 p-6 text-center text-sm text-[#64748b] dark:border-slate-700 dark:bg-slate-900/75 dark:text-slate-300">
+        <div className="rounded-2xl border border-dashed border-primary/40 bg-white/75 p-6 text-center text-sm text-gray-600 dark:border-slate-700 dark:bg-slate-900/75 dark:text-slate-300">
           Nenhum dado numérico concluído para gráfico.
         </div>
       ) : (
@@ -89,19 +89,19 @@ export function TreatmentProgressPanel({
           {data.charts.map((chart) => (
             <div
               key={chart.fieldId}
-              className="rounded-2xl border border-[#d7f3ea] bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
+              className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
             >
               <div className="mb-3 flex items-center justify-between gap-3">
                 <div>
-                  <h3 className="text-sm font-bold text-[#0f172a] dark:text-white">
+                  <h3 className="text-sm font-bold text-secondary dark:text-white">
                     {chart.label}
                   </h3>
-                  <p className="text-xs text-[#64748b] dark:text-slate-300">
+                  <p className="text-xs text-gray-600 dark:text-slate-300">
                     Atual: {chart.currentValue}{' '}
                     {chart.unit !== 'None' ? chart.unit : ''}
                   </p>
                 </div>
-                <span className="rounded-full bg-[#ecfdf5] px-2.5 py-1 text-xs font-semibold text-[#0f766e] dark:bg-slate-800 dark:text-[#67e8f9]">
+                <span className="rounded-full bg-sidebar-active px-2.5 py-1 text-xs font-semibold text-primary-dark dark:bg-slate-800 dark:text-primary-light">
                   {formatPercent(chart.progress)}
                 </span>
               </div>
@@ -113,14 +113,14 @@ export function TreatmentProgressPanel({
                       label: formatDate(point.date),
                     }))}
                   >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#d7f3ea" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-gray-200)" />
                     <XAxis dataKey="label" tick={{ fontSize: 11 }} />
                     <YAxis tick={{ fontSize: 11 }} />
                     <Tooltip />
                     <Line
                       type="monotone"
                       dataKey="value"
-                      stroke="#14b8a6"
+                      stroke="var(--color-primary)"
                       strokeWidth={2}
                       dot={{ r: 3 }}
                     />

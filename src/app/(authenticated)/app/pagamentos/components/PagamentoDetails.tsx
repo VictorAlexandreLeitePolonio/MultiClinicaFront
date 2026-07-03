@@ -15,6 +15,7 @@ import { usePlanos } from "../hooks/usePlanos";
 import { Eye, Edit3, Save, X } from "lucide-react";
 import { Patient } from "@/types";
 import { formatCurrency } from "@/utils/formatters";
+import { maskMonthReference } from "@/utils/masks";
 import { toast } from "sonner";
 import { getPatients } from "@/services/patients/patients.service";
 
@@ -132,7 +133,7 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
     return (
       <div className="space-y-6 max-w-2xl">
         <PageHeader title="Detalhes do Pagamento" onBack={onBack} />
-        <p className="text-[#4a6354]" style={{ fontFamily: "var(--font-serif)" }}>
+        <p className="text-gray-600 dark:text-slate-300">
           Carregando...
         </p>
       </div>
@@ -177,23 +178,23 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`flex items-center gap-2 px-4 py-3 rounded-sm border-2 ${
+        className={`flex items-center gap-2 px-4 py-3 rounded-xl border ${
           isEditing
-            ? "bg-[#1a4a3a]/10 border-[#1a4a3a]"
-            : "bg-[#f0f4f2] border-[#e2ebe6]"
+            ? "bg-primary-dark/10 border-primary-dark"
+            : "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700"
         }`}
       >
         {isEditing ? (
           <>
-            <Edit3 size={18} className="text-[#1a4a3a]" />
-            <span className="text-sm font-semibold text-[#1a4a3a]" style={{ fontFamily: "var(--font-serif)" }}>
+            <Edit3 size={18} className="text-primary-dark" />
+            <span className="text-sm font-semibold text-primary-dark">
               Modo Edição — Você pode alterar os dados abaixo
             </span>
           </>
         ) : (
           <>
-            <Eye size={18} className="text-[#4a6354]" />
-            <span className="text-sm font-semibold text-[#4a6354]" style={{ fontFamily: "var(--font-serif)" }}>
+            <Eye size={18} className="text-gray-600 dark:text-slate-300" />
+            <span className="text-sm font-semibold text-gray-600 dark:text-slate-300">
               Modo Visualização — Clique em &quot;Editar&quot; para modificar
             </span>
           </>
@@ -206,9 +207,8 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
           <div className="flex flex-col gap-2">
             <label
               className={`text-sm font-semibold uppercase tracking-wider ${
-                !isEditing ? "text-gray-400" : "text-[#1a2a4a]"
+                !isEditing ? "text-gray-400" : "text-secondary dark:text-white"
               }`}
-              style={{ fontFamily: "var(--font-serif)" }}
             >
               Paciente *
             </label>
@@ -216,12 +216,11 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
               disabled={!isEditing}
               value={patientId || 0}
               onChange={(e) => setValue("patientId", Number(e.target.value), { shouldValidate: true })}
-              className={`w-full px-4 py-3 border-2 rounded-sm transition-all
+              className={`w-full px-4 py-3 border rounded-xl transition-all
                 ${!isEditing
-                  ? "bg-[#f0f4f2] border-[#e2ebe6] text-gray-400 cursor-not-allowed"
-                  : "bg-white border-[#e2ebe6] text-[#1a2a4a] focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none"
+                  ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
+                  : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
                 }`}
-              style={{ fontFamily: "var(--font-serif)" }}
             >
               <option value={0}>Selecione um paciente</option>
               {patients.map((p) => (
@@ -239,9 +238,8 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
           <div className="flex flex-col gap-2">
             <label
               className={`text-sm font-semibold uppercase tracking-wider ${
-                !isEditing ? "text-gray-400" : "text-[#1a2a4a]"
+                !isEditing ? "text-gray-400" : "text-secondary dark:text-white"
               }`}
-              style={{ fontFamily: "var(--font-serif)" }}
             >
               Plano *
             </label>
@@ -249,12 +247,11 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
               disabled={!isEditing}
               value={planId || 0}
               onChange={(e) => setValue("planId", Number(e.target.value), { shouldValidate: true })}
-              className={`w-full px-4 py-3 border-2 rounded-sm transition-all
+              className={`w-full px-4 py-3 border rounded-xl transition-all
                 ${!isEditing
-                  ? "bg-[#f0f4f2] border-[#e2ebe6] text-gray-400 cursor-not-allowed"
-                  : "bg-white border-[#e2ebe6] text-[#1a2a4a] focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none"
+                  ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
+                  : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
                 }`}
-              style={{ fontFamily: "var(--font-serif)" }}
             >
               <option value={0}>{loadingPlanos ? "Carregando..." : "Selecione um plano"}</option>
               {planos.map((p) => (
@@ -270,11 +267,11 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
 
           {/* Preview do valor do plano */}
           {selectedPlan && (
-            <div className="bg-[#f0f4f2] border-2 border-[#e2ebe6] rounded-sm p-4">
-              <p className="text-sm text-[#4a6354]" style={{ fontFamily: "var(--font-serif)" }}>
+            <div className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-4">
+              <p className="text-sm text-gray-600 dark:text-slate-300">
                 Valor do plano:
               </p>
-              <p className="text-2xl font-bold text-[#1a4a3a]" style={{ fontFamily: "var(--font-serif)" }}>
+              <p className="text-2xl font-bold text-primary-dark">
                 {formatCurrency(selectedPlan.valor)}
               </p>
             </div>
@@ -286,16 +283,19 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
             error={errors.referenceMonth?.message}
             disabled={!isEditing}
             value={referenceMonth || ""}
-            onChange={(e) => setValue("referenceMonth", e.target.value, { shouldValidate: true })}
+            onChange={(e) =>
+              setValue("referenceMonth", maskMonthReference(e.target.value), {
+                shouldValidate: true,
+              })
+            }
           />
 
           {/* Select de Método */}
           <div className="flex flex-col gap-2">
             <label
               className={`text-sm font-semibold uppercase tracking-wider ${
-                !isEditing ? "text-gray-400" : "text-[#1a2a4a]"
+                !isEditing ? "text-gray-400" : "text-secondary dark:text-white"
               }`}
-              style={{ fontFamily: "var(--font-serif)" }}
             >
               Método de Pagamento *
             </label>
@@ -303,12 +303,11 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
               disabled={!isEditing}
               value={paymentMethod || ""}
               onChange={(e) => setValue("paymentMethod", e.target.value, { shouldValidate: true })}
-              className={`w-full px-4 py-3 border-2 rounded-sm transition-all
+              className={`w-full px-4 py-3 border rounded-xl transition-all
                 ${!isEditing
-                  ? "bg-[#f0f4f2] border-[#e2ebe6] text-gray-400 cursor-not-allowed"
-                  : "bg-white border-[#e2ebe6] text-[#1a2a4a] focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none"
+                  ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
+                  : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
                 }`}
-              style={{ fontFamily: "var(--font-serif)" }}
             >
               <option value="">Selecione um método</option>
               {paymentMethodOptions.map((method) => (
@@ -326,9 +325,8 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
           <div className="flex flex-col gap-2">
             <label
               className={`text-sm font-semibold uppercase tracking-wider ${
-                !isEditing ? "text-gray-400" : "text-[#1a2a4a]"
+                !isEditing ? "text-gray-400" : "text-secondary dark:text-white"
               }`}
-              style={{ fontFamily: "var(--font-serif)" }}
             >
               Status *
             </label>
@@ -336,12 +334,11 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
               disabled={!isEditing}
               value={status || "Pending"}
               onChange={(e) => setValue("status", e.target.value as "Pending" | "Paid" | "Cancelled", { shouldValidate: true })}
-              className={`w-full px-4 py-3 border-2 rounded-sm transition-all
+              className={`w-full px-4 py-3 border rounded-xl transition-all
                 ${!isEditing
-                  ? "bg-[#f0f4f2] border-[#e2ebe6] text-gray-400 cursor-not-allowed"
-                  : "bg-white border-[#e2ebe6] text-[#1a2a4a] focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none"
+                  ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
+                  : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
                 }`}
-              style={{ fontFamily: "var(--font-serif)" }}
             >
               {paymentStatusOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -378,14 +375,14 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
 
           {/* Valor (read-only, apenas visualização) */}
           {data && (
-            <div className="border-t-2 border-[#e2ebe6] pt-4 mt-4">
-              <p className="text-sm text-[#4a6354] mb-2" style={{ fontFamily: "var(--font-serif)" }}>
+            <div className="border-t border-gray-200 dark:border-slate-700 pt-4 mt-4">
+              <p className="text-sm text-gray-600 dark:text-slate-300 mb-2">
                 Valor registrado no pagamento:
               </p>
-              <p className="text-xl font-bold text-[#1a2a4a]" style={{ fontFamily: "var(--font-serif)" }}>
+              <p className="text-xl font-bold text-secondary dark:text-white">
                 {formatCurrency(data.planAmount)}
               </p>
-              <p className="text-xs text-[#4a6354]" style={{ fontFamily: "var(--font-serif)" }}>
+              <p className="text-xs text-gray-600 dark:text-slate-300">
                 Plano: {data.planName}
               </p>
             </div>

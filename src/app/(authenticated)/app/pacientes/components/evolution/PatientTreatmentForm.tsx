@@ -40,16 +40,16 @@ export function PatientTreatmentForm({ templates, loading, onSubmit, onCancel }:
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 rounded-2xl border border-[#d7f3ea] bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
+      className="space-y-4 rounded-2xl border border-gray-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
     >
       <div className="grid gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <label htmlFor="treatment-template" className="text-sm font-semibold text-[#0f172a] dark:text-white">
+          <label htmlFor="treatment-template" className="text-sm font-semibold text-secondary dark:text-white">
             Modelo
           </label>
           <select
             id="treatment-template"
-            className="rounded-xl border border-[#d7f3ea] bg-white px-4 py-3 text-sm text-[#0f172a] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+            className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-secondary dark:border-slate-800 dark:bg-slate-900 dark:text-white"
             {...register("templateId")}
           >
             {templates.map((template) => (
@@ -65,11 +65,11 @@ export function PatientTreatmentForm({ templates, loading, onSubmit, onCancel }:
       <FormField label="Título" id="treatment-title" error={errors.title?.message} {...register("title")} />
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="treatment-description" className="text-sm font-semibold text-[#0f172a] dark:text-white">Descrição</label>
+        <label htmlFor="treatment-description" className="text-sm font-semibold text-secondary dark:text-white">Descrição</label>
         <textarea
           id="treatment-description"
           rows={3}
-          className="rounded-xl border border-[#d7f3ea] bg-white px-4 py-3 text-sm text-[#0f172a] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+          className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-secondary dark:border-slate-800 dark:bg-slate-900 dark:text-white"
           {...register("description")}
         />
       </div>

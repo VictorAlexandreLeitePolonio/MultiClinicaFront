@@ -112,7 +112,7 @@ export function ClinicCreateWizard({ loading, onCancel, onSubmit }: ClinicCreate
 
       {currentStep === 2 && (
         <FormSection title="Cobrança e status" columns={2}>
-          <label className="flex items-center gap-3 rounded-sm border-2 border-[#e2ebe6] bg-white px-4 py-3 text-sm font-semibold text-[#1a2a4a]">
+          <label className="flex items-center gap-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm font-semibold text-secondary dark:text-white">
             <input
               type="checkbox"
               checked={formValues.billingEnabled}
@@ -128,13 +128,13 @@ export function ClinicCreateWizard({ loading, onCancel, onSubmit }: ClinicCreate
             {...register("monthlyFee", { valueAsNumber: true })}
           />
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold uppercase tracking-wide text-[#1a2a4a]">
+            <label className="text-sm font-semibold uppercase tracking-wide text-secondary dark:text-white">
               Status
             </label>
             <select
               value={formValues.status}
               onChange={(event) => setValue("status", event.target.value as ClinicCreateFormData["status"], { shouldValidate: true })}
-              className="w-full rounded-sm border-2 border-[#e2ebe6] bg-[#fdfcfa] px-4 py-3 text-[#1a2a4a] focus:border-[#5a9c94] focus:outline-none"
+              className="w-full rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
             >
               <option value="Active">Ativa</option>
               <option value="Inactive">Inativa</option>
@@ -153,7 +153,7 @@ export function ClinicCreateWizard({ loading, onCancel, onSubmit }: ClinicCreate
       )}
 
       {currentStep === 4 && (
-        <section className="rounded-sm border-2 border-[#e2ebe6] bg-white p-6 text-sm text-[#1a2a4a]">
+        <section className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 text-sm text-secondary dark:text-white">
           <h2 className="text-lg font-bold">Revisão do cadastro</h2>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <p><strong>Clínica:</strong> {formValues.name || "-"}</p>

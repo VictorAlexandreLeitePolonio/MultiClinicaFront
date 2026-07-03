@@ -13,6 +13,7 @@ import { useExpenseById } from "../hooks/getId";
 import { useExpenseUpdate } from "../hooks/update";
 import { Eye, Edit3, Save, X } from "lucide-react";
 import { toast } from "sonner";
+import { fromApiReferenceMonth } from "@/utils/formatters";
 
 interface Props {
   id: number;
@@ -55,7 +56,7 @@ export default function ExpenseDetails({ id, onBack, onSave }: Props) {
         value: data.value,
         paymentDate: data.paymentDate.split("T")[0], // Extrair apenas a data
         description: data.description,
-        referenceMonth: data.referenceMonth,
+        referenceMonth: fromApiReferenceMonth(data.referenceMonth),
       });
     }
   }, [data, reset]);
@@ -79,7 +80,7 @@ export default function ExpenseDetails({ id, onBack, onSave }: Props) {
         value: data.value,
         paymentDate: data.paymentDate.split("T")[0],
         description: data.description,
-        referenceMonth: data.referenceMonth,
+        referenceMonth: fromApiReferenceMonth(data.referenceMonth),
       });
     }
   };
@@ -88,7 +89,7 @@ export default function ExpenseDetails({ id, onBack, onSave }: Props) {
     return (
       <div className="space-y-6 max-w-2xl">
         <PageHeader title="Detalhes do Gasto" onBack={onBack} />
-        <p className="text-[#4a6354]" style={{ fontFamily: "var(--font-serif)" }}>
+        <p className="text-gray-600 dark:text-slate-300">
           Carregando...
         </p>
       </div>
@@ -133,23 +134,23 @@ export default function ExpenseDetails({ id, onBack, onSave }: Props) {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`flex items-center gap-2 px-4 py-3 rounded-sm border-2 ${
+        className={`flex items-center gap-2 px-4 py-3 rounded-xl border ${
           isEditing
-            ? "bg-[#1a4a3a]/10 border-[#1a4a3a]"
-            : "bg-[#f0f4f2] border-[#e2ebe6]"
+            ? "bg-primary-dark/10 border-primary-dark"
+            : "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700"
         }`}
       >
         {isEditing ? (
           <>
-            <Edit3 size={18} className="text-[#1a4a3a]" />
-            <span className="text-sm font-semibold text-[#1a4a3a]" style={{ fontFamily: "var(--font-serif)" }}>
+            <Edit3 size={18} className="text-primary-dark" />
+            <span className="text-sm font-semibold text-primary-dark">
               Modo Edição — Você pode alterar os dados abaixo
             </span>
           </>
         ) : (
           <>
-            <Eye size={18} className="text-[#4a6354]" />
-            <span className="text-sm font-semibold text-[#4a6354]" style={{ fontFamily: "var(--font-serif)" }}>
+            <Eye size={18} className="text-gray-600 dark:text-slate-300" />
+            <span className="text-sm font-semibold text-gray-600 dark:text-slate-300">
               Modo Visualização — Clique em &quot;Editar&quot; para modificar
             </span>
           </>
@@ -196,9 +197,8 @@ export default function ExpenseDetails({ id, onBack, onSave }: Props) {
           <div className="flex flex-col gap-2">
             <label
               className={`text-sm font-semibold uppercase tracking-wider ${
-                !isEditing ? "text-gray-400" : "text-[#1a2a4a]"
+                !isEditing ? "text-gray-400" : "text-secondary dark:text-white"
               }`}
-              style={{ fontFamily: "var(--font-serif)" }}
             >
               Descrição *
             </label>
@@ -207,12 +207,11 @@ export default function ExpenseDetails({ id, onBack, onSave }: Props) {
               value={description || ""}
               onChange={(e) => setValue("description", e.target.value, { shouldValidate: true })}
               rows={4}
-              className={`w-full px-4 py-3 border-2 rounded-sm transition-all resize-none
+              className={`w-full px-4 py-3 border rounded-xl transition-all resize-none
                 ${!isEditing
-                  ? "bg-[#f0f4f2] border-[#e2ebe6] text-gray-400 cursor-not-allowed"
-                  : "bg-white border-[#e2ebe6] text-[#1a2a4a] focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none"
+                  ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
+                  : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
                 }`}
-              style={{ fontFamily: "var(--font-serif)" }}
             />
             {errors.description && isEditing && (
               <span className="text-xs text-red-600">{errors.description.message}</span>

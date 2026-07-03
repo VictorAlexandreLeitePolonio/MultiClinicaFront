@@ -90,17 +90,15 @@ export default function UsuarioRegister({ onBack, onSave }: Props) {
           {/* Select de Perfil */}
           <div className="flex flex-col gap-2">
             <label
-              className="text-sm font-semibold text-[#1a2a4a] uppercase tracking-wider"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
             >
               Perfil *
             </label>
             <select
               value={role}
               onChange={(e) => setValue("role", e.target.value as UsuarioCreateFormData["role"], { shouldValidate: true })}
-              className="w-full px-4 py-3 bg-white border-2 border-[#e2ebe6] rounded-sm text-[#1a2a4a]
-                focus:border-[#1a4a3a] focus:shadow-[3px_3px_0_0_#1a4a3a] focus:outline-none transition-all"
-              style={{ fontFamily: "var(--font-serif)" }}
+              className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
+                focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
             >
               {roleOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>

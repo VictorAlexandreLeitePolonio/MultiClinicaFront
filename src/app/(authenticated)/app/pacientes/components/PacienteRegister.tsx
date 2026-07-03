@@ -100,15 +100,15 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
               step === 1
-                ? "bg-[#1a4a3a] text-white"
-                : "bg-white border-2 border-[#1a4a3a] text-[#1a4a3a]"
+                ? "bg-primary-dark text-white"
+                : "bg-white dark:bg-slate-900 border border-primary-dark text-primary-dark"
             }`}
           >
             1
           </div>
           <span
             className={`text-sm font-medium ${
-              step === 1 ? "text-[#1a4a3a]" : "text-[#4a6354]"
+              step === 1 ? "text-primary-dark" : "text-gray-600 dark:text-slate-300"
             }`}
           >
             Dados Pessoais
@@ -118,7 +118,7 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
         {/* Linha conectora */}
         <div
           className={`w-16 h-0.5 transition-colors ${
-            step === 2 ? "bg-[#1a4a3a]" : "bg-[#e2ebe6]"
+            step === 2 ? "bg-primary-dark" : "bg-gray-200"
           }`}
         />
 
@@ -127,15 +127,15 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
               step === 2
-                ? "bg-[#1a4a3a] text-white"
-                : "bg-white border-2 border-[#1a4a3a] text-[#1a4a3a]"
+                ? "bg-primary-dark text-white"
+                : "bg-white dark:bg-slate-900 border border-primary-dark text-primary-dark"
             }`}
           >
             2
           </div>
           <span
             className={`text-sm font-medium ${
-              step === 2 ? "text-[#1a4a3a]" : "text-[#4a6354]"
+              step === 2 ? "text-primary-dark" : "text-gray-600 dark:text-slate-300"
             }`}
           >
             Endereço

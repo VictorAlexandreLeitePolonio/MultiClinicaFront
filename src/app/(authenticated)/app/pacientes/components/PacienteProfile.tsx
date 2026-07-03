@@ -41,7 +41,7 @@ export default function PacienteProfile({ id, onBack }: Props) {
     return (
       <div className="space-y-6">
         <PageHeader title="Perfil do Paciente" onBack={onBack} />
-        <p className="text-[#4a6354] py-8 text-center">Carregando...</p>
+        <p className="text-gray-600 dark:text-slate-300 py-8 text-center">Carregando...</p>
       </div>
     );
   }
@@ -84,7 +84,7 @@ export default function PacienteProfile({ id, onBack }: Props) {
           Cancelled: "Cancelado",
         };
         return (
-          <span className={`px-2 py-1 rounded-sm text-xs font-semibold border-2 ${styles[a.status]}`}>
+          <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${styles[a.status]}`}>
             {labels[a.status]}
           </span>
         );
@@ -124,7 +124,7 @@ export default function PacienteProfile({ id, onBack }: Props) {
         today.setHours(0, 0, 0, 0);
         if (paymentDate < today && p.status === "Pending") {
           return (
-            <span className="px-2 py-1 rounded-sm text-xs font-semibold border-2 bg-red-100 text-red-700 border-red-200">
+            <span className="px-2 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-700 border-red-200">
               Vencido
             </span>
           );
@@ -138,7 +138,7 @@ export default function PacienteProfile({ id, onBack }: Props) {
       render: (p) => {
         const styles = {
           Pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
-          Paid: "bg-[#1a4a3a] text-white border-[#143d2f]",
+          Paid: "bg-primary-dark text-white border-primary-dark",
           Cancelled: "bg-red-100 text-red-700 border-red-200",
         };
         const labels = {
@@ -147,7 +147,7 @@ export default function PacienteProfile({ id, onBack }: Props) {
           Cancelled: "Cancelado",
         };
         return (
-          <span className={`px-2 py-1 rounded-sm text-xs font-semibold border-2 ${styles[p.status]}`}>
+          <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${styles[p.status]}`}>
             {labels[p.status]}
           </span>
         );
@@ -181,29 +181,29 @@ export default function PacienteProfile({ id, onBack }: Props) {
       {/* Header Card */}
       <motion.div
         variants={fadeSlideUp}
-        className="bg-white border-2 border-[#e2ebe6] rounded-sm p-6"
+        className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)]"
       >
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-[#1a4a3a] flex items-center justify-center text-white">
+            <div className="w-16 h-16 rounded-full bg-primary-dark flex items-center justify-center text-white">
               <User size={32} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold text-[#1a2a4a]" style={{ fontFamily: "var(--font-serif)" }}>
+                <h2 className="text-xl font-bold text-secondary dark:text-white">
                   {formatField(data.name)}
                 </h2>
                 <span
-                  className={`px-2 py-0.5 rounded-sm text-xs font-semibold border-2 ${
+                  className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${
                     data.isActive
-                      ? "bg-[#1a4a3a] text-white border-[#143d2f]"
+                      ? "bg-primary-dark text-white border-primary-dark"
                       : "bg-red-100 text-red-700 border-red-200"
                   }`}
                 >
                   {data.isActive ? "Ativo" : "Inativo"}
                 </span>
               </div>
-              <div className="flex items-center gap-4 mt-2 text-sm text-[#4a6354]">
+              <div className="flex items-center gap-4 mt-2 text-sm text-gray-600 dark:text-slate-300">
                 <span className="flex items-center gap-1">
                   <Phone size={14} />
                   {data.phone ? formatPhone(data.phone) : "-"}
@@ -211,13 +211,13 @@ export default function PacienteProfile({ id, onBack }: Props) {
                 <span>|</span>
                 <span>CPF: {data.cpf ? formatCPF(data.cpf) : "-"}</span>
               </div>
-              <div className="flex items-center gap-1 mt-1 text-sm text-[#4a6354]">
+              <div className="flex items-center gap-1 mt-1 text-sm text-gray-600 dark:text-slate-300">
                 <MapPin size={14} />
                 {formatAddress(data)}
               </div>
             </div>
           </div>
-          <div className="text-right text-sm text-[#4a6354]">
+          <div className="text-right text-sm text-gray-600 dark:text-slate-300">
             <p>Cadastrado em: {formatDate(data.createdAt)}</p>
             <p className="mt-1">{formatField(data.email)}</p>
           </div>
@@ -225,7 +225,7 @@ export default function PacienteProfile({ id, onBack }: Props) {
       </motion.div>
 
       {/* Tabs */}
-      <motion.div variants={fadeSlideUp} className="border-b-2 border-[#e2ebe6]">
+      <motion.div variants={fadeSlideUp} className="border-b border-gray-200 dark:border-slate-800">
         <div className="flex gap-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -237,17 +237,16 @@ export default function PacienteProfile({ id, onBack }: Props) {
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold uppercase tracking-wider transition-all
                   ${
                     isActive
-                      ? "bg-[#1a4a3a] text-white border-2 border-[#1a4a3a]"
-                      : "bg-white text-[#4a6354] border-2 border-transparent hover:border-[#e2ebe6]"
+                      ? "bg-primary-dark text-white border border-primary-dark"
+                      : "bg-white dark:bg-slate-900 text-gray-600 dark:text-slate-300 border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
                   }`}
-                style={{ fontFamily: "var(--font-serif)" }}
               >
                 <Icon size={16} />
                 {tab.label}
                 {tab.count !== null && (
                   <span
-                    className={`ml-1 px-1.5 py-0.5 rounded-sm text-xs ${
-                      isActive ? "bg-white/20" : "bg-[#f0f4f2]"
+                    className={`ml-1 px-1.5 py-0.5 rounded-full text-xs ${
+                      isActive ? "bg-white/20" : "bg-gray-50 dark:bg-slate-800"
                     }`}
                   >
                     {tab.count}

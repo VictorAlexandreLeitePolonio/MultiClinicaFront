@@ -46,10 +46,10 @@ export default function UsuarioList({ onCreate, onViewDetails }: Props) {
       label: "Perfil",
       render: (u) => (
         <span
-          className={`px-2 py-1 rounded-sm text-xs font-semibold border-2 ${
+          className={`px-2 py-1 rounded-full text-xs font-semibold border ${
             u.role === "Administrador"
-              ? "bg-[#1a2a4a] text-white border-[#121d33]"
-              : "bg-[#1a4a3a] text-white border-[#143d2f]"
+              ? "bg-secondary text-white border-secondary"
+              : "bg-primary-dark text-white border-primary-dark"
           }`}
         >
           {getRoleLabel(u.role)}

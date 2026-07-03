@@ -9,8 +9,7 @@ interface SkeletonProps {
 export function Skeleton({ className = "" }: SkeletonProps) {
   return (
     <div 
-      className={`relative overflow-hidden bg-[#e8e4df] border border-[#d8d2c8] ${className}`}
-      style={{ borderRadius: "2px" }}
+      className={`relative overflow-hidden rounded-xl border border-gray-200 bg-gray-100 dark:bg-slate-800 dark:border-slate-700 ${className}`}
     >
       {/* Shimmer effect — gradiente animado */}
       <motion.div

@@ -64,6 +64,25 @@
 @theme inline {
   --color-background: var(--color-bg-warm);
   --color-foreground: var(--color-secondary);
+
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-primary-light: var(--color-primary-light);
+  --color-primary-muted: var(--color-primary-muted);
+
+  --color-secondary: var(--color-secondary);
+  --color-secondary-dark: var(--color-secondary-dark);
+
+  --color-card: var(--color-bg-card);
+  --color-sidebar: var(--color-bg-sidebar);
+  --color-sidebar-active: var(--color-bg-sidebar-active);
+
+  --color-gray-50: var(--color-gray-50);
+  --color-gray-100: var(--color-gray-100);
+  --color-gray-200: var(--color-gray-200);
+  --color-gray-600: var(--color-gray-600);
+  --color-gray-800: var(--color-gray-800);
+
   --font-serif: var(--font-serif);
   --font-sans: var(--font-sans);
 }
@@ -76,56 +95,6 @@ body {
 
 .rounded-sm {
   border-radius: var(--radius-sm);
-}
-
-.border-2 {
-  border-width: 1px;
-}
-
-:where(
-  [class*="border-[#e2ebe6]"],
-  [class*="border-[#d8d2c8]"],
-  [class*="border-[#d0e8e6]"]
-) {
-  border-color: #d7f3ea;
-}
-
-:where([class*="shadow-[2px_2px_0"], [class*="shadow-[3px_3px_0"], [class*="shadow-[4px_4px_0"], [class*="shadow-[6px_6px_0"]) {
-  box-shadow: var(--shadow-md);
-}
-
-.dark body {
-  color: #ffffff;
-}
-
-.dark :where(
-  [class*="text-[#1a2a4a]"],
-  [class*="text-[#1b2e4b]"],
-  [class*="text-[#1e2d4a]"],
-  [class*="text-[#2a3d33]"],
-  [class*="text-[#4a6354]"],
-  [class*="text-[#121d33]"],
-  [class*="text-[#143d2f]"],
-  [class*="text-[#1a4a3a]"]
-) {
-  color: #ffffff;
-}
-
-.dark :where(
-  [class*="bg-white"],
-  [class*="bg-[#fdfcfa]"],
-  [class*="bg-[#f0f4f2]"],
-  [class*="bg-[#e8f0ec]"],
-  [class*="bg-[#e8f4f3]"]
-) {
-  background-color: #111827;
-}
-
-.dark :where(
-  [class*="border-[#e2ebe6]"],
-  [class*="border-[#d8d2c8]"]
-) {
-  border-color: #334155;
 }
 
 /* Estilos rústicos funcionais */
@@ -176,4 +145,13 @@ body {
 
 .border-rustic {
   border: 1px solid var(--color-gray-200);
+}
+
+@keyframes logo-loop {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }

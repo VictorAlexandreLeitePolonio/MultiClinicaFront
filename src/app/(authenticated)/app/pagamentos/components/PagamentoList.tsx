@@ -141,7 +141,7 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
         today.setHours(0, 0, 0, 0);
         if (paymentDate < today && p.status === "Pending") {
           return (
-            <span className="px-2 py-1 rounded-sm text-xs font-semibold border-2 bg-red-100 text-red-700 border-red-200">
+            <span className="px-2 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-700 border-red-200">
               Vencido
             </span>
           );
@@ -157,7 +157,7 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
         <StatusBadge
           status={p.status}
           mapping={{
-            Paid: { label: "Pago", className: "bg-[#1a4a3a] text-white border-[#143d2f]" },
+            Paid: { label: "Pago", className: "bg-primary-dark text-white border-primary-dark" },
             Pending: { label: "Pendente", className: "bg-yellow-100 text-yellow-700 border-yellow-200" },
             Cancelled: { label: "Cancelado", className: "bg-red-100 text-red-700 border-red-200" },
           }}
