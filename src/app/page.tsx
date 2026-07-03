@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { LandingHeader } from "./(public)/lp/components/LandingHeader";
 import { LandingHero } from "./(public)/lp/components/LandingHero";
+import { LandingClients } from "./(public)/lp/components/LandingClients";
+import { LandingFeatures } from "./(public)/lp/components/LandingFeatures";
+import { LandingTestimonials } from "./(public)/lp/components/LandingTestimonials";
+import { LandingCTA } from "./(public)/lp/components/LandingCTA";
+import { LandingFooter } from "./(public)/lp/components/LandingFooter";
 
 export const metadata: Metadata = {
   title: "MultiClinica | Gestão moderna para clínicas",
@@ -9,9 +14,14 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#f8fffc] text-[#0f172a]">
+    <main className="min-h-screen bg-background text-secondary">
       <LandingHeader />
       <LandingHero />
+      <LandingClients />
+      <LandingFeatures />
+      <LandingTestimonials />
+      <LandingCTA />
+      <LandingFooter />
     </main>
   );
 }
