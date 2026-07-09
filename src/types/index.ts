@@ -147,7 +147,7 @@ export interface Patient {
 
 export interface Appointment {
   id: number;
-  userId: number;
+  professionalId: number;
   patientId: number;
   patientName: string;
   appointmentDate: string;

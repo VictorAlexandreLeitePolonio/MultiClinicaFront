@@ -75,7 +75,7 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
       // Converte o datetime-local para ISO apenas no submit
       const payload = {
         ...data,
-        userId: user.id,
+        professionalId: user.id,
         appointmentDate: data.appointmentDate ? dateTimeLocalToIso(data.appointmentDate) : "",
       };
       await insertAgenda(payload);

@@ -112,7 +112,7 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
       }
       const payload = {
         ...formData,
-        userId: user.id,
+        professionalId: user.id,
         appointmentDate: dateTimeLocalToIso(formData.appointmentDate),
       };
       await updateAgenda(id, payload);
