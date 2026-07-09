@@ -275,3 +275,33 @@ export interface CreateExpenseDto {
   description: string;
   referenceMonth: string;    // "YYYY-MM"
 }
+
+// ─── Financeiro: Configurações ─────────────────────────────────────────────
+
+export interface FormaPagamento {
+  id: number;
+  nome: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export type TipoCategoriaFinanceira = "Receita" | "Despesa";
+
+export interface CategoriaFinanceira {
+  id: number;
+  nome: string;
+  tipo: TipoCategoriaFinanceira;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export type TipoContaFinanceira = "Caixa" | "Banco" | "Cartao" | "Outro";
+
+export interface ContaFinanceira {
+  id: number;
+  nome: string;
+  tipo: TipoContaFinanceira;
+  saldoInicial: number;
+  isActive: boolean;
+  createdAt: string;
+}
