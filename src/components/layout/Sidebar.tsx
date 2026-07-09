@@ -49,6 +49,11 @@ const financeGroup = {
       label: "Configurações",
       permission: "financeiro.formas_pagamento.visualizar",
     },
+    {
+      href: "/app/financeiro/contas-a-receber",
+      label: "Contas a Receber",
+      permission: "financeiro.contas_receber.visualizar",
+    },
   ],
 };
 
