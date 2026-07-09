@@ -31,15 +31,11 @@ export function ContaFinanceiraDialog({
   const {
     handleSubmit,
     register,
-    watch,
-    setValue,
     formState: { errors },
   } = useForm<ContaFinanceiraFormData>({
     resolver: zodResolver(ContaFinanceiraSchema),
     values: defaultValues,
   });
-
-  const tipo = watch("tipo");
 
   if (!open) return null;
 
@@ -61,12 +57,7 @@ export function ContaFinanceiraDialog({
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-[#0f172a] dark:text-white">Tipo</label>
             <select
-              value={tipo}
-              onChange={(event) =>
-                setValue("tipo", event.target.value as ContaFinanceiraFormData["tipo"], {
-                  shouldValidate: true,
-                })
-              }
+              {...register("tipo")}
               className="w-full rounded-xl border border-[#d7f3ea] bg-white px-4 py-3 text-[#0f172a] transition-all focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
             >
               {tipoOptions.map((option) => (
