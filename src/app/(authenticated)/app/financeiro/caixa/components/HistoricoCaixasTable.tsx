@@ -7,6 +7,7 @@ import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
 import { Column, DataTable } from "@/components/ui/DataTable";
 import { MotivoDialog } from "@/components/ui/MotivoDialog";
 import { Pagination } from "@/components/ui/Pagination";
+import { useAuth } from "@/contexts/AuthContext";
 import { ajustarCaixa, cancelarCaixa, reabrirCaixa } from "@/services/caixa/caixa.service";
 import { Caixa, StatusCaixa } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
@@ -26,6 +27,7 @@ const statusStyles: Record<StatusCaixa, string> = {
 };
 
 export function HistoricoCaixasTable({ refreshKey }: HistoricoCaixasTableProps) {
+  const { can } = useAuth();
   const { data, page, setPage, pageSize, setPageSize, totalPages, loading, error, status, setStatus, refetch } =
     useCaixasPaginated();
 
@@ -111,16 +113,23 @@ export function HistoricoCaixasTable({ refreshKey }: HistoricoCaixasTableProps) 
       key: "actions",
       label: "",
       className: "text-right",
-      render: (caixa) =>
-        caixa.status === "Fechado" ? (
-          <ActionsDropdown
-            actions={[
-              { label: "Reabrir", onClick: () => setReabrindo(caixa), icon: <RotateCcw size={14} /> },
-              { label: "Ajustar", onClick: () => setAjustando(caixa), icon: <SlidersHorizontal size={14} /> },
-              { label: "Cancelar", onClick: () => setCancelando(caixa), variant: "danger", icon: <Ban size={14} /> },
-            ]}
-          />
-        ) : null,
+      render: (caixa) => {
+        if (caixa.status !== "Fechado") return null;
+
+        const actions = [
+          can("financeiro.caixa.reabrir")
+            ? { label: "Reabrir", onClick: () => setReabrindo(caixa), icon: <RotateCcw size={14} /> }
+            : null,
+          can("financeiro.caixa.ajustar")
+            ? { label: "Ajustar", onClick: () => setAjustando(caixa), icon: <SlidersHorizontal size={14} /> }
+            : null,
+          can("financeiro.caixa.cancelar")
+            ? { label: "Cancelar", onClick: () => setCancelando(caixa), variant: "danger" as const, icon: <Ban size={14} /> }
+            : null,
+        ].filter((action) => action !== null);
+
+        return actions.length > 0 ? <ActionsDropdown actions={actions} /> : null;
+      },
     },
   ];
 
