@@ -342,3 +342,30 @@ export interface Recebimento {
   isEstornado: boolean;
   createdAt: string;
 }
+
+// ─── Financeiro: Caixa ──────────────────────────────────────────────────────
+
+export type StatusCaixa = "Aberto" | "Fechado" | "Cancelado";
+
+export interface Caixa {
+  id: number;
+  contaFinanceiraId: number;
+  dataAbertura: string;
+  dataFechamento: string | null;
+  saldoInicial: number;
+  saldoFinalInformado: number | null;
+  saldoFinalCalculado: number | null;
+  diferenca: number | null;
+  status: StatusCaixa;
+  observacao: string | null;
+  createdAt: string;
+}
+
+export interface MovimentacaoResumo {
+  id: number;
+  tipo: string;
+  origem: string;
+  descricao: string;
+  valor: number;
+  dataMovimentacao: string;
+}
