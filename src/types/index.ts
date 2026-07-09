@@ -305,3 +305,40 @@ export interface ContaFinanceira {
   isActive: boolean;
   createdAt: string;
 }
+
+// ─── Financeiro: Contas a Receber ──────────────────────────────────────────
+
+export type StatusContaReceber = "Aberta" | "Parcial" | "Paga" | "Vencida" | "Cancelada";
+export type OrigemContaReceber = "Manual" | "Atendimento" | "Pacote" | "Produto" | "Convenio";
+
+export interface ContaReceber {
+  id: number;
+  pacienteId: number;
+  categoriaFinanceiraId: number | null;
+  descricao: string;
+  valorOriginal: number;
+  valorDesconto: number;
+  valorJuros: number;
+  valorTotal: number;
+  valorRecebido: number;
+  dataEmissao: string;
+  dataVencimento: string;
+  dataPagamento: string | null;
+  status: StatusContaReceber;
+  vencida: boolean;
+  origem: OrigemContaReceber;
+  observacao: string | null;
+  createdAt: string;
+}
+
+export interface Recebimento {
+  id: number;
+  contaReceberId: number;
+  contaFinanceiraId: number;
+  formaPagamentoId: number;
+  valor: number;
+  dataRecebimento: string;
+  observacao: string | null;
+  isEstornado: boolean;
+  createdAt: string;
+}
