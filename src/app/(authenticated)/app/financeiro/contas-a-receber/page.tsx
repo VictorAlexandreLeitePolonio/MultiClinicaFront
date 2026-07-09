@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ContaReceberDetails } from "./components/ContaReceberDetails";
 import { ContaReceberList } from "./components/ContaReceberList";
@@ -7,7 +8,7 @@ import { ContaReceberRegister } from "./components/ContaReceberRegister";
 
 type ViewMode = "list" | "create" | "view";
 
-export default function ContasAReceberPage() {
+function ContasAReceberContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const mode = (searchParams.get("mode") as ViewMode) ?? "list";
@@ -28,4 +29,12 @@ export default function ContasAReceberPage() {
   }
 
   return <ContaReceberList onCreate={() => goTo("create")} onViewDetails={(contaId) => goTo("view", contaId)} />;
+}
+
+export default function ContasAReceberPage() {
+  return (
+    <Suspense>
+      <ContasAReceberContent />
+    </Suspense>
+  );
 }
