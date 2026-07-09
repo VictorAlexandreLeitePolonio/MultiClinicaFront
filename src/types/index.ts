@@ -16,6 +16,7 @@ export interface User {
   clinicId?: number | null;
   clinicName?: string | null;
   createdAt?: string;
+  permissions?: string[];
 }
 
 export type BillingStatus = "Enabled" | "Blocked" | "Disabled";

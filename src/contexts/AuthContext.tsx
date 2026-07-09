@@ -10,6 +10,7 @@ interface AuthContextType {
   initialLoading: boolean;
   setUser: (user: User | null) => void;
   refreshUser: () => Promise<User | null>;
+  can: (permission: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -60,6 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUserState(u);
   };
 
+  const can = (permission: string) => user?.permissions?.includes(permission) ?? false;
+
   return (
     <AuthContext.Provider
       value={{
@@ -68,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         initialLoading,
         setUser,
         refreshUser,
+        can,
       }}
     >
       {children}
