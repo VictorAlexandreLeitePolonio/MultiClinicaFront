@@ -54,6 +54,11 @@ const financeGroup = {
       label: "Contas a Receber",
       permission: "financeiro.contas_receber.visualizar",
     },
+    {
+      href: "/app/financeiro/caixa",
+      label: "Caixa",
+      permission: "financeiro.caixa.visualizar",
+    },
   ],
 };
 
