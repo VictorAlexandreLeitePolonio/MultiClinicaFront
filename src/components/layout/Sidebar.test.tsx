@@ -9,6 +9,7 @@ vi.mock("@/contexts/AuthContext", () => ({
   useAuth: () => ({
     user: mockedUser,
     setUser: vi.fn(),
+    can: (permission: string) => mockedUser?.permissions?.includes(permission) ?? false,
   }),
 }));
 
@@ -29,6 +30,7 @@ describe("Sidebar", () => {
       email: "usuario@multi.test",
       role: "Administrador",
       clinicName: "Clínica Centro",
+      permissions: ["financeiro.formas_pagamento.visualizar"],
     };
   });
 
@@ -39,6 +41,7 @@ describe("Sidebar", () => {
     expect(screen.getByText("Agenda")).toBeInTheDocument();
     expect(screen.getByText("Prontuários")).toBeInTheDocument();
     expect(screen.getByText("Pagamentos")).toBeInTheDocument();
+    expect(screen.getByText("Balanço (legado)")).toBeInTheDocument();
     expect(screen.getByText("Financeiro")).toBeInTheDocument();
     expect(screen.getByText("Usuários")).toBeInTheDocument();
     expect(screen.getByText("Planos")).toBeInTheDocument();
@@ -59,6 +62,7 @@ describe("Sidebar", () => {
     expect(screen.getByText("Agenda")).toBeInTheDocument();
     expect(screen.getByText("Pagamentos")).toBeInTheDocument();
     expect(screen.queryByText("Prontuários")).not.toBeInTheDocument();
+    expect(screen.queryByText("Balanço (legado)")).not.toBeInTheDocument();
     expect(screen.queryByText("Financeiro")).not.toBeInTheDocument();
     expect(screen.queryByText("Usuários")).not.toBeInTheDocument();
     expect(screen.queryByText("Planos")).not.toBeInTheDocument();
@@ -79,5 +83,20 @@ describe("Sidebar", () => {
     expect(screen.getByText("Cobranças")).toBeInTheDocument();
     expect(screen.getByText("Histórico")).toBeInTheDocument();
     expect(screen.queryByText("Pacientes")).not.toBeInTheDocument();
+  });
+
+  it("hides the Financeiro group when the user has no financial permission", () => {
+    mockedUser = {
+      id: 4,
+      name: "Sem permissão",
+      email: "sempermissao@multi.test",
+      role: "Administrador",
+      clinicName: "Clínica Centro",
+      permissions: [],
+    };
+
+    render(<Sidebar area="clinic" />);
+
+    expect(screen.queryByText("Financeiro")).not.toBeInTheDocument();
   });
 });

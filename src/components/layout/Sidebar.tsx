@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { useAuth } from "@/contexts/AuthContext";
 import { logout } from "@/services/auth/auth.service";
 import { useRouter } from "next/navigation";
+import { SidebarGroup } from "./SidebarGroup";
 import { SidebarLink } from "./SidebarLink";
 import { getRoleLabel } from "@/lib/auth/routes";
 import {
@@ -21,6 +22,7 @@ import {
   ChevronRight,
   BarChart2,
   Building2,
+  Wallet,
 } from "lucide-react";
 
 const baseModules = [
@@ -33,10 +35,22 @@ const baseModules = [
 
 const adminModules = [
   { href: "/app/pagamentos", label: "Pagamentos", icon: <CreditCard size={18} />, roles: ["Administrador", "Recepcao"] },
-  { href: "/app/financeiro", label: "Financeiro", icon: <BarChart2 size={18} />, roles: ["Administrador"] },
+  { href: "/app/financeiro", label: "Balanço (legado)", icon: <BarChart2 size={18} />, roles: ["Administrador"] },
   { href: "/app/usuarios", label: "Usuários", icon: <Shield size={18} />, roles: ["Administrador"] },
   { href: "/app/planos", label: "Planos", icon: <ClipboardList size={18} />, roles: ["Administrador"] },
 ];
+
+const financeGroup = {
+  label: "Financeiro",
+  icon: <Wallet size={18} />,
+  items: [
+    {
+      href: "/app/financeiro/configuracoes",
+      label: "Configurações",
+      permission: "financeiro.formas_pagamento.visualizar",
+    },
+  ],
+};
 
 const superAdminModules = [
   { href: "/superadmin", label: "Dashboard", icon: <Home size={18} /> },
@@ -50,7 +64,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ area }: SidebarProps) {
-  const { user, setUser } = useAuth();
+  const { user, setUser, can } = useAuth();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -110,6 +124,15 @@ export function Sidebar({ area }: SidebarProps) {
         {modules.map((mod) => (
           <SidebarLink key={mod.href} {...mod} collapsed={collapsed} />
         ))}
+        {area === "clinic" && (
+          <SidebarGroup
+            label={financeGroup.label}
+            icon={financeGroup.icon}
+            items={financeGroup.items}
+            can={can}
+            collapsed={collapsed}
+          />
+        )}
       </nav>
 
       {/* Divisor */}
