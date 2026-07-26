@@ -23,6 +23,7 @@ import {
   BarChart2,
   Building2,
   Wallet,
+  Package,
 } from "lucide-react";
 
 const baseModules = [
@@ -69,6 +70,17 @@ const financeGroup = {
       label: "Caixa",
       permission: "financeiro.caixa.visualizar",
     },
+  ],
+};
+
+const stockGroup = {
+  label: "Estoque e Compras",
+  icon: <Package size={18} />,
+  items: [
+    { href: "/app/estoque/produtos", label: "Produtos", permission: "estoque.produtos.visualizar" },
+    { href: "/app/estoque/categorias-produto", label: "Categorias de Produto", permission: "estoque.produtos.visualizar" },
+    { href: "/app/estoque/movimentacoes", label: "Movimentações", permission: "estoque.movimentacoes.visualizar" },
+    { href: "/app/estoque/compras", label: "Compras", permission: "compras.visualizar" },
   ],
 };
 
@@ -149,6 +161,15 @@ export function Sidebar({ area }: SidebarProps) {
             label={financeGroup.label}
             icon={financeGroup.icon}
             items={financeGroup.items}
+            can={can}
+            collapsed={collapsed}
+          />
+        )}
+        {area === "clinic" && (
+          <SidebarGroup
+            label={stockGroup.label}
+            icon={stockGroup.icon}
+            items={stockGroup.items}
             can={can}
             collapsed={collapsed}
           />

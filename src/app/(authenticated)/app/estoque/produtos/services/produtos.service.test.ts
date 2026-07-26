@@ -1,0 +1,5 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createProduto, getProdutos, setProdutoActive } from "./produtos.service";
+const get = vi.fn(); const post = vi.fn().mockResolvedValue({ data: {} });
+vi.mock("@/lib/api", () => ({ default: { get: (...args: unknown[]) => get(...args), post: (...args: unknown[]) => post(...args) } }));
+describe("produtos.service", () => { beforeEach(() => { vi.clearAllMocks(); get.mockResolvedValue({ data: { data: [], page: 1, pageSize: 10, totalPages: 0 } }); }); it("envia filtros e paginação", async () => { const params = { nome: "luva", page: 2, pageSize: 20 }; await getProdutos(params); expect(get).toHaveBeenCalledWith("/api/produtos", { params }); }); it("cria produto", async () => { await createProduto({ nome: "Luva", valorCompra: 1, valorVenda: 2, quantidadeMinima: 5 }); expect(post).toHaveBeenCalledWith("/api/produtos", { nome: "Luva", valorCompra: 1, valorVenda: 2, quantidadeMinima: 5 }); }); it("inativa pelo endpoint literal", async () => { await setProdutoActive(4, false); expect(post).toHaveBeenCalledWith("/api/produtos/4/inativar"); }); });
