@@ -60,6 +60,11 @@ const financeGroup = {
       permission: "financeiro.fornecedores.visualizar",
     },
     {
+      href: "/app/financeiro/contas-a-pagar",
+      label: "Contas a Pagar",
+      permission: "financeiro.contas_pagar.visualizar",
+    },
+    {
       href: "/app/financeiro/caixa",
       label: "Caixa",
       permission: "financeiro.caixa.visualizar",
