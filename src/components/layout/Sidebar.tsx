@@ -55,6 +55,11 @@ const financeGroup = {
       permission: "financeiro.contas_receber.visualizar",
     },
     {
+      href: "/app/financeiro/fornecedores",
+      label: "Fornecedores",
+      permission: "financeiro.fornecedores.visualizar",
+    },
+    {
       href: "/app/financeiro/caixa",
       label: "Caixa",
       permission: "financeiro.caixa.visualizar",
