@@ -70,6 +70,11 @@ const financeGroup = {
       label: "Caixa",
       permission: "financeiro.caixa.visualizar",
     },
+    {
+      href: "/app/financeiro/auditoria",
+      label: "Auditoria",
+      permission: "financeiro.auditoria.visualizar",
+    },
   ],
 };
 
@@ -81,6 +86,14 @@ const stockGroup = {
     { href: "/app/estoque/categorias-produto", label: "Categorias de Produto", permission: "estoque.produtos.visualizar" },
     { href: "/app/estoque/movimentacoes", label: "Movimentações", permission: "estoque.movimentacoes.visualizar" },
     { href: "/app/estoque/compras", label: "Compras", permission: "compras.visualizar" },
+  ],
+};
+
+const reportsGroup = {
+  label: "Relatórios",
+  icon: <BarChart2 size={18} />,
+  items: [
+    { href: "/app/relatorios", label: "Relatórios Financeiros", permission: "relatorios.financeiro.visualizar" },
   ],
 };
 
@@ -170,6 +183,15 @@ export function Sidebar({ area }: SidebarProps) {
             label={stockGroup.label}
             icon={stockGroup.icon}
             items={stockGroup.items}
+            can={can}
+            collapsed={collapsed}
+          />
+        )}
+        {area === "clinic" && (
+          <SidebarGroup
+            label={reportsGroup.label}
+            icon={reportsGroup.icon}
+            items={reportsGroup.items}
             can={can}
             collapsed={collapsed}
           />
