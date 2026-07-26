@@ -8,7 +8,7 @@ import {
   getContasFinanceiras,
   setContaFinanceiraActive,
   updateContaFinanceira,
-} from "@/services/contasFinanceiras/contasFinanceiras.service";
+} from "@/app/(authenticated)/app/financeiro/configuracoes/services/contasFinanceiras.service";
 import { ContaFinanceira, PagedResult } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { ContaFinanceiraFormData } from "../schemas/contaFinanceira.schema";

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getCaixas } from "@/services/caixa/caixa.service";
+import { getCaixas } from "@/app/(authenticated)/app/financeiro/caixa/services/caixa.service";
 import { Caixa, PagedResult, StatusCaixa } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
 

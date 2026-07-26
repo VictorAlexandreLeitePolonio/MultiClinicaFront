@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { deleteExpense as deleteExpenseRequest } from "@/services/financial/financial.service";
+import { deleteExpense as deleteExpenseRequest } from "@/app/(authenticated)/app/financeiro/services/financial.service";
 
 export function useExpenseDelete() {
   const [isPending, setIsPending] = useState(false);

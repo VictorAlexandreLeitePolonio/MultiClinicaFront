@@ -5,12 +5,12 @@ import { CaixaAtualCard } from "./CaixaAtualCard";
 const getCaixaAtual = vi.fn();
 const getMovimentacoesCaixa = vi.fn();
 
-vi.mock("@/services/caixa/caixa.service", () => ({
+vi.mock("@/app/(authenticated)/app/financeiro/caixa/services/caixa.service", () => ({
   getCaixaAtual: () => getCaixaAtual(),
   getMovimentacoesCaixa: (id: number) => getMovimentacoesCaixa(id),
 }));
 
-vi.mock("@/services/contasFinanceiras/contasFinanceiras.service", () => ({
+vi.mock("@/app/(authenticated)/app/financeiro/configuracoes/services/contasFinanceiras.service", () => ({
   getContasFinanceiras: () => Promise.resolve({ data: [], page: 1, pageSize: 100, totalCount: 0, totalPages: 0 }),
 }));
 

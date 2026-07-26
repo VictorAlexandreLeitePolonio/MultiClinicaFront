@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { getMedicalRecordById } from "@/services/medical-records/medical-records.service";
+import { getMedicalRecordById } from "@/app/(authenticated)/app/prontuarios/services/medical-records.service";
 import { MedicalRecord } from "@/types";
 import { toast } from "sonner";
 

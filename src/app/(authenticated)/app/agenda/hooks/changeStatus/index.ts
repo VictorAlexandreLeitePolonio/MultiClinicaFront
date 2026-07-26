@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { changeAppointmentStatus } from "@/services/appointments/appointments.service";
+import { changeAppointmentStatus } from "@/app/(authenticated)/app/agenda/services/appointments.service";
 
 export function useAgendaChangeStatus() {
   const [loading, setLoading] = useState(false);

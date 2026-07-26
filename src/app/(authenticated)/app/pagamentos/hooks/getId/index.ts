@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Payment } from "@/types";
 import { toast } from "sonner";
-import { getPaymentById } from "@/services/payments/payments.service";
+import { getPaymentById } from "@/app/(authenticated)/app/pagamentos/services/payments.service";
 
 export function usePagamentoById(id: number | null) {
   const [data, setData] = useState<Payment | null>(null);

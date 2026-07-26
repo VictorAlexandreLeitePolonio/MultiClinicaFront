@@ -8,7 +8,7 @@ import {
   getFormasPagamento,
   setFormaPagamentoActive,
   updateFormaPagamento,
-} from "@/services/formasPagamento/formasPagamento.service";
+} from "@/app/(authenticated)/app/financeiro/configuracoes/services/formasPagamento.service";
 import { FormaPagamento, PagedResult } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { FormaPagamentoFormData } from "../schemas/formaPagamento.schema";

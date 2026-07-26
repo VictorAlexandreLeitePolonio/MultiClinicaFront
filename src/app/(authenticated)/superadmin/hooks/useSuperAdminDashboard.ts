@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getSuperAdminDashboardMetrics } from "@/services/superadmin/dashboard.service";
-import { queryKeys } from "@/services/queryKeys";
+import { getSuperAdminDashboardMetrics } from "@/app/(authenticated)/superadmin/services/dashboard.service";
+import { queryKeys } from "@/lib/queryKeys";
 
 export function useSuperAdminDashboard() {
   return useQuery({

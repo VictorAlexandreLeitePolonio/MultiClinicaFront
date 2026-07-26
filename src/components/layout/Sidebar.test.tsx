@@ -13,7 +13,7 @@ vi.mock("@/contexts/AuthContext", () => ({
   }),
 }));
 
-vi.mock("@/services/auth/auth.service", () => ({
+vi.mock("@/app/(public)/login/services/auth.service", () => ({
   logout: vi.fn(),
 }));
 

@@ -5,8 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
-import { getContasFinanceiras } from "@/services/contasFinanceiras/contasFinanceiras.service";
-import { getFormasPagamento } from "@/services/formasPagamento/formasPagamento.service";
+import { getContasFinanceiras } from "@/app/(authenticated)/app/financeiro/configuracoes/services/contasFinanceiras.service";
+import { getFormasPagamento } from "@/app/(authenticated)/app/financeiro/configuracoes/services/formasPagamento.service";
 import { ContaFinanceira, FormaPagamento } from "@/types";
 import { RegistrarRecebimentoFormData, RegistrarRecebimentoSchema } from "../schemas/contaReceber.schema";
 

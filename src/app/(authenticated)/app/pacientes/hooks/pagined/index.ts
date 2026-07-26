@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PagedResult, Patient } from "@/types";
-import { getPatients } from "@/services/patients/patients.service";
+import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 import { getApiErrorMessage } from "@/utils/apiError";
 
 export interface PacienteFilters {

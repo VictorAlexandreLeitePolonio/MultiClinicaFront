@@ -2,7 +2,7 @@
 
 import { useApiMutation } from "@/lib/hooks/useApiMutation";
 import { Payment } from "@/types";
-import { CreatePaymentPayload, createPayment } from "@/services/payments/payments.service";
+import { CreatePaymentPayload, createPayment } from "@/app/(authenticated)/app/pagamentos/services/payments.service";
 
 export function usePagamentoInsert() {
   const { mutate: insertPagamento, isPending, error } = useApiMutation<

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/services/queryKeys";
+import { queryKeys } from "@/lib/queryKeys";
 import {
   createPatientEvolution,
   createPatientTreatment,
@@ -11,7 +11,7 @@ import {
   getTreatmentProgress,
   updatePatientEvolution,
   updatePatientTreatment,
-} from "@/services/evolution/evolution.service";
+} from "@/app/(authenticated)/app/modelos-evolucao/services/evolution.service";
 import {
   PatientEvolutionPayload,
   PatientEvolutionUpdatePayload,

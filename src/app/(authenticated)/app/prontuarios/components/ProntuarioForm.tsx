@@ -13,7 +13,8 @@ import { useInsertProntuario } from "../hooks/insert";
 import { toast } from "sonner";
 import { useUploadContrato } from "../hooks/uploadContrato";
 import { useUploadExame } from "../hooks/uploadExame";
-import { getPatients } from "@/services/patients/patients.service";
+import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
+import { useAuth } from "@/contexts/AuthContext";
 import { Patient } from "@/types";
 import { FileText, Image as ImageIcon, X } from "lucide-react";
 
@@ -28,6 +29,7 @@ const MAX_FILE_SIZE_MB = 10;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }: Props) {
+  const { user } = useAuth();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loadingPatients, setLoadingPatients] = useState(false);
   const [contratoFile, setContratoFile] = useState<File | null>(null);
@@ -119,8 +121,15 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
 
   const onSubmit = async (data: ProntuarioFormData) => {
     try {
+      if (!user?.id) {
+        throw new Error("Usuário não autenticado");
+      }
+
       // 1. Cria o prontuário
-      const record = await insertProntuario(data);
+      const record = await insertProntuario({
+        ...data,
+        professionalId: user.id,
+      });
       if (!record) return;
 
       // 2. Upload do contrato se selecionado

@@ -26,7 +26,7 @@ import {
   createSuperAdminClinicUser,
   registerClinicPayment,
   unblockClinicBilling,
-} from "@/services/superadmin/clinics.service";
+} from "@/app/(authenticated)/superadmin/services/clinics.service";
 import { BillingConfigDialog, BillingConfigFormData } from "../components/BillingConfigDialog";
 import { CreateClinicUserDialog, CreateClinicUserFormData } from "../components/CreateClinicUserDialog";
 import { RegisterPaymentDialog, RegisterPaymentFormData } from "../components/RegisterPaymentDialog";

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Column, DataTable } from "@/components/ui/DataTable";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { abrirCaixa, fecharCaixa, getCaixaAtual, getMovimentacoesCaixa } from "@/services/caixa/caixa.service";
+import { abrirCaixa, fecharCaixa, getCaixaAtual, getMovimentacoesCaixa } from "@/app/(authenticated)/app/financeiro/caixa/services/caixa.service";
 import { Caixa, MovimentacaoResumo } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { formatCurrency, formatDate } from "@/utils/formatters";

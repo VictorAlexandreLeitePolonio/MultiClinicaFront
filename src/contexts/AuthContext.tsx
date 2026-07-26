@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { User } from "@/types";
-import { getCurrentUser } from "@/services/auth/auth.service";
+import { getCurrentUser } from "@/app/(public)/login/services/auth.service";
 
 interface AuthContextType {
   user: User | null;

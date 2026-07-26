@@ -8,7 +8,7 @@ import { Column, DataTable } from "@/components/ui/DataTable";
 import { MotivoDialog } from "@/components/ui/MotivoDialog";
 import { Pagination } from "@/components/ui/Pagination";
 import { useAuth } from "@/contexts/AuthContext";
-import { ajustarCaixa, cancelarCaixa, reabrirCaixa } from "@/services/caixa/caixa.service";
+import { ajustarCaixa, cancelarCaixa, reabrirCaixa } from "@/app/(authenticated)/app/financeiro/caixa/services/caixa.service";
 import { Caixa, StatusCaixa } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { formatCurrency, formatDate } from "@/utils/formatters";

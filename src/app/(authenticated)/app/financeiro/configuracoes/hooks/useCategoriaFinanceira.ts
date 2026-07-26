@@ -8,7 +8,7 @@ import {
   getCategoriasFinanceiras,
   setCategoriaFinanceiraActive,
   updateCategoriaFinanceira,
-} from "@/services/categoriasFinanceiras/categoriasFinanceiras.service";
+} from "@/app/(authenticated)/app/financeiro/configuracoes/services/categoriasFinanceiras.service";
 import { CategoriaFinanceira, PagedResult } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { CategoriaFinanceiraFormData } from "../schemas/categoriaFinanceira.schema";

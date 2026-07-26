@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { createSuperAdminClinic, CreateSuperAdminClinicPayload } from "@/services/superadmin/clinics.service";
+import { createSuperAdminClinic, CreateSuperAdminClinicPayload } from "@/app/(authenticated)/superadmin/services/clinics.service";
 import { ClinicCreateWizard } from "../components/ClinicCreateWizard";
 import { ClinicCreateFormData } from "../schemas/clinic-create.schema";
 

@@ -14,7 +14,7 @@ import { Patient } from "@/types";
 import { formatCurrency } from "@/utils/formatters";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { getPatients } from "@/services/patients/patients.service";
+import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
 interface Props {
   onBack: () => void;

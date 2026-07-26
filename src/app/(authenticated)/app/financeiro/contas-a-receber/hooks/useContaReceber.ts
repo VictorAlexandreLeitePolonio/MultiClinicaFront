@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getContasReceber } from "@/services/contasReceber/contasReceber.service";
+import { getContasReceber } from "@/app/(authenticated)/app/financeiro/contas-a-receber/services/contasReceber.service";
 import { ContaReceber, PagedResult, StatusContaReceber } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
 

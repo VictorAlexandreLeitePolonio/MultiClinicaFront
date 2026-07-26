@@ -4,7 +4,7 @@ import { useApiMutation } from "@/lib/hooks/useApiMutation";
 import {
   createMedicalRecord,
   type CreateMedicalRecordDto,
-} from "@/services/medical-records/medical-records.service";
+} from "@/app/(authenticated)/app/prontuarios/services/medical-records.service";
 import { MedicalRecord } from "@/types";
 
 export type { CreateMedicalRecordDto };

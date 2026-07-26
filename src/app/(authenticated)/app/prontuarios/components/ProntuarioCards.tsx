@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Pagination } from "@/components/ui/Pagination";
 import { useProntuariosPaginated } from "../hooks/pagined";
-import { getPatientById } from "@/services/patients/patients.service";
+import { getPatientById } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 import { ArrowLeft, FileText, Calendar, User } from "lucide-react";
 
 interface Props {

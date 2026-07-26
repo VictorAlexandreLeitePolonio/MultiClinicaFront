@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { Expense } from "@/types";
-import { getExpenseById } from "@/services/financial/financial.service";
+import { getExpenseById } from "@/app/(authenticated)/app/financeiro/services/financial.service";
 
 export function useExpenseById(id: number | null) {
   const [data, setData] = useState<Expense | null>(null);

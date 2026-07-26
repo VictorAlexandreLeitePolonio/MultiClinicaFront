@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plan } from "@/types";
-import { getPlans } from "@/services/plans/plans.service";
+import { getPlans } from "@/app/(authenticated)/app/planos/services/plans.service";
 
 export function usePlanos() {
   const [data, setData] = useState<Plan[]>([]);

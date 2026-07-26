@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getRecebimentosPorConta } from "@/services/recebimentos/recebimentos.service";
+import { getRecebimentosPorConta } from "@/app/(authenticated)/app/financeiro/contas-a-receber/services/recebimentos.service";
 import { Recebimento } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
 

@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { User } from "@/types";
-import { getUserById } from "@/services/users/users.service";
+import { getUserById } from "@/app/(authenticated)/app/usuarios/services/users.service";
 
 export function useUsuarioById(id: number | null) {
   const [data, setData] = useState<User | null>(null);

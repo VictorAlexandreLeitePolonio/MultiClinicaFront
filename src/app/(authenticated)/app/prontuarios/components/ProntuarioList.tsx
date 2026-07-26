@@ -12,7 +12,7 @@ import { useProntuariosPaginated } from "../hooks/pagined";
 import { useProntuarioDelete } from "../hooks/delete";
 import { toast } from "sonner";
 import { MedicalRecord, User } from "@/types";
-import { getUsers } from "@/services/users/users.service";
+import { getUsers } from "@/app/(authenticated)/app/usuarios/services/users.service";
 
 interface Props {
   onCreate: () => void;

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
-import { getContasFinanceiras } from "@/services/contasFinanceiras/contasFinanceiras.service";
+import { getContasFinanceiras } from "@/app/(authenticated)/app/financeiro/configuracoes/services/contasFinanceiras.service";
 import { ContaFinanceira } from "@/types";
 import { AbrirCaixaFormData, AbrirCaixaSchema } from "../schemas/caixa.schema";
 

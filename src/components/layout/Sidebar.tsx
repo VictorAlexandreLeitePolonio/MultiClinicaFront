@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { useAuth } from "@/contexts/AuthContext";
-import { logout } from "@/services/auth/auth.service";
+import { logout } from "@/app/(public)/login/services/auth.service";
 import { useRouter } from "next/navigation";
 import { SidebarGroup } from "./SidebarGroup";
 import { SidebarLink } from "./SidebarLink";

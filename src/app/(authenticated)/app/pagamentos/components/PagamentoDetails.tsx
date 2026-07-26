@@ -16,7 +16,7 @@ import { Eye, Edit3, Save, X } from "lucide-react";
 import { Patient } from "@/types";
 import { formatCurrency } from "@/utils/formatters";
 import { toast } from "sonner";
-import { getPatients } from "@/services/patients/patients.service";
+import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
 interface Props {
   id: number;

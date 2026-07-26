@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getSuperAdminClinicCharges, GetSuperAdminBillingParams } from "@/services/superadmin/billing.service";
-import { queryKeys } from "@/services/queryKeys";
+import { getSuperAdminClinicCharges, GetSuperAdminBillingParams } from "@/app/(authenticated)/superadmin/services/billing.service";
+import { queryKeys } from "@/lib/queryKeys";
 
 export function useSuperAdminBilling(clinicId: number, params: GetSuperAdminBillingParams) {
   return useQuery({

@@ -14,7 +14,7 @@ import { useAgendaUpdate } from "../hooks/update";
 import { Patient } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { Eye, Edit3, Save, X } from "lucide-react";
-import { getPatients } from "@/services/patients/patients.service";
+import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
 interface Props {
   id: number;

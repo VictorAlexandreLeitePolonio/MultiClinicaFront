@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { Expense, PagedResult } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { getExpenses } from "@/services/financial/financial.service";
+import { getExpenses } from "@/app/(authenticated)/app/financeiro/services/financial.service";
 
 export function useExpensesPaginated() {
   const [result, setResult] = useState<PagedResult<Expense>>({

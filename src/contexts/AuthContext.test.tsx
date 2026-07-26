@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from "./AuthContext";
 
 const getCurrentUser = vi.fn();
 
-vi.mock("@/services/auth/auth.service", () => ({
+vi.mock("@/app/(public)/login/services/auth.service", () => ({
   getCurrentUser: () => getCurrentUser(),
 }));
 

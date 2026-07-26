@@ -3,7 +3,7 @@
 import { useApiMutation } from "@/lib/hooks/useApiMutation";
 import { Appointment } from "@/types";
 import { AgendaFormData } from "../../schemas/agenda.schema";
-import { createAppointment } from "@/services/appointments/appointments.service";
+import { createAppointment } from "@/app/(authenticated)/app/agenda/services/appointments.service";
 
 export function useAgendaInsert() {
   const { mutate: insertAgenda, isPending, error } = useApiMutation<AgendaFormData, Appointment>({

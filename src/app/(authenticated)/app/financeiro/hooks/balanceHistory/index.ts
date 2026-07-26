@@ -6,7 +6,7 @@ import { FinancialBalance } from "@/types";
 import {
   BalanceHistoryPeriod,
   getFinancialBalanceHistory,
-} from "@/services/financial/financial.service";
+} from "@/app/(authenticated)/app/financeiro/services/financial.service";
 
 // Opções disponíveis no select de período do gráfico
 export type HistoryPeriod = BalanceHistoryPeriod;
