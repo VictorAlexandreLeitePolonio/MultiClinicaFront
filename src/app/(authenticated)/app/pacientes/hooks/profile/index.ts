@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { PatientProfile } from "@/types";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { getPatientProfile } from "@/services/patients/patients.service";
+import { getPatientProfile } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
 export function useGetPatientProfile(id: number | null) {
   const [data, setData] = useState<PatientProfile | null>(null);

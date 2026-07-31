@@ -3,7 +3,7 @@
 import { useApiMutation } from "@/lib/hooks/useApiMutation";
 import { Patient } from "@/types";
 import { PacientePayload } from "../../schemas/paciente.schema";
-import { updatePatient } from "@/services/patients/patients.service";
+import { updatePatient } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
 export function usePacienteUpdate() {
   const { mutate, isPending, error } = useApiMutation<

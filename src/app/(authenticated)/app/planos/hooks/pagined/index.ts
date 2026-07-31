@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PagedResult, Plan } from "@/types";
-import { getPlans } from "@/services/plans/plans.service";
+import { getPlans } from "@/app/(authenticated)/app/planos/services/plans.service";
 import { getApiErrorMessage } from "@/utils/apiError";
 
 export function usePlanosPaginated() {

@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getSuperAdminClinics, GetSuperAdminClinicsParams } from "@/services/superadmin/clinics.service";
-import { queryKeys } from "@/services/queryKeys";
+import { getSuperAdminClinics, GetSuperAdminClinicsParams } from "@/app/(authenticated)/superadmin/services/clinics.service";
+import { queryKeys } from "@/lib/queryKeys";
 
 export function useSuperAdminClinics(params: GetSuperAdminClinicsParams) {
   return useQuery({

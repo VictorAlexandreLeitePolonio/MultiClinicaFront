@@ -3,7 +3,7 @@
 import { useApiMutation } from "@/lib/hooks/useApiMutation";
 import { User } from "@/types";
 import { UsuarioFormData } from "../../schemas/usuario.schema";
-import { updateUser } from "@/services/users/users.service";
+import { updateUser } from "@/app/(authenticated)/app/usuarios/services/users.service";
 
 export function useUsuarioUpdate() {
   const { mutate, isPending, error } = useApiMutation<

@@ -1,7 +1,7 @@
 "use client";
 
 import { useApiMutation } from "@/lib/hooks/useApiMutation";
-import { deletePatient } from "@/services/patients/patients.service";
+import { deletePatient } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
 export function usePacienteDelete() {
   const { mutate: deletePaciente, isPending, error } = useApiMutation<number, void>({

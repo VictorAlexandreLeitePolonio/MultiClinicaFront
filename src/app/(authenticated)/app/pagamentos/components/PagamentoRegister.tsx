@@ -11,11 +11,11 @@ import { PagamentoSchema, PagamentoFormData } from '../schemas/pagamento.schema'
 import { usePagamentoInsert } from '../hooks/insert'
 import { usePlanos } from '../hooks/usePlanos'
 import { Patient } from '@/types'
-import { formatCurrency } from '@/utils/formatters'
 import { maskMonthReference } from '@/utils/masks'
+import { formatCurrency } from '@/utils/formatters'
 import { toast } from 'sonner'
 import { useAuth } from '@/contexts/AuthContext'
-import { getPatients } from '@/services/patients/patients.service'
+import { getPatients } from '@/app/(authenticated)/app/pacientes/services/patients.service'
 
 interface Props {
   onBack: () => void
@@ -108,9 +108,7 @@ export default function PagamentoRegister({ onBack, onSave }: Props) {
         <FormSection title="Dados do Pagamento">
           {/* Select de Paciente */}
           <div className="flex flex-col gap-2">
-            <label
-              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
-            >
+            <label className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider">
               Paciente *
             </label>
             <select
@@ -141,9 +139,7 @@ export default function PagamentoRegister({ onBack, onSave }: Props) {
 
           {/* Select de Plano */}
           <div className="flex flex-col gap-2">
-            <label
-              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
-            >
+            <label className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider">
               Plano *
             </label>
             <select
@@ -199,9 +195,7 @@ export default function PagamentoRegister({ onBack, onSave }: Props) {
 
           {/* Select de Método de Pagamento */}
           <div className="flex flex-col gap-2">
-            <label
-              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
-            >
+            <label className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider">
               Método de Pagamento *
             </label>
             <select
@@ -230,9 +224,7 @@ export default function PagamentoRegister({ onBack, onSave }: Props) {
 
           {/* Select de Status */}
           <div className="flex flex-col gap-2">
-            <label
-              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
-            >
+            <label className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider">
               Status *
             </label>
             <select

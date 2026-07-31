@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Appointment, PagedResult } from "@/types";
-import { getAppointments } from "@/services/appointments/appointments.service";
+import { getAppointments } from "@/app/(authenticated)/app/agenda/services/appointments.service";
 import { getApiErrorMessage } from "@/utils/apiError";
 
 export interface AgendaFilters {

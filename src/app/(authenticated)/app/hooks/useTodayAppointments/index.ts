@@ -1,5 +1,5 @@
 import { Appointment, PagedResult } from "@/types";
-import { getAppointments } from "@/services/appointments/appointments.service";
+import { getAppointments } from "@/app/(authenticated)/app/agenda/services/appointments.service";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 

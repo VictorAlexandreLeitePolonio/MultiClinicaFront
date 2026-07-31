@@ -16,7 +16,7 @@ import { usePagamentoDelete } from "../hooks/delete";
 import { Payment, Patient } from "@/types";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 import { toast } from "sonner";
-import { getPatients } from "@/services/patients/patients.service";
+import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
 interface Props {
   onCreate: () => void;

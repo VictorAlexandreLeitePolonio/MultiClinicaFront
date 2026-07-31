@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useProntuarioById } from "../hooks/getId";
 import { FileText, Image as ImageIcon, UserCircle } from "lucide-react";
-import { getAttachmentDownloadUrl } from "@/services/attachments/attachments.service";
+import { getAttachmentDownloadUrl } from "@/app/(authenticated)/app/prontuarios/services/attachments.service";
 import { ClinicalAttachment } from "@/types";
 import { toast } from "sonner";
 

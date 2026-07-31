@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PagedResult, User } from "@/types";
-import { getUsers } from "@/services/users/users.service";
+import { getUsers } from "@/app/(authenticated)/app/usuarios/services/users.service";
 import { getApiErrorMessage } from "@/utils/apiError";
 
 export function useUsuariosPaginated() {

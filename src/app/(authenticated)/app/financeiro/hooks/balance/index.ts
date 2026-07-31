@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { FinancialBalance } from "@/types";
-import { getMonthlyFinancialBalance } from "@/services/financial/financial.service";
+import { getMonthlyFinancialBalance } from "@/app/(authenticated)/app/financeiro/services/financial.service";
 
 export function useMonthlyBalance(month: string) {
   const [data, setData] = useState<FinancialBalance | null>(null);

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Expense } from "@/types";
 import { ExpenseFormData } from "../../schemas/expense.schema";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { createExpense } from "@/services/financial/financial.service";
+import { createExpense } from "@/app/(authenticated)/app/financeiro/services/financial.service";
 
 export function useExpenseInsert() {
   const [isPending, setIsPending] = useState(false);

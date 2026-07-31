@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { uploadMedicalRecordAttachment } from "@/services/attachments/attachments.service";
+import { uploadMedicalRecordAttachment } from "@/app/(authenticated)/app/prontuarios/services/attachments.service";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { ClinicalAttachment } from "@/types";
 

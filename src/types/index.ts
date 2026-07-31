@@ -16,6 +16,7 @@ export interface User {
   clinicId?: number | null;
   clinicName?: string | null;
   createdAt?: string;
+  permissions?: string[];
 }
 
 export type BillingStatus = "Enabled" | "Blocked" | "Disabled";
@@ -273,4 +274,98 @@ export interface CreateExpenseDto {
   paymentDate: string;       // ISO string
   description: string;
   referenceMonth: string;    // "YYYY-MM"
+}
+
+// ─── Financeiro: Configurações ─────────────────────────────────────────────
+
+export interface FormaPagamento {
+  id: number;
+  nome: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export type TipoCategoriaFinanceira = "Receita" | "Despesa";
+
+export interface CategoriaFinanceira {
+  id: number;
+  nome: string;
+  tipo: TipoCategoriaFinanceira;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export type TipoContaFinanceira = "Caixa" | "Banco" | "Cartao" | "Outro";
+
+export interface ContaFinanceira {
+  id: number;
+  nome: string;
+  tipo: TipoContaFinanceira;
+  saldoInicial: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+// ─── Financeiro: Contas a Receber ──────────────────────────────────────────
+
+export type StatusContaReceber = "Aberta" | "Parcial" | "Paga" | "Vencida" | "Cancelada";
+export type OrigemContaReceber = "Manual" | "Atendimento" | "Pacote" | "Produto" | "Convenio";
+
+export interface ContaReceber {
+  id: number;
+  pacienteId: number;
+  categoriaFinanceiraId: number | null;
+  descricao: string;
+  valorOriginal: number;
+  valorDesconto: number;
+  valorJuros: number;
+  valorTotal: number;
+  valorRecebido: number;
+  dataEmissao: string;
+  dataVencimento: string;
+  dataPagamento: string | null;
+  status: StatusContaReceber;
+  vencida: boolean;
+  origem: OrigemContaReceber;
+  observacao: string | null;
+  createdAt: string;
+}
+
+export interface Recebimento {
+  id: number;
+  contaReceberId: number;
+  contaFinanceiraId: number;
+  formaPagamentoId: number;
+  valor: number;
+  dataRecebimento: string;
+  observacao: string | null;
+  isEstornado: boolean;
+  createdAt: string;
+}
+
+// ─── Financeiro: Caixa ──────────────────────────────────────────────────────
+
+export type StatusCaixa = "Aberto" | "Fechado" | "Cancelado";
+
+export interface Caixa {
+  id: number;
+  contaFinanceiraId: number;
+  dataAbertura: string;
+  dataFechamento: string | null;
+  saldoInicial: number;
+  saldoFinalInformado: number | null;
+  saldoFinalCalculado: number | null;
+  diferenca: number | null;
+  status: StatusCaixa;
+  observacao: string | null;
+  createdAt: string;
+}
+
+export interface MovimentacaoResumo {
+  id: number;
+  tipo: string;
+  origem: string;
+  descricao: string;
+  valor: number;
+  dataMovimentacao: string;
 }

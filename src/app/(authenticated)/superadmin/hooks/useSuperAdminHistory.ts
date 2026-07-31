@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getSuperAdminCommercialHistory, GetSuperAdminHistoryParams } from "@/services/superadmin/history.service";
-import { queryKeys } from "@/services/queryKeys";
+import { getSuperAdminCommercialHistory, GetSuperAdminHistoryParams } from "@/app/(authenticated)/superadmin/services/history.service";
+import { queryKeys } from "@/lib/queryKeys";
 
 export function useSuperAdminHistory(clinicId: number, params: GetSuperAdminHistoryParams) {
   return useQuery({

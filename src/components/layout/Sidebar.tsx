@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { useAuth } from "@/contexts/AuthContext";
-import { logout } from "@/services/auth/auth.service";
+import { logout } from "@/app/(public)/login/services/auth.service";
 import { useRouter } from "next/navigation";
+import { SidebarGroup } from "./SidebarGroup";
 import { SidebarLink } from "./SidebarLink";
 import { getRoleLabel } from "@/lib/auth/routes";
 import {
@@ -21,6 +22,8 @@ import {
   ChevronRight,
   BarChart2,
   Building2,
+  Wallet,
+  Package,
 } from "lucide-react";
 
 const baseModules = [
@@ -33,10 +36,66 @@ const baseModules = [
 
 const adminModules = [
   { href: "/app/pagamentos", label: "Pagamentos", icon: <CreditCard size={18} />, roles: ["Administrador", "Recepcao"] },
-  { href: "/app/financeiro", label: "Financeiro", icon: <BarChart2 size={18} />, roles: ["Administrador"] },
+  { href: "/app/financeiro", label: "Balanço (legado)", icon: <BarChart2 size={18} />, roles: ["Administrador"] },
   { href: "/app/usuarios", label: "Usuários", icon: <Shield size={18} />, roles: ["Administrador"] },
   { href: "/app/planos", label: "Planos", icon: <ClipboardList size={18} />, roles: ["Administrador"] },
 ];
+
+const financeGroup = {
+  label: "Financeiro",
+  icon: <Wallet size={18} />,
+  items: [
+    {
+      href: "/app/financeiro/configuracoes",
+      label: "Configurações",
+      permission: "financeiro.formas_pagamento.visualizar",
+    },
+    {
+      href: "/app/financeiro/contas-a-receber",
+      label: "Contas a Receber",
+      permission: "financeiro.contas_receber.visualizar",
+    },
+    {
+      href: "/app/financeiro/fornecedores",
+      label: "Fornecedores",
+      permission: "financeiro.fornecedores.visualizar",
+    },
+    {
+      href: "/app/financeiro/contas-a-pagar",
+      label: "Contas a Pagar",
+      permission: "financeiro.contas_pagar.visualizar",
+    },
+    {
+      href: "/app/financeiro/caixa",
+      label: "Caixa",
+      permission: "financeiro.caixa.visualizar",
+    },
+    {
+      href: "/app/financeiro/auditoria",
+      label: "Auditoria",
+      permission: "financeiro.auditoria.visualizar",
+    },
+  ],
+};
+
+const stockGroup = {
+  label: "Estoque e Compras",
+  icon: <Package size={18} />,
+  items: [
+    { href: "/app/estoque/produtos", label: "Produtos", permission: "estoque.produtos.visualizar" },
+    { href: "/app/estoque/categorias-produto", label: "Categorias de Produto", permission: "estoque.produtos.visualizar" },
+    { href: "/app/estoque/movimentacoes", label: "Movimentações", permission: "estoque.movimentacoes.visualizar" },
+    { href: "/app/estoque/compras", label: "Compras", permission: "compras.visualizar" },
+  ],
+};
+
+const reportsGroup = {
+  label: "Relatórios",
+  icon: <BarChart2 size={18} />,
+  items: [
+    { href: "/app/relatorios", label: "Relatórios Financeiros", permission: "relatorios.financeiro.visualizar" },
+  ],
+};
 
 const superAdminModules = [
   { href: "/superadmin", label: "Dashboard", icon: <Home size={18} /> },
@@ -50,7 +109,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ area }: SidebarProps) {
-  const { user, setUser } = useAuth();
+  const { user, setUser, can } = useAuth();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -110,6 +169,33 @@ export function Sidebar({ area }: SidebarProps) {
         {modules.map((mod) => (
           <SidebarLink key={mod.href} {...mod} collapsed={collapsed} />
         ))}
+        {area === "clinic" && (
+          <SidebarGroup
+            label={financeGroup.label}
+            icon={financeGroup.icon}
+            items={financeGroup.items}
+            can={can}
+            collapsed={collapsed}
+          />
+        )}
+        {area === "clinic" && (
+          <SidebarGroup
+            label={stockGroup.label}
+            icon={stockGroup.icon}
+            items={stockGroup.items}
+            can={can}
+            collapsed={collapsed}
+          />
+        )}
+        {area === "clinic" && (
+          <SidebarGroup
+            label={reportsGroup.label}
+            icon={reportsGroup.icon}
+            items={reportsGroup.items}
+            can={can}
+            collapsed={collapsed}
+          />
+        )}
       </nav>
 
       {/* Divisor */}

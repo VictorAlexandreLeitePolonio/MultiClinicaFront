@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Expense } from "@/types";
 import { ExpenseFormData } from "../../schemas/expense.schema";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { updateExpense as updateExpenseRequest } from "@/services/financial/financial.service";
+import { updateExpense as updateExpenseRequest } from "@/app/(authenticated)/app/financeiro/services/financial.service";
 
 export function useExpenseUpdate() {
   const [isPending, setIsPending] = useState(false);

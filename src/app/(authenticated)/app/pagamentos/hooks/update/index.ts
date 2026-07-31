@@ -5,7 +5,7 @@ import { Payment } from "@/types";
 import { PagamentoFormData } from "../../schemas/pagamento.schema";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { updatePayment } from "@/services/payments/payments.service";
+import { updatePayment } from "@/app/(authenticated)/app/pagamentos/services/payments.service";
 
 export function usePagamentoUpdate() {
   const [isPending, setIsPending] = useState(false);

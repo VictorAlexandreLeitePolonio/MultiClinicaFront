@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Plan } from "@/types";
 import { toast } from "sonner";
-import { getPlanById } from "@/services/plans/plans.service";
+import { getPlanById } from "@/app/(authenticated)/app/planos/services/plans.service";
 
 export function usePlanoById(id: number | null) {
   const [data, setData] = useState<Plan | null>(null);

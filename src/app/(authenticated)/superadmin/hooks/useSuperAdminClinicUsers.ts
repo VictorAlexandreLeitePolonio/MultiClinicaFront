@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getSuperAdminClinicUsers,
   GetSuperAdminClinicChildrenParams,
-} from "@/services/superadmin/clinics.service";
-import { queryKeys } from "@/services/queryKeys";
+} from "@/app/(authenticated)/superadmin/services/clinics.service";
+import { queryKeys } from "@/lib/queryKeys";
 
 export function useSuperAdminClinicUsers(
   clinicId: number,

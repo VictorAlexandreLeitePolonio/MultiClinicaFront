@@ -14,7 +14,7 @@ import {
   EvolutionTemplateFieldSchema,
 } from "../schemas/evolutionTemplate.schema";
 import { EvolutionTemplateField } from "@/types/evolution";
-import { isNumericEvolutionField } from "@/services/evolution/evolutionPayload";
+import { isNumericEvolutionField } from "@/app/(authenticated)/app/modelos-evolucao/services/evolutionPayload";
 
 interface EvolutionTemplateFieldFormProps {
   field?: EvolutionTemplateField | null;

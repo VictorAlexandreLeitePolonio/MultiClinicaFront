@@ -3,7 +3,7 @@
 import { useApiMutation } from "@/lib/hooks/useApiMutation";
 import { Plan } from "@/types";
 import { PlanoFormData } from "../../schemas/plano.schema";
-import { createPlan } from "@/services/plans/plans.service";
+import { createPlan } from "@/app/(authenticated)/app/planos/services/plans.service";
 
 export function usePlanoInsert() {
   const { mutate: insertPlano, isPending, error } = useApiMutation<PlanoFormData, Plan>({

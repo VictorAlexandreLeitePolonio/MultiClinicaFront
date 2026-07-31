@@ -1,7 +1,7 @@
 "use client";
 
 import { useApiMutation } from "@/lib/hooks/useApiMutation";
-import { deletePlan } from "@/services/plans/plans.service";
+import { deletePlan } from "@/app/(authenticated)/app/planos/services/plans.service";
 
 export function usePlanoDelete() {
   const { mutate: deletePlano, isPending, error } = useApiMutation<number, void>({

@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Appointment } from "@/types";
 import { toast } from "sonner";
-import { getAppointmentById } from "@/services/appointments/appointments.service";
+import { getAppointmentById } from "@/app/(authenticated)/app/agenda/services/appointments.service";
 
 export function useAgendaById(id: number | null) {
   const [data, setData] = useState<Appointment | null>(null);

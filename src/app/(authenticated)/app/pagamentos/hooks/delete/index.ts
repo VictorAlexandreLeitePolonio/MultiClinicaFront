@@ -1,7 +1,7 @@
 "use client";
 
 import { useApiMutation } from "@/lib/hooks/useApiMutation";
-import { deletePayment } from "@/services/payments/payments.service";
+import { deletePayment } from "@/app/(authenticated)/app/pagamentos/services/payments.service";
 
 export function usePagamentoDelete() {
   const { mutate: deletePagamento, isPending, error } = useApiMutation<number, void>({

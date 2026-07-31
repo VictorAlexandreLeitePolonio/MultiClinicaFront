@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Patient } from "@/types";
 import { toast } from "sonner";
-import { getPatientById } from "@/services/patients/patients.service";
+import { getPatientById } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
 export function usePacienteById(id: number | null) {
   const [data, setData] = useState<Patient | null>(null);

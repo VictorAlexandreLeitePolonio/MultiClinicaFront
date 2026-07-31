@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Appointment } from "@/types";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { getAppointments } from "@/services/appointments/appointments.service";
+import { getAppointments } from "@/app/(authenticated)/app/agenda/services/appointments.service";
 
 function getStartOfWeek(date: Date): Date {
   const d = new Date(date);

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getMedicalRecords } from "@/services/medical-records/medical-records.service";
+import { getMedicalRecords } from "@/app/(authenticated)/app/prontuarios/services/medical-records.service";
 import { MedicalRecord, PagedResult } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
 

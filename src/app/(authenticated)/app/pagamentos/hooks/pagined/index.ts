@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PagedResult, Payment } from "@/types";
-import { getPayments } from "@/services/payments/payments.service";
+import { getPayments } from "@/app/(authenticated)/app/pagamentos/services/payments.service";
 import { getApiErrorMessage } from "@/utils/apiError";
 
 export interface PagamentoFilters {

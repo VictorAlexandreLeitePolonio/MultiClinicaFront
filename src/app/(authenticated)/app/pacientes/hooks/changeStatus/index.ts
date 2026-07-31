@@ -4,7 +4,7 @@ import { useApiMutation } from "@/lib/hooks/useApiMutation";
 import {
   changePatientStatus,
   ChangePatientStatusResponse,
-} from "@/services/patients/patients.service";
+} from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
 export function usePacienteChangeStatus() {
   const { mutate, isPending: loading, error } = useApiMutation<

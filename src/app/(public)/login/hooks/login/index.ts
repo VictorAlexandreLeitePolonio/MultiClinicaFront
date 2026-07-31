@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { User } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { login, LoginPayload } from "@/services/auth/auth.service";
+import { login, LoginPayload } from "@/app/(public)/login/services/auth.service";
 
 interface UseLoginReturn {
   loginUser: (payload: LoginPayload) => Promise<{
