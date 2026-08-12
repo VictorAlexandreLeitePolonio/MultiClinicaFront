@@ -34,7 +34,9 @@ function ContasAReceberContent() {
 export default function ContasAReceberPage() {
   return (
     <Suspense>
-      <ContasAReceberContent />
+      <div className="p-8">
+        <ContasAReceberContent />
+      </div>
     </Suspense>
   );
 }

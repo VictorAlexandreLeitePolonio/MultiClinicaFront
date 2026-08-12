@@ -26,5 +26,11 @@ function ContasAPagarContent() {
 }
 
 export default function ContasAPagarPage() {
-  return <Suspense><ContasAPagarContent /></Suspense>;
+  return (
+    <Suspense>
+      <div className="p-8">
+        <ContasAPagarContent />
+      </div>
+    </Suspense>
+  );
 }

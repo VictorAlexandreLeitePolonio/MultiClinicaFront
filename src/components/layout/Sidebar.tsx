@@ -47,7 +47,7 @@ const financeGroup = {
   items: [
     {
       href: "/app/financeiro/configuracoes",
-      label: "Configurações",
+      label: "Forma de Pagamento",
       permission: "financeiro.formas_pagamento.visualizar",
     },
     {

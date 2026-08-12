@@ -10,6 +10,8 @@ interface TopbarProps {
 }
 
 function formatBreadcrumbSegment(segment: string): string {
+  if (segment === "configuracoes") return "Forma de Pagamento";
+
   return segment
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
