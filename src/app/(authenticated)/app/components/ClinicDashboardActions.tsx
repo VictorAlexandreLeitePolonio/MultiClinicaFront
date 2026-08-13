@@ -55,8 +55,8 @@ const dashboardActions: DashboardAction[] = [
   },
   {
     href: "/app/financeiro",
-    title: "Financeiro",
-    description: "Ver despesas, entradas e saldo interno da clínica.",
+    title: "Balanço",
+    description: "Ver entradas, saídas e resultado estimado da clínica.",
     icon: BarChart2,
     roles: ["Administrador"],
   },
@@ -79,7 +79,7 @@ const dashboardActions: DashboardAction[] = [
 const roleCopy: Record<Exclude<UserRole, "SuperAdmin">, { title: string; description: string }> = {
   Administrador: {
     title: "Operação completa",
-    description: "Acompanhe agenda, pacientes, pagamentos, financeiro e gestão da equipe.",
+    description: "Acompanhe agenda, pacientes, pagamentos, balanço e gestão da equipe.",
   },
   Profissional: {
     title: "Rotina clínica",

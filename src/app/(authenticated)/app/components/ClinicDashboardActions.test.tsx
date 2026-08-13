@@ -10,7 +10,7 @@ describe("ClinicDashboardActions", () => {
     expect(screen.getByRole("link", { name: "Abrir Pacientes" })).toHaveAttribute("href", "/app/pacientes");
     expect(screen.getByRole("link", { name: "Abrir Prontuários" })).toHaveAttribute("href", "/app/prontuarios");
     expect(screen.getByRole("link", { name: "Abrir Pagamentos" })).toHaveAttribute("href", "/app/pagamentos");
-    expect(screen.getByRole("link", { name: "Abrir Financeiro" })).toHaveAttribute("href", "/app/financeiro");
+    expect(screen.getByRole("link", { name: "Abrir Balanço" })).toHaveAttribute("href", "/app/financeiro");
     expect(screen.getByRole("link", { name: "Abrir Planos" })).toHaveAttribute("href", "/app/planos");
     expect(screen.getByRole("link", { name: "Abrir Usuários" })).toHaveAttribute("href", "/app/usuarios");
   });
@@ -22,7 +22,7 @@ describe("ClinicDashboardActions", () => {
     expect(screen.getByRole("link", { name: "Abrir Pacientes" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Abrir Prontuários" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Abrir Pagamentos" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Abrir Financeiro" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Abrir Balanço" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Abrir Usuários" })).not.toBeInTheDocument();
   });
 
@@ -33,7 +33,7 @@ describe("ClinicDashboardActions", () => {
     expect(screen.getByRole("link", { name: "Abrir Pacientes" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Abrir Pagamentos" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Abrir Prontuários" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Abrir Financeiro" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Abrir Balanço" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Abrir Planos" })).not.toBeInTheDocument();
   });
 });

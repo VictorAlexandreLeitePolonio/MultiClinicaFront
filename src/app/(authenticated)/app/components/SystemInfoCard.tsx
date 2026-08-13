@@ -8,7 +8,7 @@ const features = [
   { icon: <Users size={16} />, text: "Gerenciamento completo de pacientes e prontuários" },
   { icon: <ClipboardList size={16} />, text: "Agenda integrada com controle de sessões" },
   { icon: <Stethoscope size={16} />, text: "Acompanhamento de tratamentos e evolução" },
-  { icon: <CheckCircle size={16} />, text: "Controle financeiro e relatórios" },
+  { icon: <CheckCircle size={16} />, text: "Balanço operacional e estoque" },
   { icon: <Shield size={16} />, text: "Acesso seguro com níveis de permissão" },
 ];
 
