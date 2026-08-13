@@ -4,19 +4,16 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApiMutation } from "@/lib/hooks/useApiMutation";
 import { produtosQueryKey } from "../../produtos/hooks/useProdutos";
 import { movimentacoesQueryKey } from "../../movimentacoes/hooks/useMovimentacoes";
-import { contasPagarQueryKey } from "../../../financeiro/contas-a-pagar/hooks/useContaPagar";
 import {
   aprovarCompra,
   cancelarCompra,
   createCompra,
-  gerarContaPagar,
   getCompra,
   getCompras,
   receberCompra,
   updateCompra,
   type Compra,
   type CompraPayload,
-  type GerarContaPagarPayload,
   type GetComprasParams,
 } from "../services/compras.service";
 
@@ -30,25 +27,21 @@ export function useCompraMutations() {
   const updateMutation = useApiMutation<{ id: number; payload: CompraPayload }, Compra>({ mutationFn: ({ id, payload }) => updateCompra(id, payload), errorMessage: "Erro ao atualizar compra." });
   const approveMutation = useApiMutation<number, Compra>({ mutationFn: aprovarCompra, errorMessage: "Erro ao aprovar compra." });
   const receiveMutation = useApiMutation<number, Compra>({ mutationFn: receberCompra, errorMessage: "Erro ao receber compra." });
-  const accountMutation = useApiMutation<{ id: number; payload: GerarContaPagarPayload }, Compra>({ mutationFn: ({ id, payload }) => gerarContaPagar(id, payload), errorMessage: "Erro ao gerar conta a pagar." });
   const cancelMutation = useApiMutation<{ id: number; motivo: string }, Compra>({ mutationFn: ({ id, motivo }) => cancelarCompra(id, motivo), errorMessage: "Erro ao cancelar compra." });
-  const invalidate = async (receive = false, account = false) => {
+  const invalidate = async (receive = false) => {
     await client.invalidateQueries({ queryKey: comprasQueryKey });
     if (receive) { await client.invalidateQueries({ queryKey: produtosQueryKey }); await client.invalidateQueries({ queryKey: movimentacoesQueryKey }); }
-    if (account) await client.invalidateQueries({ queryKey: contasPagarQueryKey });
   };
   return {
     createCompra: async (payload: CompraPayload) => { const result = await createMutation.mutate(payload); await invalidate(); return result; },
     updateCompra: async (id: number, payload: CompraPayload) => { const result = await updateMutation.mutate({ id, payload }); await invalidate(); return result; },
     aprovarCompra: async (id: number) => { const result = await approveMutation.mutate(id); await invalidate(); return result; },
     receberCompra: async (id: number) => { const result = await receiveMutation.mutate(id); await invalidate(true); return result; },
-    gerarContaPagar: async (id: number, payload: GerarContaPagarPayload) => { const result = await accountMutation.mutate({ id, payload }); await invalidate(false, true); return result; },
     cancelarCompra: async (id: number, motivo: string) => { const result = await cancelMutation.mutate({ id, motivo }); await invalidate(); return result; },
     isCreating: createMutation.isPending,
     isUpdating: updateMutation.isPending,
     isApproving: approveMutation.isPending,
     isReceiving: receiveMutation.isPending,
-    isGeneratingAccount: accountMutation.isPending,
     isCanceling: cancelMutation.isPending,
   };
 }

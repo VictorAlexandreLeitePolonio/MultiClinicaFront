@@ -12,5 +12,3 @@ export const CompraSchema = z.object({
   itens: z.array(CompraItemSchema).min(1, "Adicione ao menos um item"),
 });
 export type CompraFormData = z.infer<typeof CompraSchema>;
-export const GerarContaPagarSchema = z.object({ dataVencimento: z.string().min(1, "Data de vencimento é obrigatória"), categoriaFinanceiraId: z.number().nullable() });
-export type GerarContaPagarFormData = z.infer<typeof GerarContaPagarSchema>;

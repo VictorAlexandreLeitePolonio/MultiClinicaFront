@@ -23,6 +23,7 @@ export interface ProdutoAlerta { produtoId: number; nome: string; quantidadeAtua
 export interface GetMovimentacoesParams { produtoId?: number; tipo?: TipoMovimentacao; page: number; pageSize: number; }
 export interface RegistrarMovimentacaoPayload { produtoId: number; quantidade: number; observacao?: string | null; }
 export interface AjustarEstoquePayload { produtoId: number; novaQuantidade: number; observacao: string; }
+export interface CreateStockMovementRequest { productId: number; quantity: number; note?: string | null; }
 
 export async function getMovimentacoes(params: GetMovimentacoesParams): Promise<PagedResult<MovimentacaoEstoque>> {
   const response = await api.get<PagedResult<MovimentacaoEstoque> | MovimentacaoEstoque[]>("/api/estoque/movimentacoes", { params });
@@ -42,6 +43,9 @@ export async function registrarUsoInterno(payload: RegistrarMovimentacaoPayload)
 }
 export async function registrarPerda(payload: RegistrarMovimentacaoPayload): Promise<MovimentacaoEstoque> {
   const response = await api.post<MovimentacaoEstoque>("/api/estoque/movimentacoes/perda", payload); return response.data;
+}
+export async function createProductSale(payload: CreateStockMovementRequest): Promise<MovimentacaoEstoque> {
+  const response = await api.post<MovimentacaoEstoque>("/api/stock/movements/sale", payload); return response.data;
 }
 export async function ajustarEstoque(payload: AjustarEstoquePayload): Promise<MovimentacaoEstoque> {
   const response = await api.post<MovimentacaoEstoque>("/api/estoque/movimentacoes/ajuste", payload); return response.data;
