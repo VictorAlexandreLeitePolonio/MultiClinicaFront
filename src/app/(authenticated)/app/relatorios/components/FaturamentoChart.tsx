@@ -1,5 +1,0 @@
-"use client";
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import type { RelatorioAgrupado } from "../services/relatorios.service";
-import { formatCurrency } from "@/utils/formatters";
-export function FaturamentoChart({ data, loading }: { data: RelatorioAgrupado[]; loading?: boolean }) { if (loading) return <div className="h-72 animate-pulse rounded-2xl bg-slate-100" />; if (!data.length) return <div className="rounded-2xl border border-dashed p-10 text-center text-sm text-slate-500">Nenhum faturamento no período.</div>; return <div className="h-72 rounded-2xl border border-[#d7f3ea] bg-white p-4"><ResponsiveContainer width="100%" height="100%"><BarChart data={data}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="chave" /><YAxis tickFormatter={(value) => `${value}`} /><Tooltip formatter={(value) => formatCurrency(Number(value))} /><Bar dataKey="valor" fill="#14b8a6" name="Faturamento" /></BarChart></ResponsiveContainer></div>; }

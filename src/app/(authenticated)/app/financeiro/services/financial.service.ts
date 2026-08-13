@@ -1,68 +1,72 @@
 import api from "@/lib/api";
 import { normalizePagedResult } from "@/lib/pagination";
-import { CreateExpenseDto, Expense, FinancialBalance, PagedResult } from "@/types";
-import { toApiReferenceMonth } from "@/utils/formatters";
+import type { ClinicExpense, FinancialBalance, PagedResult } from "@/types";
 
-export interface GetExpensesParams {
-  title?: string;
-  month?: string;
+export interface GetFinancialBalanceParams {
+  startDate?: string;
+  endDate?: string;
+}
+
+export async function getFinancialBalance(
+  params?: GetFinancialBalanceParams,
+): Promise<FinancialBalance> {
+  const response = await api.get<FinancialBalance>("/api/financial/balance", {
+    params,
+  });
+
+  return response.data;
+}
+
+export interface GetClinicExpensesParams {
+  startDate?: string;
+  endDate?: string;
   page: number;
   pageSize: number;
 }
 
-export type BalanceHistoryPeriod = 1 | 3 | 6 | 12;
+export interface CreateClinicExpenseRequest {
+  title: string;
+  amount: number;
+  date: string;
+  description?: string;
+}
 
-export async function getMonthlyFinancialBalance(month: string): Promise<FinancialBalance> {
-  const response = await api.get<FinancialBalance>(`/api/financial/balance/${toApiReferenceMonth(month)}`);
+export type UpdateClinicExpenseRequest = CreateClinicExpenseRequest;
+
+export async function getClinicExpenses(
+  params: GetClinicExpensesParams,
+): Promise<PagedResult<ClinicExpense>> {
+  const response = await api.get<PagedResult<ClinicExpense> | ClinicExpense[]>(
+    "/api/financial/expenses",
+    { params },
+  );
+
+  return normalizePagedResult<ClinicExpense>(response.data, params.pageSize);
+}
+
+export async function createClinicExpense(
+  payload: CreateClinicExpenseRequest,
+): Promise<ClinicExpense> {
+  const response = await api.post<ClinicExpense>("/api/financial/expenses", payload);
 
   return response.data;
 }
 
-export async function getFinancialBalanceHistory(
-  months: BalanceHistoryPeriod
-): Promise<FinancialBalance[]> {
-  const response = await api.get<FinancialBalance[]>("/api/financial/balance/history", {
-    params: { months },
-  });
+export async function getClinicExpense(id: number): Promise<ClinicExpense> {
+  const response = await api.get<ClinicExpense>(`/api/financial/expenses/${id}`);
 
   return response.data;
 }
 
-export async function getExpenses(params: GetExpensesParams): Promise<PagedResult<Expense>> {
-  const apiParams = params.month
-    ? { ...params, month: toApiReferenceMonth(params.month) }
-    : params;
-  const response = await api.get<PagedResult<Expense> | Expense[]>("/api/financial/expenses", {
-    params: apiParams,
-  });
-
-  return normalizePagedResult<Expense>(response.data, params.pageSize);
-}
-
-export async function getExpenseById(id: number): Promise<Expense> {
-  const response = await api.get<Expense>(`/api/financial/expenses/${id}`);
+export async function updateClinicExpense(
+  id: number,
+  payload: UpdateClinicExpenseRequest,
+): Promise<ClinicExpense> {
+  const response = await api.put<ClinicExpense>(`/api/financial/expenses/${id}`, payload);
 
   return response.data;
 }
 
-export async function createExpense(payload: CreateExpenseDto): Promise<Expense> {
-  const response = await api.post<Expense>("/api/financial/expenses", {
-    ...payload,
-    referenceMonth: toApiReferenceMonth(payload.referenceMonth),
-  });
-
-  return response.data;
-}
-
-export async function updateExpense(id: number, payload: CreateExpenseDto): Promise<Expense> {
-  const response = await api.put<Expense>(`/api/financial/expenses/${id}`, {
-    ...payload,
-    referenceMonth: toApiReferenceMonth(payload.referenceMonth),
-  });
-
-  return response.data;
-}
-
-export async function deleteExpense(id: number): Promise<void> {
+export async function deleteClinicExpense(id: number): Promise<void> {
   await api.delete(`/api/financial/expenses/${id}`);
 }

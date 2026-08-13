@@ -1,58 +1,64 @@
 "use client";
 
-import { Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { AnimatePresence, motion } from "motion/react";
-import ExpenseList from "./components/ExpenseList";
-import ExpenseRegister from "./components/ExpenseRegister";
-import ExpenseDetails from "./components/ExpenseDetails";
+import { useState } from "react";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { getApiErrorMessage } from "@/utils/apiError";
+import type { GetFinancialBalanceParams } from "./services/financial.service";
+import { useFinancialBalance } from "./hooks/useFinancialBalance";
+import { BalanceMoneyCards } from "./components/BalanceMoneyCards";
+import { BalanceOperationalCards } from "./components/BalanceOperationalCards";
+import { BalancePeriodFilter } from "./components/BalancePeriodFilter";
+import { BalanceRecentMovementsTable } from "./components/BalanceRecentMovementsTable";
+import { BalanceStockSection } from "./components/BalanceStockSection";
+import { ClinicExpensesSection } from "./components/ClinicExpensesSection";
 
-type ViewMode = "list" | "create" | "view";
-
-function FinanceiroPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const mode = (searchParams.get("mode") as ViewMode) ?? "list";
-  const id = searchParams.get("id") ? Number(searchParams.get("id")) : null;
-
-  const goTo = (mode: ViewMode, id?: number) => {
-    const params = new URLSearchParams({ mode });
-    if (id) params.set("id", String(id));
-    router.push(`/app/financeiro?${params.toString()}`);
-  };
+export default function FinancialBalancePage() {
+  const [period, setPeriod] = useState<GetFinancialBalanceParams>({});
+  const balance = useFinancialBalance(period);
 
   return (
-    <div className="p-8">
-      <AnimatePresence mode="wait" initial={false}>
-        {mode === "list" && (
-          <motion.div key="list"
-            initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
-            <ExpenseList
-              onCreate={() => goTo("create")}
-              onViewDetails={(id) => goTo("view", id)}
-            />
-          </motion.div>
-        )}
-        {mode === "create" && (
-          <motion.div key="create"
-            initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.2 }}>
-            <ExpenseRegister onBack={() => goTo("list")} onSave={() => goTo("list")} />
-          </motion.div>
-        )}
-        {mode === "view" && id && (
-          <motion.div key="view"
-            initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.2 }}>
-            <ExpenseDetails id={id} onBack={() => goTo("list")} onSave={() => goTo("list")} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div className="mx-auto flex max-w-7xl flex-col gap-6 p-8">
+      <PageHeader
+        title="Balanço"
+        actions={<BalancePeriodFilter onApply={setPeriod} />}
+      />
+
+      {balance.isError ? (
+        <ErrorState
+          message={getApiErrorMessage(balance.error, "Erro ao carregar o balanço.")}
+          onRetry={() => void balance.refetch()}
+        />
+      ) : balance.isLoading ? (
+        <>
+          <BalanceMoneyCards money={null} loading />
+          <BalanceOperationalCards money={null} appointments={null} patients={null} stock={null} evolutions={null} />
+          <BalanceStockSection stock={null} loading />
+        </>
+      ) : !balance.data ? (
+        <EmptyState title="Nenhum dado disponível" description="Não há dados de balanço para o período selecionado." />
+      ) : (
+        <>
+          <p className="text-sm text-[#64748b] dark:text-slate-300">
+            Período: {balance.data.period.startDate} a {balance.data.period.endDate}
+          </p>
+          <BalanceMoneyCards money={balance.data.money} />
+          <BalanceOperationalCards
+            money={balance.data.money}
+            appointments={balance.data.appointments}
+            patients={balance.data.patients}
+            stock={balance.data.stock}
+            evolutions={balance.data.evolutions}
+          />
+          <BalanceStockSection stock={balance.data.stock} />
+          <section className="space-y-3">
+            <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Últimas movimentações</h2>
+            <BalanceRecentMovementsTable movements={balance.data.recentMovements ?? []} />
+          </section>
+        </>
+      )}
+      <ClinicExpensesSection period={period} />
     </div>
   );
-}
-
-export default function Page() {
-  return <Suspense><FinanceiroPage /></Suspense>;
 }
