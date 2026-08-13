@@ -35,12 +35,14 @@ import { useSuperAdminClinicDetail } from "../../hooks/useSuperAdminClinicDetail
 import { useSuperAdminBilling } from "../../hooks/useSuperAdminBilling";
 import { useSuperAdminClinicUsers } from "../../hooks/useSuperAdminClinicUsers";
 import { useSuperAdminHistory } from "../../hooks/useSuperAdminHistory";
+import { SuperAdminClinicSettingsPanel } from "../../clinics/components/SuperAdminClinicSettingsPanel";
 
 const tabs = [
   { value: "overview", label: "Visão geral" },
   { value: "data", label: "Dados cadastrais" },
   { value: "billing", label: "Cobrança" },
   { value: "users", label: "Usuários" },
+  { value: "settings", label: "Configurações" },
   { value: "history", label: "Histórico" },
 ];
 
@@ -323,6 +325,8 @@ export default function SuperAdminClinicDetailPage() {
             )}
           </section>
         )}
+
+        {activeTab === "settings" && <SuperAdminClinicSettingsPanel clinicId={clinicId} />}
 
         {activeTab === "history" && (
           <section className="flex flex-col gap-4">

@@ -4,12 +4,13 @@ import { User } from "@/types";
 import { Sidebar } from "./Sidebar";
 
 let mockedUser: User | null = null;
+let mockedPermissions: string[] = [];
 
 vi.mock("@/contexts/AuthContext", () => ({
   useAuth: () => ({
     user: mockedUser,
     setUser: vi.fn(),
-    can: (permission: string) => mockedUser?.permissions?.includes(permission) ?? false,
+    can: (permission: string) => mockedPermissions.includes(permission),
   }),
 }));
 
@@ -30,8 +31,8 @@ describe("Sidebar", () => {
       email: "usuario@multi.test",
       role: "Administrador",
       clinicName: "Clínica Centro",
-      permissions: ["financeiro.formas_pagamento.visualizar"],
     };
+    mockedPermissions = [];
   });
 
   it("shows all clinic modules for Administrador", () => {
@@ -41,8 +42,9 @@ describe("Sidebar", () => {
     expect(screen.getByText("Agenda")).toBeInTheDocument();
     expect(screen.getByText("Prontuários")).toBeInTheDocument();
     expect(screen.getByText("Pagamentos")).toBeInTheDocument();
-    expect(screen.getByText("Balanço (legado)")).toBeInTheDocument();
-    expect(screen.getByText("Financeiro")).toBeInTheDocument();
+    expect(screen.getByText("Balanço")).toBeInTheDocument();
+    expect(screen.queryByText("Financeiro")).not.toBeInTheDocument();
+    expect(screen.queryByText("Relatórios")).not.toBeInTheDocument();
     expect(screen.getByText("Usuários")).toBeInTheDocument();
     expect(screen.getByText("Planos")).toBeInTheDocument();
   });
@@ -62,8 +64,9 @@ describe("Sidebar", () => {
     expect(screen.getByText("Agenda")).toBeInTheDocument();
     expect(screen.getByText("Pagamentos")).toBeInTheDocument();
     expect(screen.queryByText("Prontuários")).not.toBeInTheDocument();
-    expect(screen.queryByText("Balanço (legado)")).not.toBeInTheDocument();
+    expect(screen.queryByText("Balanço")).not.toBeInTheDocument();
     expect(screen.queryByText("Financeiro")).not.toBeInTheDocument();
+    expect(screen.queryByText("Relatórios")).not.toBeInTheDocument();
     expect(screen.queryByText("Usuários")).not.toBeInTheDocument();
     expect(screen.queryByText("Planos")).not.toBeInTheDocument();
   });
@@ -85,18 +88,34 @@ describe("Sidebar", () => {
     expect(screen.queryByText("Pacientes")).not.toBeInTheDocument();
   });
 
-  it("hides the Financeiro group when the user has no financial permission", () => {
+  it("does not render removed financial groups", () => {
     mockedUser = {
       id: 4,
       name: "Sem permissão",
       email: "sempermissao@multi.test",
       role: "Administrador",
       clinicName: "Clínica Centro",
-      permissions: [],
     };
 
     render(<Sidebar area="clinic" />);
 
     expect(screen.queryByText("Financeiro")).not.toBeInTheDocument();
+    expect(screen.queryByText("Relatórios")).not.toBeInTheDocument();
+    expect(screen.getByText("Balanço")).toBeInTheDocument();
+  });
+
+  it("shows clinic settings only with the view permission", () => {
+    mockedUser = {
+      id: 5,
+      name: "Administrador",
+      email: "admin@multi.test",
+      role: "Administrador",
+      clinicName: "Clínica Centro",
+    };
+    mockedPermissions = ["clinic.settings.view"];
+
+    render(<Sidebar area="clinic" />);
+
+    expect(screen.getByText("Configurações")).toBeInTheDocument();
   });
 });

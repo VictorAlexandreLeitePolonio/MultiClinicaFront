@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { User } from "@/types";
+import { AuthResponse } from "@/types";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { login, LoginPayload } from "@/app/(public)/login/services/auth.service";
 
 interface UseLoginReturn {
   loginUser: (payload: LoginPayload) => Promise<{
     success: boolean;
-    user?: User;
+    auth?: AuthResponse;
     error?: string;
   }>;
   loading: boolean;
@@ -24,8 +24,8 @@ export const useLogin = (): UseLoginReturn => {
     setError(null);
 
     try {
-      const user = await login(payload);
-      return { success: true, user };
+      const auth = await login(payload);
+      return { success: true, auth };
     } catch (err) {
       const errorMessage = getApiErrorMessage(err, "Erro de conexão. Tente novamente.");
       setError(errorMessage);

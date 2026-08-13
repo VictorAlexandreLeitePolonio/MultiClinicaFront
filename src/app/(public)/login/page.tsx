@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/Button";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setUser, isAuthenticated, user } = useAuth();
+  const { setAuth, isAuthenticated, user } = useAuth();
   const { loginUser, loading } = useLogin();
 
   const {
@@ -39,9 +39,9 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     const result = await loginUser(data);
-    if (result.success && result.user) {
-      setUser(result.user);
-      router.replace(getDashboardPathByRole(result.user.role));
+    if (result.success && result.auth) {
+      setAuth(result.auth);
+      router.replace(getDashboardPathByRole(result.auth.user.role));
     } else {
       toast.error(result.error ?? "Erro ao fazer login.");
     }

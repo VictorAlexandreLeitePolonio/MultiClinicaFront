@@ -1,31 +1,69 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { User } from "@/types";
+import { AuthResponse, AuthTenant, User } from "@/types";
 import { getCurrentUser } from "@/app/(public)/login/services/auth.service";
+
+interface AuthState {
+  user: User | null;
+  tenant: AuthTenant | null;
+  permissions: string[];
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
 
 interface AuthContextType {
   user: User | null;
+  tenant: AuthTenant | null;
+  permissions: string[];
   isAuthenticated: boolean;
+  isLoading: boolean;
   initialLoading: boolean;
   setUser: (user: User | null) => void;
+  setAuth: (auth: AuthResponse) => void;
+  updateTenant: (tenant: AuthTenant | null) => void;
   refreshUser: () => Promise<User | null>;
   can: (permission: string) => boolean;
 }
 
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+const emptyAuthState: AuthState = {
+  user: null,
+  tenant: null,
+  permissions: [],
+  isAuthenticated: false,
+  isLoading: true,
+};
+
+const AuthContext = createContext<AuthContextType>({
+  ...emptyAuthState,
+  initialLoading: true,
+  setUser: () => undefined,
+  setAuth: () => undefined,
+  updateTenant: () => undefined,
+  refreshUser: async () => null,
+  can: () => false,
+});
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUserState] = useState<User | null>(null);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [authState, setAuthState] = useState<AuthState>(emptyAuthState);
+
+  const applyAuth = (auth: AuthResponse) => {
+    setAuthState({
+      user: auth.user,
+      tenant: auth.tenant,
+      permissions: auth.permissions,
+      isAuthenticated: true,
+      isLoading: false,
+    });
+  };
 
   const refreshUser = async () => {
     try {
-      const currentUser = await getCurrentUser();
-      setUserState(currentUser);
-      return currentUser;
+      const auth = await getCurrentUser();
+      applyAuth(auth);
+      return auth.user;
     } catch {
-      setUserState(null);
+      setAuthState({ ...emptyAuthState, isLoading: false });
       return null;
     }
   };
@@ -35,17 +73,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     async function loadCurrentUser() {
       try {
-        const currentUser = await getCurrentUser();
+        const auth = await getCurrentUser();
         if (isActive) {
-          setUserState(currentUser);
+          applyAuth(auth);
         }
       } catch {
         if (isActive) {
-          setUserState(null);
+          setAuthState({ ...emptyAuthState, isLoading: false });
         }
       } finally {
         if (isActive) {
-          setInitialLoading(false);
+          setAuthState((current) => ({ ...current, isLoading: false }));
         }
       }
     }
@@ -58,18 +96,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setUser = (u: User | null) => {
-    setUserState(u);
+    if (!u) {
+      setAuthState({ ...emptyAuthState, isLoading: false });
+      return;
+    }
+
+    setAuthState((current) => ({
+      ...current,
+      user: u,
+      isAuthenticated: true,
+      isLoading: false,
+    }));
   };
 
-  const can = (permission: string) => user?.permissions?.includes(permission) ?? false;
+  const setAuth = (auth: AuthResponse) => applyAuth(auth);
+
+  const updateTenant = (tenant: AuthTenant | null) => {
+    setAuthState((current) => ({
+      ...current,
+      tenant,
+      user: current.user
+        ? {
+            ...current.user,
+            clinicId: tenant?.id ?? null,
+            clinicName: tenant?.displayName ?? null,
+          }
+        : null,
+    }));
+  };
+
+  const can = (permission: string) => authState.permissions.includes(permission);
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        isAuthenticated: !!user,
-        initialLoading,
+        ...authState,
+        initialLoading: authState.isLoading,
         setUser,
+        setAuth,
+        updateTenant,
         refreshUser,
         can,
       }}

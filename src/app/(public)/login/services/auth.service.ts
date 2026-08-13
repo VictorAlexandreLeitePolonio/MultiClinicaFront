@@ -1,35 +1,21 @@
 import api from "@/lib/api";
-import { User } from "@/types";
+import { AuthResponse } from "@/types";
 
 export interface LoginPayload {
   email: string;
   password: string;
 }
 
-interface AuthUserResponse {
-  user: User;
+export async function login(payload: LoginPayload): Promise<AuthResponse> {
+  const response = await api.post<AuthResponse>("/api/auth/login", payload);
+
+  return response.data;
 }
 
-interface LoginResponse {
-  message?: string;
-  user: User;
-}
+export async function getCurrentUser(): Promise<AuthResponse> {
+  const response = await api.get<AuthResponse>("/api/auth/me");
 
-export async function login(payload: LoginPayload): Promise<User> {
-  const response = await api.post<LoginResponse>("/api/auth/login", payload);
-
-  return response.data.user;
-}
-
-export async function getCurrentUser(): Promise<User> {
-  const response = await api.get<AuthUserResponse | User>("/api/auth/me");
-  const data = response.data;
-
-  if ("user" in data) {
-    return data.user;
-  }
-
-  return data;
+  return response.data;
 }
 
 export async function logout(): Promise<void> {

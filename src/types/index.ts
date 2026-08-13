@@ -16,7 +16,46 @@ export interface User {
   clinicId?: number | null;
   clinicName?: string | null;
   createdAt?: string;
-  permissions?: string[];
+}
+
+export interface AuthTenant {
+  id: number;
+  name: string;
+  displayName: string;
+  logoUrl: string | null;
+  primaryColor: string | null;
+  secondaryColor: string | null;
+  accentColor: string | null;
+  contactEmail: string | null;
+  contactPhone: string | null;
+}
+
+export interface AuthResponse {
+  user: User;
+  tenant: AuthTenant | null;
+  permissions: string[];
+}
+
+export interface ClinicSettings {
+  clinicId: number;
+  name: string;
+  displayName: string;
+  logoUrl: string | null;
+  primaryColor: string | null;
+  secondaryColor: string | null;
+  accentColor: string | null;
+  contactEmail: string | null;
+  contactPhone: string | null;
+}
+
+export interface UpdateClinicSettingsRequest {
+  displayName?: string | null;
+  logoUrl?: string | null;
+  primaryColor?: string | null;
+  secondaryColor?: string | null;
+  accentColor?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
 }
 
 export type BillingStatus = "Enabled" | "Blocked" | "Disabled";
@@ -249,123 +288,103 @@ export interface PatientProfile {
 
 export * from "./evolution";
 
-// ─── Módulo Financeiro ─────────────────────────────────────────────────────
+export interface BalancePeriod {
+  startDate: string;
+  endDate: string;
+}
 
-export interface Expense {
+export interface BalanceMoneySummary {
+  appointmentIncome: number;
+  productSalesIncome: number;
+  totalIncome: number;
+  productPurchaseCost: number;
+  productOutputCost: number;
+  productLossCost: number;
+  productInternalUseCost: number;
+  manualExpenseCost: number;
+  totalOutcome: number;
+  estimatedProfit: number;
+  paidAppointmentCount: number;
+  productSaleCount: number;
+  stockCostMovementCount: number;
+  manualExpenseCount: number;
+}
+
+export interface BalanceAppointmentsSummary {
+  scheduled: number;
+  completed: number;
+  cancelled: number;
+  noShow: number;
+  total: number;
+}
+
+export interface BalancePatientsSummary {
+  active: number;
+  newInPeriod: number;
+  total: number;
+}
+
+export interface BalanceLowStockProduct {
+  productId: number;
+  name: string;
+  currentQuantity: number;
+  minimumQuantity: number;
+}
+
+export interface BalanceStockSummary {
+  totalProducts: number;
+  productsBelowMinimum: number;
+  stockEntriesInPeriod: number;
+  stockOutputsInPeriod: number;
+  productSalesInPeriod: number;
+  productPurchasesInPeriod: number;
+  productLossesInPeriod: number;
+  productInternalUseInPeriod: number;
+  lowStockProducts: BalanceLowStockProduct[];
+}
+
+export interface BalanceEvolutionSummary {
+  evolutionsInPeriod: number;
+  treatmentsInProgress: number;
+  completedTreatments: number;
+}
+
+export type BalanceRecentMovementSource = "Payment" | "Stock" | "ManualExpense";
+
+export type BalanceRecentMovementType =
+  | "AppointmentPayment"
+  | "ProductSale"
+  | "ProductPurchase"
+  | "ProductOutput"
+  | "ProductLoss"
+  | "InternalUse"
+  | "ClinicExpense";
+
+export interface BalanceRecentMovement {
+  id: number;
+  source: BalanceRecentMovementSource;
+  type: BalanceRecentMovementType;
+  description: string;
+  amount: number | null;
+  quantity: number | null;
+  date: string;
+}
+
+export interface ClinicExpense {
   id: number;
   title: string;
-  value: number;
-  paymentDate: string;       // ISO string — ex: "2026-03-10T00:00:00Z"
-  description: string;
-  referenceMonth: string;    // formato "YYYY-MM" — ex: "2026-03"
+  amount: number;
+  date: string;
+  description: string | null;
   createdAt: string;
 }
 
 export interface FinancialBalance {
-  referenceMonth: string;    // "YYYY-MM"
-  totalExpenses: number;     // soma dos gastos do mês
-  totalIncome: number;       // soma dos payments com status "Paid"
-  netBalance: number;        // totalIncome - totalExpenses
-}
-
-export interface CreateExpenseDto {
-  title: string;
-  value: number;
-  paymentDate: string;       // ISO string
-  description: string;
-  referenceMonth: string;    // "YYYY-MM"
-}
-
-// ─── Financeiro: Configurações ─────────────────────────────────────────────
-
-export interface FormaPagamento {
-  id: number;
-  nome: string;
-  isActive: boolean;
-  createdAt: string;
-}
-
-export type TipoCategoriaFinanceira = "Receita" | "Despesa";
-
-export interface CategoriaFinanceira {
-  id: number;
-  nome: string;
-  tipo: TipoCategoriaFinanceira;
-  isActive: boolean;
-  createdAt: string;
-}
-
-export type TipoContaFinanceira = "Caixa" | "Banco" | "Cartao" | "Outro";
-
-export interface ContaFinanceira {
-  id: number;
-  nome: string;
-  tipo: TipoContaFinanceira;
-  saldoInicial: number;
-  isActive: boolean;
-  createdAt: string;
-}
-
-// ─── Financeiro: Contas a Receber ──────────────────────────────────────────
-
-export type StatusContaReceber = "Aberta" | "Parcial" | "Paga" | "Vencida" | "Cancelada";
-export type OrigemContaReceber = "Manual" | "Atendimento" | "Pacote" | "Produto" | "Convenio";
-
-export interface ContaReceber {
-  id: number;
-  pacienteId: number;
-  categoriaFinanceiraId: number | null;
-  descricao: string;
-  valorOriginal: number;
-  valorDesconto: number;
-  valorJuros: number;
-  valorTotal: number;
-  valorRecebido: number;
-  dataEmissao: string;
-  dataVencimento: string;
-  dataPagamento: string | null;
-  status: StatusContaReceber;
-  vencida: boolean;
-  origem: OrigemContaReceber;
-  observacao: string | null;
-  createdAt: string;
-}
-
-export interface Recebimento {
-  id: number;
-  contaReceberId: number;
-  contaFinanceiraId: number;
-  formaPagamentoId: number;
-  valor: number;
-  dataRecebimento: string;
-  observacao: string | null;
-  isEstornado: boolean;
-  createdAt: string;
-}
-
-// ─── Financeiro: Caixa ──────────────────────────────────────────────────────
-
-export type StatusCaixa = "Aberto" | "Fechado" | "Cancelado";
-
-export interface Caixa {
-  id: number;
-  contaFinanceiraId: number;
-  dataAbertura: string;
-  dataFechamento: string | null;
-  saldoInicial: number;
-  saldoFinalInformado: number | null;
-  saldoFinalCalculado: number | null;
-  diferenca: number | null;
-  status: StatusCaixa;
-  observacao: string | null;
-  createdAt: string;
-}
-
-export interface MovimentacaoResumo {
-  id: number;
-  tipo: string;
-  origem: string;
-  descricao: string;
-  valor: number;
-  dataMovimentacao: string;
+  period: BalancePeriod;
+  money: BalanceMoneySummary;
+  appointments: BalanceAppointmentsSummary;
+  patients: BalancePatientsSummary;
+  stock: BalanceStockSummary;
+  evolutions: BalanceEvolutionSummary;
+  recentMovements: BalanceRecentMovement[];
 }

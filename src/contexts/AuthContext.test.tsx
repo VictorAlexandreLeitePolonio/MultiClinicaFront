@@ -9,7 +9,7 @@ vi.mock("@/app/(public)/login/services/auth.service", () => ({
 }));
 
 function AuthState() {
-  const { user, initialLoading, isAuthenticated, can } = useAuth();
+  const { user, tenant, initialLoading, isAuthenticated, can } = useAuth();
 
   if (initialLoading) return <span>Carregando</span>;
 
@@ -17,8 +17,9 @@ function AuthState() {
     <div>
       <span>{isAuthenticated ? "Autenticado" : "Deslogado"}</span>
       <span>{user?.name ?? "Sem usuário"}</span>
-      <span>{can("financeiro.caixa.visualizar") ? "Pode caixa" : "Não pode caixa"}</span>
-      <span>{can("financeiro.contas_pagar.visualizar") ? "Pode contas a pagar" : "Não pode contas a pagar"}</span>
+      <span>{tenant?.displayName ?? "Sem clínica"}</span>
+      <span>{can("clinic.dashboard.view") ? "Pode dashboard" : "Não pode dashboard"}</span>
+      <span>{can("clinic.users.view") ? "Pode usuários" : "Não pode usuários"}</span>
     </div>
   );
 }
@@ -30,11 +31,25 @@ describe("AuthProvider", () => {
 
   it("restores the session from the backend /me endpoint", async () => {
     getCurrentUser.mockResolvedValue({
-      id: 1,
-      name: "Ana Gestora",
-      email: "ana@multi.test",
-      role: "Administrador",
-      clinicName: "Clínica Centro",
+      user: {
+        id: 1,
+        name: "Ana Gestora",
+        email: "ana@multi.test",
+        role: "Administrador",
+        clinicName: "Clínica Centro",
+      },
+      tenant: {
+        id: 10,
+        name: "Clínica Centro Ltda.",
+        displayName: "Clínica Centro",
+        logoUrl: null,
+        primaryColor: null,
+        secondaryColor: null,
+        accentColor: null,
+        contactEmail: null,
+        contactPhone: null,
+      },
+      permissions: [],
     });
 
     render(
@@ -47,6 +62,7 @@ describe("AuthProvider", () => {
 
     await waitFor(() => expect(screen.getByText("Autenticado")).toBeInTheDocument());
     expect(screen.getByText("Ana Gestora")).toBeInTheDocument();
+    expect(screen.getByText("Clínica Centro")).toBeInTheDocument();
     expect(getCurrentUser).toHaveBeenCalledTimes(1);
   });
 
@@ -65,12 +81,15 @@ describe("AuthProvider", () => {
 
   it("exposes can() based on the permissions array returned by /me", async () => {
     getCurrentUser.mockResolvedValue({
-      id: 1,
-      name: "Recepção",
-      email: "recep@multi.test",
-      role: "Recepcao",
-      clinicName: "Clínica Centro",
-      permissions: ["financeiro.caixa.visualizar"],
+      user: {
+        id: 1,
+        name: "Recepção",
+        email: "recep@multi.test",
+        role: "Recepcao",
+        clinicName: "Clínica Centro",
+      },
+      tenant: null,
+      permissions: ["clinic.dashboard.view"],
     });
 
     render(
@@ -80,8 +99,8 @@ describe("AuthProvider", () => {
     );
 
     await waitFor(() => expect(screen.getByText("Autenticado")).toBeInTheDocument());
-    expect(screen.getByText("Pode caixa")).toBeInTheDocument();
-    expect(screen.getByText("Não pode contas a pagar")).toBeInTheDocument();
+    expect(screen.getByText("Pode dashboard")).toBeInTheDocument();
+    expect(screen.getByText("Não pode usuários")).toBeInTheDocument();
   });
 
   it("can() returns false for everything when there is no user", async () => {
@@ -94,6 +113,6 @@ describe("AuthProvider", () => {
     );
 
     await waitFor(() => expect(screen.getByText("Deslogado")).toBeInTheDocument());
-    expect(screen.getByText("Não pode caixa")).toBeInTheDocument();
+    expect(screen.getByText("Não pode dashboard")).toBeInTheDocument();
   });
 });

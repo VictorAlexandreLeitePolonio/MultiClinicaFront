@@ -10,17 +10,17 @@ vi.mock("next/navigation", () => ({
 }));
 
 const items = [
-  { href: "/app/financeiro/configuracoes", label: "Configurações", permission: "financeiro.categorias.visualizar" },
-  { href: "/app/financeiro/caixa", label: "Caixa", permission: "financeiro.caixa.visualizar" },
+  { href: "/app/estoque/produtos", label: "Produtos", permission: "estoque.produtos.visualizar" },
+  { href: "/app/estoque/movimentacoes", label: "Movimentações", permission: "estoque.movimentacoes.visualizar" },
 ];
 
 describe("SidebarGroup", () => {
   it("hides the whole group when no child permission is granted", () => {
     mockedPathname = "/app";
 
-    render(<SidebarGroup label="Financeiro" icon={<span />} items={items} can={() => false} />);
+    render(<SidebarGroup label="Estoque" icon={<span />} items={items} can={() => false} />);
 
-    expect(screen.queryByText("Financeiro")).not.toBeInTheDocument();
+    expect(screen.queryByText("Estoque")).not.toBeInTheDocument();
   });
 
   it("shows only the items whose permission is granted", () => {
@@ -28,36 +28,36 @@ describe("SidebarGroup", () => {
 
     render(
       <SidebarGroup
-        label="Financeiro"
+        label="Estoque"
         icon={<span />}
         items={items}
-        can={(permission) => permission === "financeiro.caixa.visualizar"}
+        can={(permission) => permission === "estoque.movimentacoes.visualizar"}
       />
     );
 
-    expect(screen.getByText("Financeiro")).toBeInTheDocument();
-    expect(screen.queryByText("Configurações")).not.toBeInTheDocument();
+    expect(screen.getByText("Estoque")).toBeInTheDocument();
+    expect(screen.queryByText("Produtos")).not.toBeInTheDocument();
   });
 
   it("expands automatically when a child route is active", () => {
-    mockedPathname = "/app/financeiro/caixa";
+    mockedPathname = "/app/estoque/movimentacoes";
 
-    render(<SidebarGroup label="Financeiro" icon={<span />} items={items} can={() => true} />);
+    render(<SidebarGroup label="Estoque" icon={<span />} items={items} can={() => true} />);
 
-    expect(screen.getByText("Caixa")).toBeInTheDocument();
-    expect(screen.getByText("Configurações")).toBeInTheDocument();
+    expect(screen.getByText("Movimentações")).toBeInTheDocument();
+    expect(screen.getByText("Produtos")).toBeInTheDocument();
   });
 
   it("starts closed and expands on click when no child route is active", async () => {
     mockedPathname = "/app";
     const user = userEvent.setup();
 
-    render(<SidebarGroup label="Financeiro" icon={<span />} items={items} can={() => true} />);
+    render(<SidebarGroup label="Estoque" icon={<span />} items={items} can={() => true} />);
 
-    expect(screen.queryByText("Caixa")).not.toBeInTheDocument();
+    expect(screen.queryByText("Movimentações")).not.toBeInTheDocument();
 
-    await user.click(screen.getByText("Financeiro"));
+    await user.click(screen.getByText("Estoque"));
 
-    expect(screen.getByText("Caixa")).toBeInTheDocument();
+    expect(screen.getByText("Movimentações")).toBeInTheDocument();
   });
 });

@@ -22,10 +22,8 @@ export const queryKeys = {
     detail: (paymentId: number) => ["payments", "detail", paymentId] as const,
   },
   financial: {
-    balance: (month: string) => ["financial", "balance", month] as const,
-    history: (params: unknown) => ["financial", "history", params] as const,
-    expenses: (params: unknown) => ["financial", "expenses", params] as const,
-    expenseDetail: (expenseId: number) => ["financial", "expenses", expenseId] as const,
+    balance: (params?: unknown) => params === undefined ? ["financial", "balance"] as const : ["financial", "balance", params] as const,
+    expenses: (params?: unknown) => params === undefined ? ["financial", "expenses"] as const : ["financial", "expenses", params] as const,
   },
   plans: {
     all: ["plans"] as const,
@@ -63,4 +61,14 @@ export const queryKeys = {
     history: (clinicId: number, params: unknown) => ["superadmin", "history", clinicId, params] as const,
     clinicUsers: (clinicId: number, params: unknown) => ["superadmin", "users", clinicId, params] as const,
   },
+};
+
+export const clinicSettingsKeys = {
+  all: ["clinic-settings"] as const,
+  detail: () => ["clinic-settings", "detail"] as const,
+};
+
+export const superAdminClinicSettingsKeys = {
+  all: ["superadmin-clinic-settings"] as const,
+  detail: (clinicId: number) => ["superadmin-clinic-settings", clinicId] as const,
 };
