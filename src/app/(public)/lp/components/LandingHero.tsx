@@ -1,84 +1,77 @@
 "use client";
 
-import { motion } from "motion/react";
-import { ArrowRight, CalendarDays, CreditCard, FileText, Users } from "lucide-react";
-import { fadeSlideUp, slideFromLeft, staggerContainer } from "@/lib/motion";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { LandingProductPreview } from "./LandingProductPreview";
+import { RobotAvatar } from "./LandingMascot";
+import { LandingSmoothLink } from "./LandingSmoothLink";
+import type { LandingModuleId } from "./landingModules";
 
-const highlights = [
-  { label: "Agenda clínica", icon: CalendarDays },
-  { label: "Pacientes", icon: Users },
-  { label: "Prontuários", icon: FileText },
-  { label: "Financeiro", icon: CreditCard },
-];
+interface LandingHeroProps {
+  activeModuleId: LandingModuleId;
+  onModuleChange: (moduleId: LandingModuleId) => void;
+}
 
-export function LandingHero() {
+export function LandingHero({ activeModuleId, onModuleChange }: LandingHeroProps) {
   return (
-    <section className="relative overflow-hidden bg-background bg-[radial-gradient(circle_at_top_right,rgba(103,232,249,0.24),transparent_34%),linear-gradient(180deg,var(--color-bg-warm)_0%,var(--color-gray-50)_100%)]">
-      <div className="mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-[1fr_0.9fr]">
-        <motion.div
-          className="max-w-3xl"
-          variants={staggerContainer}
-          initial="hidden"
-          animate="show"
-        >
-          <motion.p
-            variants={fadeSlideUp}
-            className="mb-4 inline-flex rounded-full border border-primary/30 bg-card px-4 py-2 text-sm font-semibold text-primary-dark shadow-sm"
-          >
-            Um projeto novo, feito sob medida
-          </motion.p>
-          <motion.h1
-            variants={fadeSlideUp}
-            className="text-4xl font-bold tracking-tight text-secondary sm:text-5xl lg:text-6xl"
-          >
-            MultiClinica
-          </motion.h1>
-          <motion.p variants={fadeSlideUp} className="mt-5 max-w-2xl text-lg leading-8 text-gray-600">
-            Estou construindo o MultiClinica: um SaaS de gestão para clínicas —
-            agenda, pacientes, prontuários e financeiro numa experiência só.
-            Por enquanto, o acesso é feito por indicação ou liberação direta,
-            enquanto a base de clientes cresce com cuidado.
-          </motion.p>
+    <section
+      data-mascot-anchor="hero"
+      className="landing-hero relative overflow-hidden"
+    >
+      <div className="landing-hero__glow landing-hero__glow--top" />
+      <div className="landing-hero__glow landing-hero__glow--bottom" />
+      <div className="landing-hero__inner relative mx-auto grid min-h-[min(760px,calc(100vh-76px))] max-w-[88rem] items-center gap-14 px-6 py-20 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16 lg:px-8">
+        <div className="relative z-10 max-w-2xl">
+          <div className="landing-hero__signal">
+            <span className="landing-hero__signal-dot" />
+            Gestão clínica com visão de ponta a ponta
+          </div>
+          <h1 className="mt-7 max-w-xl text-5xl font-bold leading-[0.98] tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-[4.7rem]">
+            A clínica inteira, em uma visão só.
+          </h1>
+          <p className="mt-7 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
+            Agenda, pacientes, prontuários, evolução e operação administrativa
+            conectados em um sistema feito para o ritmo real da sua clínica.
+          </p>
 
-          <motion.div variants={fadeSlideUp} className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="#contato"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-[0_20px_42px_-28px_rgba(20,184,166,0.95)] transition-colors hover:bg-primary-dark"
-            >
-              Pedir acesso
-              <ArrowRight size={16} />
-            </a>
-            <a
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <LandingSmoothLink
               href="#modulos"
-              className="inline-flex items-center justify-center rounded-xl border border-primary/30 bg-card px-5 py-3 text-sm font-semibold text-primary-dark shadow-sm transition-colors hover:bg-sidebar-active"
+              className="landing-button landing-button--primary"
             >
-              Ver módulos
-            </a>
-          </motion.div>
-        </motion.div>
+              Explorar o sistema
+              <ArrowRight size={17} />
+            </LandingSmoothLink>
+            <LandingSmoothLink
+              href="#contato"
+              className="landing-button landing-button--secondary"
+            >
+              Solicitar acesso
+            </LandingSmoothLink>
+          </div>
 
-        <motion.div
-          variants={slideFromLeft}
-          initial="hidden"
-          animate="show"
-          className="rounded-3xl border border-gray-200 bg-card/90 p-5 shadow-[0_32px_90px_-48px_rgba(15,23,42,0.45)] backdrop-blur-xl"
-        >
-          <div className="rounded-2xl bg-gradient-to-br from-[#0f766e] via-[#14b8a6] to-[#06b6d4] p-6 text-white">
-            <p className="text-sm font-medium text-white/75">Painel operacional</p>
-            <strong className="mt-2 block text-3xl">Visão completa da clínica</strong>
+          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-slate-500">
+            <span className="inline-flex items-center gap-2">
+              <Sparkles size={14} className="text-teal-600" />
+              Demo sem login
+            </span>
+            <span>Dados ilustrativos</span>
+            <span>Acesso por indicação</span>
           </div>
-          <div id="modulos" className="mt-5 grid gap-3 sm:grid-cols-2">
-            {highlights.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.label} className="rounded-2xl border border-gray-200 bg-background p-4">
-                  <Icon className="text-primary" size={22} />
-                  <p className="mt-3 text-sm font-semibold text-secondary">{item.label}</p>
-                </div>
-              );
-            })}
+        </div>
+
+        <div className="landing-hero__preview-wrap relative z-10">
+          <div className="landing-hero__preview-note">
+            <span>Toque nos módulos</span>
+            <ArrowRight size={14} />
           </div>
-        </motion.div>
+          <div className="landing-hero__robot-sticker">
+            <RobotAvatar />
+          </div>
+          <LandingProductPreview
+            activeModuleId={activeModuleId}
+            onModuleChange={onModuleChange}
+          />
+        </div>
       </div>
     </section>
   );

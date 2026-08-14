@@ -1,25 +1,27 @@
 import type { Metadata } from "next";
 import { LandingHeader } from "./(public)/lp/components/LandingHeader";
-import { LandingHero } from "./(public)/lp/components/LandingHero";
+import { LandingExperience } from "./(public)/lp/components/LandingExperience";
 import { LandingClients } from "./(public)/lp/components/LandingClients";
-import { LandingFeatures } from "./(public)/lp/components/LandingFeatures";
 import { LandingTestimonials } from "./(public)/lp/components/LandingTestimonials";
+import { LandingFaq } from "./(public)/lp/components/LandingFaq";
 import { LandingCTA } from "./(public)/lp/components/LandingCTA";
 import { LandingFooter } from "./(public)/lp/components/LandingFooter";
+import { LandingMascot } from "./(public)/lp/components/LandingMascot";
 
 export const metadata: Metadata = {
-  title: "MultiClinica | Gestão moderna para clínicas",
-  description: "SaaS para gestão de clínicas, agenda, pacientes, prontuários, pagamentos e operação administrativa.",
+  title: "MultiClinica | A clínica inteira, em uma visão só",
+  description: "Gestão clínica com agenda, pacientes, prontuários, evolução e operação administrativa conectadas.",
 };
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-background text-secondary">
+    <main className="landing-page min-h-screen overflow-x-clip bg-background text-secondary">
       <LandingHeader />
-      <LandingHero />
+      <LandingMascot />
+      <LandingExperience />
       <LandingClients />
-      <LandingFeatures />
       <LandingTestimonials />
+      <LandingFaq />
       <LandingCTA />
       <LandingFooter />
     </main>

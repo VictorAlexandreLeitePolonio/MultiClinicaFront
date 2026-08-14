@@ -1,77 +1,63 @@
 "use client";
 
-import { motion } from "motion/react";
-import { Activity, CalendarDays, CreditCard, FileText, ShieldCheck, Users } from "lucide-react";
-import { fadeSlideUp, staggerContainer } from "@/lib/motion";
+import { LandingProductPreview } from "./LandingProductPreview";
+import { landingModules, type LandingModuleId } from "./landingModules";
 
-const features = [
-  {
-    icon: CalendarDays,
-    title: "Agenda clínica",
-    description: "Marcação de consultas por profissional, com status e histórico completo.",
-  },
-  {
-    icon: Users,
-    title: "Pacientes",
-    description: "Cadastro completo, perfil 360° com consultas, prontuários e pagamentos.",
-  },
-  {
-    icon: FileText,
-    title: "Prontuários",
-    description: "Registro clínico estruturado, anexos e modelos de evolução reutilizáveis.",
-  },
-  {
-    icon: CreditCard,
-    title: "Financeiro",
-    description: "Pagamentos por plano, controle de gastos e saldo mensal em um só lugar.",
-  },
-  {
-    icon: Activity,
-    title: "Evolução do paciente",
-    description: "Acompanhamento de tratamento e progresso ao longo do tempo.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Acesso controlado",
-    description: "Times e permissões por clínica, sem exposição de dados entre unidades.",
-  },
-];
+interface LandingFeaturesProps {
+  activeModuleId: LandingModuleId;
+  onModuleChange: (moduleId: LandingModuleId) => void;
+}
 
-export function LandingFeatures() {
+export function LandingFeatures({ activeModuleId, onModuleChange }: LandingFeaturesProps) {
   return (
-    <section id="beneficios" className="bg-background py-20">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-primary-dark">Features</p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-secondary sm:text-4xl">
-            Tudo que uma clínica precisa, num só sistema
+    <section id="modulos" data-mascot-anchor="modulos" data-landing-reveal className="landing-modules py-24 sm:py-32">
+      <div className="mx-auto max-w-[88rem] px-6 lg:px-8">
+        <div className="max-w-3xl">
+          <h2 className="text-4xl font-bold leading-tight tracking-[-0.045em] text-slate-950 sm:text-5xl">
+            Uma visão rápida de cada frente da clínica.
           </h2>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+            Explore os módulos e veja como cada parte da operação encontra o seu lugar,
+            sem abrir telas complexas ou tirar você da página.
+          </p>
         </div>
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.2 }}
-          className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {features.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div
-                key={feature.title}
-                variants={fadeSlideUp}
-                className="rounded-2xl border border-gray-200 bg-card p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)]"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sidebar-active text-primary-dark">
-                  <Icon size={22} />
-                </div>
-                <h3 className="mt-4 text-base font-bold text-secondary">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-gray-600">{feature.description}</p>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+        <div className="landing-modules__grid mt-14 grid items-start gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-16">
+          <div className="landing-module-list" aria-label="Módulos da clínica">
+            {landingModules.map((module) => {
+              const Icon = module.icon;
+              const isActive = module.id === activeModuleId;
+
+              return (
+                <button
+                  key={module.id}
+                  type="button"
+                  className="landing-module-row"
+                  data-active={isActive}
+                  aria-pressed={isActive}
+                  onClick={() => onModuleChange(module.id)}
+                >
+                  <span className="landing-module-row__icon">
+                    <Icon size={18} />
+                  </span>
+                  <span className="min-w-0 text-left">
+                    <span className="block text-sm font-bold text-slate-900">{module.label}</span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">{module.description}</span>
+                  </span>
+                  <span className="landing-module-row__arrow">→</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="landing-modules__preview lg:sticky lg:top-28">
+            <LandingProductPreview
+              compact
+              activeModuleId={activeModuleId}
+              onModuleChange={onModuleChange}
+            />
+          </div>
+        </div>
       </div>
     </section>
   );
