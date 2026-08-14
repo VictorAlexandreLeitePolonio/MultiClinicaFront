@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthLayout } from "./components/layout/AuthLayout";
-import { AuthRightPanel } from "./components/layout/AuthRightPanel";
+import type { AuthRobotState } from "./components/layout/AuthMouseRobot";
 import { useLogin } from "./hooks/login";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDashboardPathByRole } from "@/lib/auth/routes";
@@ -21,6 +21,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { setAuth, isAuthenticated, user } = useAuth();
   const { loginUser, loading } = useLogin();
+  const [robotState, setRobotState] = useState<AuthRobotState>("idle");
 
   const {
     register,
@@ -38,19 +39,23 @@ export default function LoginPage() {
   }, [isAuthenticated, router, user]);
 
   const onSubmit = async (data: LoginFormData) => {
+    setRobotState("loading");
     const result = await loginUser(data);
     if (result.success && result.auth) {
+      setRobotState("success");
       setAuth(result.auth);
       router.replace(getDashboardPathByRole(result.auth.user.role));
     } else {
+      setRobotState("error");
       toast.error(result.error ?? "Erro ao fazer login.");
+      window.setTimeout(() => setRobotState("idle"), 1400);
     }
   };
 
   return (
     <div className="flex min-h-screen">
-      <AuthLayout>
-        <Logo />
+      <AuthLayout robotState={loading ? "loading" : robotState}>
+        <Logo light />
 
         <div>
           <h1
@@ -69,6 +74,7 @@ export default function LoginPage() {
             id="email"
             type="email"
             placeholder="seu@email.com"
+            light
             error={errors.email?.message}
             {...register("email")}
           />
@@ -77,6 +83,7 @@ export default function LoginPage() {
             label="Senha"
             id="password"
             placeholder="Sua senha"
+            light
             error={errors.password?.message}
             {...register("password")}
           />
@@ -93,8 +100,6 @@ export default function LoginPage() {
           Voltar para a página inicial
         </Link>
       </AuthLayout>
-
-      <AuthRightPanel />
     </div>
   );
 }

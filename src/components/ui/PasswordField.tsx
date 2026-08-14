@@ -13,20 +13,33 @@ interface PasswordFieldProps {
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  light?: boolean;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
-  ({ label, error, id, disabled, value, onChange, onBlur, ...rest }, ref) => {
+  ({ label, error, id, disabled, value, onChange, onBlur, light = false, ...rest }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
+    const labelClassName = disabled
+      ? "text-slate-400"
+      : light
+        ? "text-[#0f172a]"
+        : "text-[#0f172a] dark:text-white";
+    const inputClassName = disabled
+      ? light
+        ? "cursor-not-allowed border-[#d7f3ea] bg-[#f0fdf9] text-slate-400"
+        : "cursor-not-allowed border-[#d7f3ea] bg-[#f0fdf9] text-slate-400 dark:border-slate-800 dark:bg-slate-900"
+      : light
+        ? "border-[#d7f3ea] bg-white text-[#0f172a] placeholder:text-slate-400 focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50"
+        : "border-[#d7f3ea] bg-white text-[#0f172a] placeholder:text-slate-400 focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-[#67e8f9] dark:focus:ring-[#134e4a]";
 
     return (
       <motion.div variants={fadeSlideUp} className="flex flex-col gap-2">
         <label 
           htmlFor={id} 
-          className={`text-sm font-semibold ${disabled ? "text-slate-400" : "text-[#0f172a] dark:text-white"}`}
+          className={`text-sm font-semibold ${labelClassName}`}
         >
           {label}
           {rest.required && <span className="text-red-600 ml-1">*</span>}
@@ -42,11 +55,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             onChange={onChange}
             onBlur={onBlur}
             whileFocus={disabled ? undefined : { scale: 1.005 }}
-            className={`w-full rounded-xl border px-4 py-3 pr-12 transition-all duration-150
-              ${disabled 
-                ? "cursor-not-allowed border-[#d7f3ea] bg-[#f0fdf9] text-slate-400 dark:border-slate-800 dark:bg-slate-900"
-                : "border-[#d7f3ea] bg-white text-[#0f172a] placeholder:text-slate-400 focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-[#67e8f9] dark:focus:ring-[#134e4a]"
-              }
+            className={`w-full rounded-xl border px-4 py-3 pr-12 transition-all duration-150 ${inputClassName}
               ${error && !disabled ? "border-red-500 focus:border-red-500 focus:ring-red-100" : ""}
             `}
           />
@@ -55,7 +64,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             onClick={() => setShowPassword(!showPassword)}
             disabled={disabled}
             className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 transition-colors
-              ${disabled ? "cursor-not-allowed text-slate-300" : "text-[#64748b] hover:bg-[#ecfdf5] hover:text-[#0f766e] dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}
+              ${disabled ? "cursor-not-allowed text-slate-300" : light ? "text-[#64748b] hover:bg-[#ecfdf5] hover:text-[#0f766e]" : "text-[#64748b] hover:bg-[#ecfdf5] hover:text-[#0f766e] dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}
             `}
             tabIndex={-1}
           >

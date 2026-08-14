@@ -4,7 +4,11 @@ import { motion } from "motion/react";
 import { fadeSlideUp } from "@/lib/motion";
 import { Building2 } from "lucide-react";
 
-export function Logo() {
+interface LogoProps {
+  light?: boolean;
+}
+
+export function Logo({ light = false }: LogoProps) {
   return (
     <motion.div
       variants={fadeSlideUp}
@@ -21,12 +25,12 @@ export function Logo() {
       
       <div className="text-center">
         <h1 
-          className="text-2xl font-bold tracking-tight text-[#0f172a] dark:text-white"
+          className={`text-2xl font-bold tracking-tight ${light ? "text-[#0f172a]" : "text-[#0f172a] dark:text-white"}`}
         >
           MultiClinica
         </h1>
         <p 
-          className="mt-1 text-sm font-medium text-[#0f766e] dark:text-[#67e8f9]"
+          className={`mt-1 text-sm font-medium ${light ? "text-[#0f766e]" : "text-[#0f766e] dark:text-[#67e8f9]"}`}
         >
           Gestão para clínicas
         </p>
