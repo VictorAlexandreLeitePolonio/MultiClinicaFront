@@ -5,11 +5,11 @@ import { Ban } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
-import { Button } from "@/components/ui/Button";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { MotivoDialog } from "@/components/ui/MotivoDialog";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Pagination } from "@/components/ui/Pagination";
+import { Select } from "@/components/ui/Select";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { formatDate } from "@/utils/formatters";
 import { useProdutos } from "../../produtos/hooks/useProdutos";
@@ -81,14 +81,15 @@ export function MovimentacaoList() {
     { key: "perda", label: "Perda", permission: "estoque.movimentacoes.perda" },
     { key: "ajuste", label: "Ajuste", permission: "estoque.movimentacoes.ajuste" },
   ];
+  const availableActions = actions.filter((item) => can(item.permission));
 
   return (
     <div className="space-y-4 p-8">
-      <PageHeader title="Movimentações de Estoque" actions={<div className="flex flex-wrap gap-2">{actions.filter((item) => can(item.permission)).map((item) => <Button key={item.key} onClick={() => setAction(item.key)}>{item.label}</Button>)}</div>} />
+      <PageHeader title="Movimentações de Estoque" actions={availableActions.length ? <ActionsDropdown label="Nova movimentação" actions={availableActions.map((item) => ({ label: item.label, onClick: () => setAction(item.key) }))} /> : undefined} />
       <AlertasCard />
-      <div className="flex flex-wrap gap-3">
-        <select aria-label="Produto" value={produtoId ?? ""} onChange={(event) => { setProdutoId(event.target.value ? Number(event.target.value) : undefined); setPage(1); }} className="rounded-xl border border-[#d7f3ea] bg-white px-4 py-2"><option value="">Todos os produtos</option>{produtos.data?.data.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</select>
-        <select aria-label="Tipo" value={tipo ?? ""} onChange={(event) => { setTipo((event.target.value || undefined) as MovimentacaoEstoque["tipo"] | undefined); setPage(1); }} className="rounded-xl border border-[#d7f3ea] bg-white px-4 py-2"><option value="">Todos os tipos</option>{movementTypes.map((item) => <option key={item} value={item}>{item}</option>)}</select>
+      <div className="grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
+        <Select aria-label="Produto" value={produtoId ?? ""} onChange={(event) => { setProdutoId(event.target.value ? Number(event.target.value) : undefined); setPage(1); }}><option value="">Todos os produtos</option>{produtos.data?.data.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</Select>
+        <Select aria-label="Tipo" value={tipo ?? ""} onChange={(event) => { setTipo((event.target.value || undefined) as MovimentacaoEstoque["tipo"] | undefined); setPage(1); }}><option value="">Todos os tipos</option>{movementTypes.map((item) => <option key={item} value={item}>{item}</option>)}</Select>
       </div>
       <DataTable columns={columns} data={query.data?.data ?? []} loading={query.isLoading} error={query.isError ? getApiErrorMessage(query.error, "Erro ao carregar movimentações.") : null} onRetry={() => void query.refetch()} emptyMessage="Nenhuma movimentação encontrada." keyExtractor={(row) => row.id} />
       <Pagination page={page} totalPages={query.data?.totalPages ?? 0} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(size) => { setPageSize(size); setPage(1); }} />

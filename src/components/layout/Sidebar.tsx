@@ -114,6 +114,11 @@ const stockGroup = {
       permission: 'estoque.movimentacoes.visualizar',
     },
     {
+      href: '/app/estoque/fornecedores',
+      label: 'Fornecedores',
+      permission: 'compras.visualizar',
+    },
+    {
       href: '/app/estoque/compras',
       label: 'Compras',
       permission: 'compras.visualizar',
@@ -188,7 +193,7 @@ export function Sidebar({ area }: SidebarProps) {
                 <img
                   src={tenant.logoUrl}
                   alt={clinicName}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain p-1.5"
                 />
               ) : (
                 <Building2 size={28} />

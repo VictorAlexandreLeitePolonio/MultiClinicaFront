@@ -9,17 +9,20 @@ interface ButtonProps {
   disabled?: boolean;
   onClick?: () => void;
   variant?: "primary" | "secondary" | "outline" | "danger";
+  /** Ocupa 100% da largura (padrão). Use false em headers/linhas de tabela. */
+  fullWidth?: boolean;
 }
 
-export function Button({ 
-  children, 
-  loading, 
-  type = "button", 
-  disabled, 
+export function Button({
+  children,
+  loading,
+  type = "button",
+  disabled,
   onClick,
-  variant = "primary"
+  variant = "primary",
+  fullWidth = true
 }: ButtonProps) {
-  const baseStyles = "w-full rounded-xl px-6 py-3 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#99f6e4] disabled:cursor-not-allowed disabled:opacity-60";
+  const baseStyles = `${fullWidth ? "w-full" : "w-auto"} inline-flex items-center justify-center gap-1.5 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#99f6e4] disabled:cursor-not-allowed disabled:opacity-60`;
   
   const variants = {
     primary: "border border-[#14b8a6] bg-[#14b8a6] text-white shadow-[0_18px_32px_-24px_rgba(20,184,166,0.9)] hover:bg-[#0f766e] hover:shadow-[0_20px_42px_-24px_rgba(20,184,166,0.95)]",
