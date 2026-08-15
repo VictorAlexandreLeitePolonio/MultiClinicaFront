@@ -16,8 +16,8 @@ export function TutorialCatalog({ open, onClose, onSelect }: TutorialCatalogProp
   return (
     <Dialog.Root open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-[999998] bg-black/40" />
-        <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <Dialog.Content className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-700 dark:bg-slate-900">
             <Dialog.Title className="text-lg font-bold text-secondary dark:text-slate-50">
               Tutoriais
@@ -30,8 +30,8 @@ export function TutorialCatalog({ open, onClose, onSelect }: TutorialCatalogProp
                     key={tutorial.id}
                     className="flex items-center justify-between gap-3 rounded-xl border border-gray-200 p-3 dark:border-slate-700"
                   >
-                    <div>
-                      <p className="font-semibold text-secondary dark:text-slate-50">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold text-secondary dark:text-slate-50">
                         {tutorial.title}
                       </p>
                       <p className="text-sm text-gray-600 dark:text-slate-300">

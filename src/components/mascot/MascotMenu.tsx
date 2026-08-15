@@ -22,7 +22,7 @@ export function MascotMenu({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[999998]"
+        className="fixed inset-0 z-40"
         onClick={onClose}
       />
       <motion.div
@@ -32,14 +32,14 @@ export function MascotMenu({
         exit="exit"
         role="menu"
         aria-label="Menu do assistente"
-        className="absolute bottom-full right-0 z-[999999] mb-3 w-56 overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white py-1.5 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900"
+        className="absolute bottom-full right-0 z-50 mb-3 w-56 origin-bottom-right overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white py-1.5 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900"
       >
         {contextualLabel && (
           <button
             type="button"
             role="menuitem"
             onClick={onContextual}
-            className="block w-full px-4 py-2.5 text-left text-sm font-semibold text-[#0f172a] transition-colors hover:bg-[#ecfdf5] dark:text-white dark:hover:bg-slate-800"
+            className="block w-full px-4 py-2.5 text-left text-sm font-semibold text-[#0f172a] transition-[background-color,transform] duration-150 hover:bg-[#ecfdf5] active:scale-[0.98] dark:text-white dark:hover:bg-slate-800"
           >
             {contextualLabel}
           </button>

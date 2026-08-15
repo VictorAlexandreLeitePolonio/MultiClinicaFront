@@ -76,7 +76,7 @@ export function MascotAssistant() {
   if (isRunning) {
     return (
       <motion.div
-        className="fixed z-[999999]"
+        className="fixed z-[80]"
         animate={
           reducedMotion
             ? { opacity: 1 }
@@ -108,7 +108,7 @@ export function MascotAssistant() {
   const completed = moduleTutorial ? isTutorialCompleted(moduleTutorial.id) : false;
 
   return (
-    <div className="fixed bottom-4 right-4 z-[999999] flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
+    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
       <AnimatePresence>
         {inviteTutorial && !menuOpen && (
           <MascotBubble
