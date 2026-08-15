@@ -177,6 +177,7 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
       label: "",
       className: "text-right",
       render: (p) => (
+        <span data-tutorial="patients-actions">
         <ActionsDropdown
           actions={[
             {
@@ -208,6 +209,7 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
             },
           ]}
         />
+        </span>
       ),
     },
   ];
@@ -220,31 +222,39 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
         title="Pacientes"
         actions={
           <div className="flex gap-2">
-            <FilterPopover
-              filters={filterOptions}
-              values={filterValues}
-              onChange={handleFilterChange}
-              onApply={handleApplyFilters}
-              onClear={handleClearFilters}
-            />
-            <Button onClick={onCreate}>Novo Paciente</Button>
+            <div data-tutorial="patients-filters">
+              <FilterPopover
+                filters={filterOptions}
+                values={filterValues}
+                onChange={handleFilterChange}
+                onApply={handleApplyFilters}
+                onClear={handleClearFilters}
+              />
+            </div>
+            <div data-tutorial="patients-new">
+              <Button onClick={onCreate}>Novo Paciente</Button>
+            </div>
           </div>
         }
       />
 
-      <SearchInput
-        value={search}
-        onChange={setSearch}
-        placeholder="Buscar por nome..."
-      />
+      <div data-tutorial="patients-search">
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Buscar por nome..."
+        />
+      </div>
 
-      <DataTable
-        columns={columns}
-        data={data}
-        loading={loading}
-        emptyMessage="Nenhum paciente encontrado."
-        keyExtractor={(p) => p.id}
-      />
+      <div data-tutorial="patients-list">
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          emptyMessage="Nenhum paciente encontrado."
+          keyExtractor={(p) => p.id}
+        />
+      </div>
 
       <Pagination
         page={page}

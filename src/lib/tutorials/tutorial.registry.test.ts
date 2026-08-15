@@ -15,6 +15,11 @@ describe("resolveTutorialByPathname", () => {
     expect(resolveTutorialByPathname("/app")?.id).toBe("dashboard");
   });
 
+  it("resolve /app/pacientes para pacientes, não para o dashboard", () => {
+    // regressão: o pathname do dashboard ("/app") é prefixo de toda rota do app.
+    expect(resolveTutorialByPathname("/app/pacientes")?.id).toBe("patients");
+  });
+
   it("retorna null para uma rota fora de /app", () => {
     expect(resolveTutorialByPathname("/login")).toBeNull();
   });
