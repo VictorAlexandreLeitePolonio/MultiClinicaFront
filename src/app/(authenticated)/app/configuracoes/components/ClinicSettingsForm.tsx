@@ -52,27 +52,31 @@ export function ClinicSettingsForm({
     <form onSubmit={handleSubmit((data) => onSubmit(toUpdateClinicSettingsRequest(data)))} className="space-y-6">
       <section className="grid gap-6 rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:grid-cols-[minmax(0,1fr)_18rem]">
         <div className="space-y-5">
-          <div>
-            <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Minha clínica</h2>
-            <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">
-              Atualize a identidade visual e os canais públicos da clínica.
-            </p>
+          <div data-tutorial="settings-identity" className="space-y-5">
+            <div>
+              <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Minha clínica</h2>
+              <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">
+                Atualize a identidade visual e os canais públicos da clínica.
+              </p>
+            </div>
+            <FormField
+              id="clinic-settings-display-name"
+              label="Nome de exibição"
+              disabled={!canEdit}
+              error={errors.displayName?.message}
+              {...register("displayName")}
+            />
           </div>
-          <FormField
-            id="clinic-settings-display-name"
-            label="Nome de exibição"
-            disabled={!canEdit}
-            error={errors.displayName?.message}
-            {...register("displayName")}
-          />
-          <FormField
-            id="clinic-settings-logo-url"
-            label="Logo URL"
-            type="url"
-            disabled={!canEdit}
-            error={errors.logoUrl?.message}
-            {...register("logoUrl")}
-          />
+          <div data-tutorial="settings-logo">
+            <FormField
+              id="clinic-settings-logo-url"
+              label="Logo URL"
+              type="url"
+              disabled={!canEdit}
+              error={errors.logoUrl?.message}
+              {...register("logoUrl")}
+            />
+          </div>
         </div>
         <div>
           <p className="mb-2 text-sm font-semibold text-[#0f172a] dark:text-white">Preview da logo</p>
@@ -80,7 +84,7 @@ export function ClinicSettingsForm({
         </div>
       </section>
 
-      <section className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section data-tutorial="settings-colors" className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Cores da clínica</h2>
         <div className="mt-5 grid gap-5 md:grid-cols-3">
           {([
@@ -109,7 +113,7 @@ export function ClinicSettingsForm({
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <div className="space-y-5 rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div data-tutorial="settings-contact" className="space-y-5 rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div>
             <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Contato</h2>
             <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">Dados exibidos para os pacientes.</p>
@@ -130,7 +134,7 @@ export function ClinicSettingsForm({
             {...register("contactPhone")}
           />
         </div>
-        <div className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div data-tutorial="settings-preview" className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Preview visual</h2>
           <div className="mt-5">
             <ClinicThemePreview
@@ -145,7 +149,7 @@ export function ClinicSettingsForm({
       </section>
 
       {canEdit && (
-        <div className="flex justify-end">
+        <div data-tutorial="settings-save" className="flex justify-end">
           <div className="w-full sm:w-48">
             <Button type="submit" loading={loading}>
               Salvar alterações

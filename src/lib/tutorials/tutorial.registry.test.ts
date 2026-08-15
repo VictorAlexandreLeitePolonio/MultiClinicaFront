@@ -20,6 +20,13 @@ describe("resolveTutorialByPathname", () => {
     expect(resolveTutorialByPathname("/app/pacientes")?.id).toBe("patients");
   });
 
+  it("retorna null para uma sub-rota inexistente de /app", () => {
+    // regressão: "/app" é a raiz compartilhada por todas as rotas, não deve
+    // "engolir" sub-rotas como prefixo (diferente de /app/agenda, que é dono
+    // da própria subárvore).
+    expect(resolveTutorialByPathname("/app/rota-inexistente")).toBeNull();
+  });
+
   it("retorna null para uma rota fora de /app", () => {
     expect(resolveTutorialByPathname("/login")).toBeNull();
   });

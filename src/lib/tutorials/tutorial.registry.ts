@@ -14,6 +14,7 @@ import { stockProductsTutorial } from "./definitions/stock-products/module.tutor
 import { suppliersTutorial } from "./definitions/suppliers/module.tutorial";
 import { usersTutorial } from "./definitions/users/module.tutorial";
 import { plansTutorial } from "./definitions/plans/module.tutorial";
+import { settingsTutorial } from "./definitions/settings/module.tutorial";
 
 export const tutorialRegistry: ModuleTutorial[] = [
   dashboardTutorial,
@@ -30,6 +31,7 @@ export const tutorialRegistry: ModuleTutorial[] = [
   purchasesTutorial,
   usersTutorial,
   plansTutorial,
+  settingsTutorial,
 ];
 
 export function resolveTutorialByPathname(pathname: string): ModuleTutorial | null {
