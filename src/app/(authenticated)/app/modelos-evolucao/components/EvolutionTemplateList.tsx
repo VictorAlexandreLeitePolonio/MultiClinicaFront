@@ -56,14 +56,16 @@ export function EvolutionTemplateList({ onCreate, onViewDetails }: EvolutionTemp
       label: "",
       className: "text-right",
       render: (template) => (
-        <ActionsDropdown
-          actions={[
-            { label: "Detalhes", onClick: () => onViewDetails(template.id), icon: <Eye size={14} /> },
-            ...(canEdit && template.isActive
-              ? [{ label: "Desativar", onClick: () => setToDelete(template), variant: "danger" as const, icon: <Trash2 size={14} /> }]
-              : []),
-          ]}
-        />
+        <span data-tutorial="evolution-templates-actions">
+          <ActionsDropdown
+            actions={[
+              { label: "Detalhes", onClick: () => onViewDetails(template.id), icon: <Eye size={14} /> },
+              ...(canEdit && template.isActive
+                ? [{ label: "Desativar", onClick: () => setToDelete(template), variant: "danger" as const, icon: <Trash2 size={14} /> }]
+                : []),
+            ]}
+          />
+        </span>
       ),
     },
   ];
@@ -83,18 +85,26 @@ export function EvolutionTemplateList({ onCreate, onViewDetails }: EvolutionTemp
     <div className="space-y-4">
       <PageHeader
         title="Modelos de evolução"
-        actions={canEdit ? <Button onClick={onCreate}><Plus size={16} className="mr-2" />Novo modelo</Button> : null}
+        actions={
+          canEdit ? (
+            <div data-tutorial="evolution-templates-new">
+              <Button onClick={onCreate}><Plus size={16} className="mr-2" />Novo modelo</Button>
+            </div>
+          ) : null
+        }
       />
 
-      <DataTable
-        columns={columns}
-        data={data?.data ?? []}
-        loading={isLoading}
-        error={error ? "Erro ao carregar modelos de evolução." : null}
-        onRetry={refetch}
-        emptyMessage="Nenhum modelo de evolução encontrado."
-        keyExtractor={(template) => template.id}
-      />
+      <div data-tutorial="evolution-templates-list">
+        <DataTable
+          columns={columns}
+          data={data?.data ?? []}
+          loading={isLoading}
+          error={error ? "Erro ao carregar modelos de evolução." : null}
+          onRetry={refetch}
+          emptyMessage="Nenhum modelo de evolução encontrado."
+          keyExtractor={(template) => template.id}
+        />
+      </div>
 
       <Pagination
         page={page}

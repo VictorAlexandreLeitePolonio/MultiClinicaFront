@@ -2,6 +2,7 @@ import type { UserRole } from "@/types";
 import type { ModuleTutorial, TutorialStep } from "./tutorial.types";
 import { agendaTutorial } from "./definitions/agenda/module.tutorial";
 import { dashboardTutorial } from "./definitions/dashboard/module.tutorial";
+import { evolutionTemplatesTutorial } from "./definitions/evolution-templates/module.tutorial";
 import { medicalRecordsTutorial } from "./definitions/medical-records/module.tutorial";
 import { patientsTutorial } from "./definitions/patients/module.tutorial";
 
@@ -10,6 +11,7 @@ export const tutorialRegistry: ModuleTutorial[] = [
   patientsTutorial,
   agendaTutorial,
   medicalRecordsTutorial,
+  evolutionTemplatesTutorial,
 ];
 
 export function resolveTutorialByPathname(pathname: string): ModuleTutorial | null {
