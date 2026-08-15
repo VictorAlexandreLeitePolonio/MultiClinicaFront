@@ -8,6 +8,7 @@ import { medicalRecordsTutorial } from "./definitions/medical-records/module.tut
 import { patientsTutorial } from "./definitions/patients/module.tutorial";
 import { paymentsTutorial } from "./definitions/payments/module.tutorial";
 import { stockCategoriesTutorial } from "./definitions/stock-categories/module.tutorial";
+import { stockMovementsTutorial } from "./definitions/stock-movements/module.tutorial";
 import { stockProductsTutorial } from "./definitions/stock-products/module.tutorial";
 
 export const tutorialRegistry: ModuleTutorial[] = [
@@ -20,6 +21,7 @@ export const tutorialRegistry: ModuleTutorial[] = [
   financialTutorial,
   stockProductsTutorial,
   stockCategoriesTutorial,
+  stockMovementsTutorial,
 ];
 
 export function resolveTutorialByPathname(pathname: string): ModuleTutorial | null {

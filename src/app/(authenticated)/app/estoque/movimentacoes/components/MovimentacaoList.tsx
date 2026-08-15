@@ -85,13 +85,19 @@ export function MovimentacaoList() {
 
   return (
     <div className="space-y-4 p-8">
-      <PageHeader title="Movimentações de Estoque" actions={availableActions.length ? <ActionsDropdown label="Nova movimentação" actions={availableActions.map((item) => ({ label: item.label, onClick: () => setAction(item.key) }))} /> : undefined} />
-      <AlertasCard />
-      <div className="grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
-        <Select aria-label="Produto" value={produtoId ?? ""} onChange={(event) => { setProdutoId(event.target.value ? Number(event.target.value) : undefined); setPage(1); }}><option value="">Todos os produtos</option>{produtos.data?.data.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</Select>
-        <Select aria-label="Tipo" value={tipo ?? ""} onChange={(event) => { setTipo((event.target.value || undefined) as MovimentacaoEstoque["tipo"] | undefined); setPage(1); }}><option value="">Todos os tipos</option>{movementTypes.map((item) => <option key={item} value={item}>{item}</option>)}</Select>
+      <div data-tutorial="stock-movements-new">
+        <PageHeader title="Movimentações de Estoque" actions={availableActions.length ? <ActionsDropdown label="Nova movimentação" actions={availableActions.map((item) => ({ label: item.label, onClick: () => setAction(item.key) }))} /> : undefined} />
       </div>
-      <DataTable columns={columns} data={query.data?.data ?? []} loading={query.isLoading} error={query.isError ? getApiErrorMessage(query.error, "Erro ao carregar movimentações.") : null} onRetry={() => void query.refetch()} emptyMessage="Nenhuma movimentação encontrada." keyExtractor={(row) => row.id} />
+      <AlertasCard />
+      <div data-tutorial="stock-movements-filters" className="grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
+        <Select aria-label="Produto" value={produtoId ?? ""} onChange={(event) => { setProdutoId(event.target.value ? Number(event.target.value) : undefined); setPage(1); }}><option value="">Todos os produtos</option>{produtos.data?.data.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}</Select>
+        <div data-tutorial="stock-movements-types">
+          <Select aria-label="Tipo" value={tipo ?? ""} onChange={(event) => { setTipo((event.target.value || undefined) as MovimentacaoEstoque["tipo"] | undefined); setPage(1); }}><option value="">Todos os tipos</option>{movementTypes.map((item) => <option key={item} value={item}>{item}</option>)}</Select>
+        </div>
+      </div>
+      <div data-tutorial="stock-movements-list">
+        <DataTable columns={columns} data={query.data?.data ?? []} loading={query.isLoading} error={query.isError ? getApiErrorMessage(query.error, "Erro ao carregar movimentações.") : null} onRetry={() => void query.refetch()} emptyMessage="Nenhuma movimentação encontrada." keyExtractor={(row) => row.id} />
+      </div>
       <Pagination page={page} totalPages={query.data?.totalPages ?? 0} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(size) => { setPageSize(size); setPage(1); }} />
       <MovimentacaoDialog open={!!action} action={action ?? "entrada"} loading={mutations.isMutating} onClose={() => setAction(null)} onSubmit={submit} />
       <MotivoDialog open={!!cancelar} title="Cancelar movimentação" description="Informe o motivo do cancelamento." confirmLabel="Cancelar" loading={mutations.isCanceling} onCancel={() => setCancelar(null)} onConfirm={cancel} />
