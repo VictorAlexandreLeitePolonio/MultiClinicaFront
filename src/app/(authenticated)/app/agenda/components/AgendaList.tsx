@@ -198,7 +198,10 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
         title="Agenda"
         actions={
           <div className="flex flex-wrap gap-2">
-            <div className="inline-flex overflow-hidden rounded-2xl border border-gray-200 bg-white p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div
+              data-tutorial="agenda-view-mode"
+              className="inline-flex overflow-hidden rounded-2xl border border-gray-200 bg-white p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+            >
               <button
                 type="button"
                 onClick={() => onChangeViewMode?.("list")}
@@ -226,33 +229,41 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
                 Calendário
               </button>
             </div>
-            <FilterPopover
-              filters={filterOptions}
-              values={filterValues}
-              onChange={handleFilterChange}
-              onApply={handleApplyFilters}
-              onClear={handleClearFilters}
-            />
-            <Button onClick={onCreate}>Novo Agendamento</Button>
+            <div data-tutorial="agenda-filters">
+              <FilterPopover
+                filters={filterOptions}
+                values={filterValues}
+                onChange={handleFilterChange}
+                onApply={handleApplyFilters}
+                onClear={handleClearFilters}
+              />
+            </div>
+            <div data-tutorial="agenda-new">
+              <Button onClick={onCreate}>Novo Agendamento</Button>
+            </div>
           </div>
         }
       />
 
       {viewMode === "list" && (
         <>
-      <SearchInput
-        value={search}
-        onChange={setSearch}
-        placeholder="Buscar por nome do paciente..."
-      />
+      <div data-tutorial="agenda-search">
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Buscar por nome do paciente..."
+        />
+      </div>
 
-      <DataTable
-        columns={columns}
-        data={data}
-        loading={loading}
-        emptyMessage="Nenhum agendamento encontrado."
-        keyExtractor={(a) => a.id}
-      />
+      <div data-tutorial="agenda-list">
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          emptyMessage="Nenhum agendamento encontrado."
+          keyExtractor={(a) => a.id}
+        />
+      </div>
       </>
       )}
 
