@@ -46,6 +46,7 @@ export default function UsuarioList({ onCreate, onViewDetails }: Props) {
       label: "Perfil",
       render: (u) => (
         <span
+          data-tutorial="users-role"
           className={`px-2 py-1 rounded-full text-xs font-semibold border ${
             u.role === "Administrador"
               ? "bg-secondary text-white border-secondary"
@@ -66,21 +67,23 @@ export default function UsuarioList({ onCreate, onViewDetails }: Props) {
       label: "",
       className: "text-right",
       render: (u) => (
-        <ActionsDropdown
-          actions={[
-            {
-              label: "Detalhes",
-              onClick: () => onViewDetails(u.id),
-              icon: <Eye size={14} />,
-            },
-            {
-              label: "Excluir",
-              onClick: () => setToDelete(u),
-              variant: "danger",
-              icon: <Trash2 size={14} />,
-            },
-          ]}
-        />
+        <span data-tutorial="users-actions">
+          <ActionsDropdown
+            actions={[
+              {
+                label: "Detalhes",
+                onClick: () => onViewDetails(u.id),
+                icon: <Eye size={14} />,
+              },
+              {
+                label: "Excluir",
+                onClick: () => setToDelete(u),
+                variant: "danger",
+                icon: <Trash2 size={14} />,
+              },
+            ]}
+          />
+        </span>
       ),
     },
   ];
@@ -91,22 +94,30 @@ export default function UsuarioList({ onCreate, onViewDetails }: Props) {
     <div className="space-y-4">
       <PageHeader
         title="Usuários"
-        actions={<Button onClick={onCreate}>Novo Usuário</Button>}
+        actions={
+          <div data-tutorial="users-new">
+            <Button onClick={onCreate}>Novo Usuário</Button>
+          </div>
+        }
       />
 
-      <SearchInput
-        value={search}
-        onChange={setSearch}
-        placeholder="Buscar por nome..."
-      />
+      <div data-tutorial="users-search">
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Buscar por nome..."
+        />
+      </div>
 
-      <DataTable
-        columns={columns}
-        data={data}
-        loading={loading}
-        emptyMessage="Nenhum usuário encontrado."
-        keyExtractor={(u) => u.id}
-      />
+      <div data-tutorial="users-list">
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          emptyMessage="Nenhum usuário encontrado."
+          keyExtractor={(u) => u.id}
+        />
+      </div>
 
       <DeleteConfirmDialog
         open={!!toDelete}
