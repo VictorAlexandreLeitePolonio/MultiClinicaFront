@@ -40,7 +40,9 @@ export default function FinancialBalancePage() {
         }
       />
 
-      <BalancePeriodFilter onApply={setPeriod} />
+      <div data-tutorial="financial-period">
+        <BalancePeriodFilter onApply={setPeriod} />
+      </div>
 
       {balance.isError ? (
         <ErrorState message={getApiErrorMessage(balance.error, "Erro ao carregar o balanço.")} onRetry={() => void balance.refetch()} />
@@ -57,13 +59,17 @@ export default function FinancialBalancePage() {
         <EmptyState title="Nenhum dado disponível" description="Não há dados de balanço para o período selecionado." />
       ) : (
         <>
-          <BalanceMoneyCards money={data.money} />
+          <div data-tutorial="financial-money">
+            <BalanceMoneyCards money={data.money} />
+          </div>
 
-          <ChartCard title="Como o resultado se formou" subtitle="Das entradas, subtraindo cada custo, até o resultado do período.">
-            <BalanceWaterfallChart money={data.money} />
-          </ChartCard>
+          <div data-tutorial="financial-result">
+            <ChartCard title="Como o resultado se formou" subtitle="Das entradas, subtraindo cada custo, até o resultado do período.">
+              <BalanceWaterfallChart money={data.money} />
+            </ChartCard>
+          </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div data-tutorial="financial-charts" className="grid gap-6 lg:grid-cols-2">
             <ChartCard title="Consultas por status" subtitle="Distribuição das consultas no período.">
               <BalanceAppointmentsDonut appointments={data.appointments} />
             </ChartCard>
@@ -72,13 +78,15 @@ export default function FinancialBalancePage() {
             </ChartCard>
           </div>
 
-          <BalanceOperationalCards
-            money={data.money}
-            appointments={data.appointments}
-            patients={data.patients}
-            stock={data.stock}
-            evolutions={data.evolutions}
-          />
+          <div data-tutorial="financial-operational">
+            <BalanceOperationalCards
+              money={data.money}
+              appointments={data.appointments}
+              patients={data.patients}
+              stock={data.stock}
+              evolutions={data.evolutions}
+            />
+          </div>
 
           <div className="grid items-start gap-6 lg:grid-cols-2">
             <section className="space-y-3">
@@ -93,7 +101,9 @@ export default function FinancialBalancePage() {
         </>
       )}
 
-      <ClinicExpensesSection period={period} />
+      <div data-tutorial="financial-expenses">
+        <ClinicExpensesSection period={period} />
+      </div>
     </div>
   );
 }
