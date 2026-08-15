@@ -48,6 +48,7 @@ export function GreetingBanner({ totalAppointments }: GreetingBannerProps) {
 
   return (
     <motion.div
+      data-tutorial="dashboard-greeting"
       initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 80 }}

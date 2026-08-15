@@ -98,7 +98,7 @@ export function ClinicDashboardActions({ role }: ClinicDashboardActionsProps) {
   const copy = roleCopy[role];
 
   return (
-    <section className="flex flex-col gap-4">
+    <section data-tutorial="dashboard-actions" className="flex flex-col gap-4">
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider text-primary-dark dark:text-primary-light">
           {copy.title}

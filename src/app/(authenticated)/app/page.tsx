@@ -21,7 +21,7 @@ export default function BemVindoPage() {
       <GreetingBanner totalAppointments={total} />
 
       {user?.role && user.role !== "SuperAdmin" && (
-        <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <section data-tutorial="dashboard-metrics" className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <MetricCard
             label="Agendamentos hoje"
             value={total}
@@ -53,7 +53,7 @@ export default function BemVindoPage() {
 
       {user?.role && user.role !== "SuperAdmin" && <EvolutionSummaryCard />}
 
-      <div>
+      <div data-tutorial="dashboard-today">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ecfdf5] text-[#0f766e] ring-1 ring-[#a7f3d0]">
             <ClipboardList size={16} />

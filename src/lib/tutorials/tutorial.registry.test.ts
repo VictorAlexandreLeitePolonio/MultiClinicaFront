@@ -11,8 +11,8 @@ describe("resolveTutorialByPathname", () => {
     expect(resolveTutorialByPathname("/app/agenda?mode=create")?.id).toBe("agenda");
   });
 
-  it("retorna null para /app", () => {
-    expect(resolveTutorialByPathname("/app")).toBeNull();
+  it("resolve /app para o tutorial do dashboard", () => {
+    expect(resolveTutorialByPathname("/app")?.id).toBe("dashboard");
   });
 
   it("retorna null para uma rota fora de /app", () => {

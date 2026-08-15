@@ -13,7 +13,7 @@ export function EvolutionSummaryCard() {
   const { data, isLoading, error } = useEvolutionSummary();
 
   return (
-    <section className="mt-4">
+    <section data-tutorial="dashboard-evolutions" className="mt-4">
       <div className="mb-4 flex items-center gap-3">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ecfdf5] text-[#0f766e] ring-1 ring-[#a7f3d0]">
           <Activity size={16} />

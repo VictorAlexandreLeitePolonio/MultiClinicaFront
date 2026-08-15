@@ -1,8 +1,9 @@
 import type { UserRole } from "@/types";
 import type { ModuleTutorial, TutorialStep } from "./tutorial.types";
 import { agendaTutorial } from "./definitions/agenda/module.tutorial";
+import { dashboardTutorial } from "./definitions/dashboard/module.tutorial";
 
-export const tutorialRegistry: ModuleTutorial[] = [agendaTutorial];
+export const tutorialRegistry: ModuleTutorial[] = [dashboardTutorial, agendaTutorial];
 
 export function resolveTutorialByPathname(pathname: string): ModuleTutorial | null {
   const path = pathname.split("?")[0];
