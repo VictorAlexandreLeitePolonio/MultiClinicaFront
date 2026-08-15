@@ -47,8 +47,13 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
       activeStepsRef.current = accessibleSteps;
 
       const driverObj = driver({
-        animate: true,
-        duration: 200,
+        // false, not just "fast": advanceOnClick/onDestroyed read driver.js's
+        // internal __activeElement/__transitionCallback, which only populate
+        // once its own highlight transition finishes — with animate:true that
+        // takes the full `duration`, so a target-click step can silently eat
+        // a real click made before that window closes. false finalizes on the
+        // very first requestAnimationFrame tick instead, closing that gap.
+        animate: false,
         popoverClass: "mc-tutorial-popover",
         showProgress: true,
         progressText: "{{current}} / {{total}}",
@@ -70,7 +75,8 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
               side: step.placement,
               // target-click / route-change steps advance on their own —
               // showing "Próximo" would let the user skip past the real action.
-              showButtons: advanceOn === "manual" ? undefined : ["previous"],
+              // "close" stays so "Pular tutorial" is still reachable.
+              showButtons: advanceOn === "manual" ? undefined : ["previous", "close"],
             },
           };
         }),

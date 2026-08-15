@@ -29,10 +29,10 @@ vi.mock("@/contexts/AuthContext", () => ({
   }),
 }));
 
-// driver.js's own highlight transition (animate:true, duration:200) only
-// finalizes __activeElement after ~200ms of real time — irrelevant for a
-// human clicking, but our synthetic click needs to wait for it too.
-const waitForDriverTransition = () => new Promise((resolve) => setTimeout(resolve, 250));
+// With animate:false driver.js finalizes its internal state on the very next
+// tick — this is a generous margin, kept mostly to prove tests don't depend
+// on the previous (buggy) animate:true 200ms window.
+const waitForDriverTransition = () => new Promise((resolve) => setTimeout(resolve, 20));
 
 const oneStepTutorial: ModuleTutorial = {
   id: "agenda",
@@ -232,7 +232,11 @@ describe("TutorialProvider", () => {
     );
   }
 
-  it("target-click avança ao clicar no elemento real destacado, sem botão Próximo", async () => {
+  it("target-click avança ao clicar no elemento real destacado, sem botão Próximo, mesmo num clique imediato", async () => {
+    // regressão: com animate:true (duration:200), um clique real feito antes
+    // da transição interna do driver.js terminar era simplesmente ignorado —
+    // "Cadastrar paciente" no step 1 nunca avançava para o step 2. Sem esperar
+    // nada aqui, exatamente como um clique rápido de verdade.
     const user = userEvent.setup();
     render(
       <TutorialProvider>
@@ -243,7 +247,7 @@ describe("TutorialProvider", () => {
     await user.click(screen.getByText("Iniciar target-click"));
     await screen.findByText("Clique aqui");
     expect(document.querySelector(".driver-popover-next-btn")).not.toBeVisible();
-    await waitForDriverTransition();
+    expect(screen.getByText("Pular tutorial")).toBeVisible();
 
     await user.click(screen.getByText("Botão real"));
 
@@ -392,6 +396,7 @@ describe("TutorialProvider", () => {
     await user.click(screen.getByText("Iniciar"));
     await screen.findByText("Aguardando navegação");
     expect(document.querySelector(".driver-popover-next-btn")).not.toBeVisible();
+    expect(screen.getByText("Pular tutorial")).toBeVisible();
 
     mockPathname = "/app/pacientes";
     rerender(
