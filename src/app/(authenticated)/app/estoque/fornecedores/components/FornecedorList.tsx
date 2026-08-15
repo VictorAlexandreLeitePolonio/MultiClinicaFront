@@ -69,15 +69,19 @@ export function FornecedorList() {
           ? { label: "Inativar", onClick: () => setToggle(row), variant: "danger" as const, icon: <Ban size={14} /> }
           : { label: "Reativar", onClick: () => setToggle(row), variant: "success" as const, icon: <RotateCcw size={14} /> },
       ];
-      return <ActionsDropdown actions={actions} />;
+      return <span data-tutorial="suppliers-actions"><ActionsDropdown actions={actions} /></span>;
     } },
   ];
 
   return (
     <div className="space-y-4 p-8">
-      <PageHeader title="Fornecedores" actions={canManage ? <Button onClick={() => { setEditing(null); setOpen(true); }}>Novo Fornecedor</Button> : undefined} />
-      <SearchInput value={search} onChange={(value) => { setSearch(value); setPage(1); }} placeholder="Buscar por nome..." />
-      <DataTable columns={columns} data={query.data?.data ?? []} loading={query.isLoading} error={query.isError ? getApiErrorMessage(query.error, "Erro ao carregar fornecedores.") : null} onRetry={() => void query.refetch()} emptyMessage="Nenhum fornecedor cadastrado." keyExtractor={(row) => row.id} />
+      <PageHeader title="Fornecedores" actions={canManage ? <div data-tutorial="suppliers-new"><Button onClick={() => { setEditing(null); setOpen(true); }}>Novo Fornecedor</Button></div> : undefined} />
+      <div data-tutorial="suppliers-search">
+        <SearchInput value={search} onChange={(value) => { setSearch(value); setPage(1); }} placeholder="Buscar por nome..." />
+      </div>
+      <div data-tutorial="suppliers-list">
+        <DataTable columns={columns} data={query.data?.data ?? []} loading={query.isLoading} error={query.isError ? getApiErrorMessage(query.error, "Erro ao carregar fornecedores.") : null} onRetry={() => void query.refetch()} emptyMessage="Nenhum fornecedor cadastrado." keyExtractor={(row) => row.id} />
+      </div>
       <Pagination page={page} totalPages={query.data?.totalPages ?? 0} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(size) => { setPageSize(size); setPage(1); }} />
       <FornecedorRegister open={open} defaultValues={{ nome: editing?.nome ?? "" }} loading={mutations.isCreating || mutations.isUpdating} onClose={() => setOpen(false)} onSubmit={submit} />
       <ConfirmDialog open={!!toggle} title={toggle?.isActive ? "Inativar fornecedor" : "Reativar fornecedor"} description={`Deseja ${toggle?.isActive ? "inativar" : "reativar"} "${toggle?.nome}"?`} confirmLabel={toggle?.isActive ? "Inativar" : "Reativar"} loading={mutations.isSettingActive} onCancel={() => setToggle(null)} onConfirm={toggleActive} />

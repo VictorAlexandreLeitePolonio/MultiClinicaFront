@@ -10,6 +10,7 @@ import { paymentsTutorial } from "./definitions/payments/module.tutorial";
 import { stockCategoriesTutorial } from "./definitions/stock-categories/module.tutorial";
 import { stockMovementsTutorial } from "./definitions/stock-movements/module.tutorial";
 import { stockProductsTutorial } from "./definitions/stock-products/module.tutorial";
+import { suppliersTutorial } from "./definitions/suppliers/module.tutorial";
 
 export const tutorialRegistry: ModuleTutorial[] = [
   dashboardTutorial,
@@ -22,6 +23,7 @@ export const tutorialRegistry: ModuleTutorial[] = [
   stockProductsTutorial,
   stockCategoriesTutorial,
   stockMovementsTutorial,
+  suppliersTutorial,
 ];
 
 export function resolveTutorialByPathname(pathname: string): ModuleTutorial | null {
