@@ -154,14 +154,16 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
       key: "status",
       label: "Status",
       render: (p) => (
-        <StatusBadge
-          status={p.status}
-          mapping={{
-            Paid: { label: "Pago", className: "bg-primary-dark text-white border-primary-dark" },
-            Pending: { label: "Pendente", className: "bg-yellow-100 text-yellow-700 border-yellow-200" },
-            Cancelled: { label: "Cancelado", className: "bg-red-100 text-red-700 border-red-200" },
-          }}
-        />
+        <span data-tutorial="payments-status">
+          <StatusBadge
+            status={p.status}
+            mapping={{
+              Paid: { label: "Pago", className: "bg-primary-dark text-white border-primary-dark" },
+              Pending: { label: "Pendente", className: "bg-yellow-100 text-yellow-700 border-yellow-200" },
+              Cancelled: { label: "Cancelado", className: "bg-red-100 text-red-700 border-red-200" },
+            }}
+          />
+        </span>
       ),
     },
     {
@@ -201,31 +203,39 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
         title="Pagamentos"
         actions={
           <div className="flex gap-2">
-            <FilterPopover
-              filters={filterOptions}
-              values={filterValues}
-              onChange={handleFilterChange}
-              onApply={handleApplyFilters}
-              onClear={handleClearFilters}
-            />
-            <Button onClick={onCreate}>Novo Pagamento</Button>
+            <div data-tutorial="payments-filters">
+              <FilterPopover
+                filters={filterOptions}
+                values={filterValues}
+                onChange={handleFilterChange}
+                onApply={handleApplyFilters}
+                onClear={handleClearFilters}
+              />
+            </div>
+            <div data-tutorial="payments-new">
+              <Button onClick={onCreate}>Novo Pagamento</Button>
+            </div>
           </div>
         }
       />
 
-      <SearchInput
-        value={search}
-        onChange={setSearch}
-        placeholder="Buscar por nome do paciente..."
-      />
+      <div data-tutorial="payments-search">
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Buscar por nome do paciente..."
+        />
+      </div>
 
-      <DataTable
-        columns={columns}
-        data={data}
-        loading={loading}
-        emptyMessage="Nenhum pagamento encontrado."
-        keyExtractor={(p) => p.id}
-      />
+      <div data-tutorial="payments-list">
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          emptyMessage="Nenhum pagamento encontrado."
+          keyExtractor={(p) => p.id}
+        />
+      </div>
 
       <Pagination
         page={page}
