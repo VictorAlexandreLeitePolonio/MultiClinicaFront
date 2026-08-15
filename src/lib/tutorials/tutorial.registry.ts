@@ -2,9 +2,15 @@ import type { UserRole } from "@/types";
 import type { ModuleTutorial, TutorialStep } from "./tutorial.types";
 import { agendaTutorial } from "./definitions/agenda/module.tutorial";
 import { dashboardTutorial } from "./definitions/dashboard/module.tutorial";
+import { medicalRecordsTutorial } from "./definitions/medical-records/module.tutorial";
 import { patientsTutorial } from "./definitions/patients/module.tutorial";
 
-export const tutorialRegistry: ModuleTutorial[] = [dashboardTutorial, patientsTutorial, agendaTutorial];
+export const tutorialRegistry: ModuleTutorial[] = [
+  dashboardTutorial,
+  patientsTutorial,
+  agendaTutorial,
+  medicalRecordsTutorial,
+];
 
 export function resolveTutorialByPathname(pathname: string): ModuleTutorial | null {
   const path = pathname.split("?")[0];

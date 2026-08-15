@@ -91,6 +91,7 @@ export default function ProntuarioList({ onCreate, onViewCards, onViewDetails }:
       label: "Paciente",
       render: (r) => (
         <button
+          data-tutorial="medical-records-patient"
           onClick={() => onViewCards(r.patientId)}
           className="text-primary-dark hover:underline font-medium"
         >
@@ -139,13 +140,15 @@ export default function ProntuarioList({ onCreate, onViewCards, onViewDetails }:
       <PageHeader
         title="Prontuários"
         actions={
-          <Button onClick={onCreate}>+ Novo Prontuário</Button>
+          <div data-tutorial="medical-records-new">
+            <Button onClick={onCreate}>+ Novo Prontuário</Button>
+          </div>
         }
       />
 
       {/* Filtros em linha */}
       <div className="flex flex-wrap items-end gap-3 p-4 bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700">
-        <div className="flex-1 min-w-50">
+        <div data-tutorial="medical-records-search" className="flex-1 min-w-50">
           <label className="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">
             Nome do Paciente
           </label>
@@ -195,13 +198,15 @@ export default function ProntuarioList({ onCreate, onViewCards, onViewDetails }:
         )}
       </div>
 
-      <DataTable
-        columns={columns}
-        data={data}
-        loading={loading}
-        emptyMessage="Nenhum prontuário encontrado."
-        keyExtractor={(r) => r.id}
-      />
+      <div data-tutorial="medical-records-list">
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          emptyMessage="Nenhum prontuário encontrado."
+          keyExtractor={(r) => r.id}
+        />
+      </div>
 
       <Pagination
         page={page}
