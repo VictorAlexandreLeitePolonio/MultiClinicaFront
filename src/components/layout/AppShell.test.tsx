@@ -41,8 +41,9 @@ vi.mock("next-themes", () => ({
 }));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ replace: vi.fn() }),
+  useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
   usePathname: () => "/app/agenda",
+  useSearchParams: () => ({ toString: () => "" }),
 }));
 
 describe("AppShell", () => {

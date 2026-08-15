@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { driver, type Driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,6 +16,7 @@ const WAIT_FOR_ELEMENT_MS = 3000;
 
 export function TutorialProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { user, can } = useAuth();
   const [activeTutorial, setActiveTutorial] = useState<ModuleTutorial | null>(null);
@@ -26,7 +27,11 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
     (tutorial: ModuleTutorial) => {
       driverRef.current?.destroy();
 
-      if (pathname !== tutorial.pathname) {
+      // Modules like Pacientes/Agenda/Pagamentos reuse the same pathname for
+      // list/create/view via ?mode=... — the tutorial's targets only exist on
+      // the list view, so any query string means we're on the wrong subview
+      // even when the pathname itself already matches.
+      if (pathname !== tutorial.pathname || searchParams.toString() !== "") {
         router.push(tutorial.pathname);
       }
 
@@ -73,7 +78,7 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
       setIsRunning(true);
       driverObj.drive();
     },
-    [pathname, router, user, can],
+    [pathname, searchParams, router, user, can],
   );
 
   // A tour left mid-navigation (waiting on waitForElement) must not outlive

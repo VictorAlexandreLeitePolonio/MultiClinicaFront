@@ -7,6 +7,7 @@ import { TutorialProvider } from "@/components/tutorial/TutorialProvider";
 let mockPathname = "/app/agenda";
 vi.mock("next/navigation", () => ({
   usePathname: () => mockPathname,
+  useSearchParams: () => ({ toString: () => "" }),
   useRouter: () => ({ push: vi.fn() }),
 }));
 

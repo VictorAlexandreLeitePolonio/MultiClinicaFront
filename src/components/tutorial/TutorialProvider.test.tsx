@@ -11,8 +11,10 @@ vi.mock("@/lib/tutorials/tutorial.storage", () => ({
 }));
 
 const routerPush = vi.fn();
+let mockSearchParamsString = "";
 vi.mock("next/navigation", () => ({
   usePathname: () => "/app/agenda",
+  useSearchParams: () => ({ toString: () => mockSearchParamsString }),
   useRouter: () => ({ push: routerPush }),
 }));
 
@@ -60,6 +62,7 @@ describe("TutorialProvider", () => {
     markTutorialCompleted.mockReset();
     routerPush.mockReset();
     mockRole = "Administrador";
+    mockSearchParamsString = "";
     document.body.innerHTML = "";
   });
 
@@ -123,6 +126,24 @@ describe("TutorialProvider", () => {
     await user.click(screen.getByText("Iniciar em outra rota"));
 
     expect(routerPush).toHaveBeenCalledWith("/app/pacientes");
+  });
+
+  it("navega para a rota base quando a página atual tem query string (ex.: ?mode=create)", async () => {
+    // regressão: iniciar o tour numa subview (criação/edição) da mesma
+    // pathname da lista travava a página inteira — driver.js nunca achava
+    // os alvos (que só existem na lista) e ficava tentando por steps × 3s
+    // com a tela inteira sem pointer-events.
+    mockSearchParamsString = "mode=create";
+    const user = userEvent.setup();
+    render(
+      <TutorialProvider>
+        <TestConsumer />
+      </TutorialProvider>,
+    );
+
+    await user.click(screen.getByText("Iniciar"));
+
+    expect(routerPush).toHaveBeenCalledWith("/app/agenda");
   });
 
   it("pula steps restritos por role para quem não tem a role exigida", async () => {
