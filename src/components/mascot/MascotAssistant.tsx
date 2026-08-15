@@ -24,6 +24,20 @@ export function MascotAssistant() {
   const reducedMotion = useReducedMotion();
   const { isRunning, startTutorial } = useTutorial();
   const tooltipAnchor = useMascotTooltipAnchor(isRunning);
+  // driver.js destroys and recreates its popover on every step — the anchor
+  // hook briefly reports null in that gap. Hold the last known position
+  // instead of snapping back to the corner (0,0) each time. Adjusted during
+  // render (not an effect) — React's documented pattern for derived state.
+  const [displayAnchor, setDisplayAnchor] = useState<{ x: number; y: number } | null>(null);
+  const [prevTooltipAnchor, setPrevTooltipAnchor] = useState(tooltipAnchor);
+  if (tooltipAnchor !== prevTooltipAnchor) {
+    setPrevTooltipAnchor(tooltipAnchor);
+    if (tooltipAnchor) {
+      setDisplayAnchor(tooltipAnchor);
+    } else if (!isRunning) {
+      setDisplayAnchor(null);
+    }
+  }
 
   const [inviteTutorial, setInviteTutorial] = useState<ModuleTutorial | null>(null);
   const [isFlipping, setIsFlipping] = useState(false);
@@ -80,7 +94,7 @@ export function MascotAssistant() {
         animate={
           reducedMotion
             ? { opacity: 1 }
-            : { left: tooltipAnchor?.x ?? 0, top: tooltipAnchor?.y ?? 0, opacity: tooltipAnchor ? 1 : 0 }
+            : { left: displayAnchor?.x ?? 0, top: displayAnchor?.y ?? 0, opacity: displayAnchor ? 1 : 0 }
         }
         transition={{ type: "spring", stiffness: 260, damping: 26 }}
       >
