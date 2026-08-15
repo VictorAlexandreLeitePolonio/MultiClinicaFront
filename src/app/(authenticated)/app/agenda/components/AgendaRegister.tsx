@@ -12,6 +12,7 @@ import { useAgendaInsert } from "../hooks/insert";
 import { Patient } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
+import { useTutorial } from "@/hooks/tutorial/useTutorial";
 
 
 interface Props {
@@ -32,6 +33,7 @@ const dateTimeLocalToIso = (dateTimeLocal: string): string => {
 export default function AgendaRegister({ onBack, onSave }: Props) {
   const { insertAgenda, isPending } = useAgendaInsert();
   const { user } = useAuth();
+  const { completeTaskTutorial } = useTutorial();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loadingPatients, setLoadingPatients] = useState(false);
 
@@ -80,6 +82,7 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
       };
       await insertAgenda(payload);
       toast.success("Agendamento criado com sucesso!");
+      completeTaskTutorial("agenda", "create-appointment");
       onSave();
     } catch {
       // erro já tratado no hook
@@ -110,7 +113,7 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <FormSection title="Dados do Agendamento">
           {/* Select de Paciente */}
-          <div className="flex flex-col gap-2">
+          <div data-tutorial="agenda-form-patient" className="flex flex-col gap-2">
             <label
               className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
             >
@@ -135,7 +138,7 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
           </div>
 
           {/* Data e Hora */}
-          <div className="flex flex-col gap-2">
+          <div data-tutorial="agenda-form-datetime" className="flex flex-col gap-2">
             <label
               className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
             >
@@ -161,9 +164,11 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
           </div>
         </FormSection>
 
-        <Button type="submit" loading={isPending}>
-          Cadastrar
-        </Button>
+        <div data-tutorial="agenda-form-save">
+          <Button type="submit" loading={isPending}>
+            Cadastrar
+          </Button>
+        </div>
       </form>
     </div>
   );
