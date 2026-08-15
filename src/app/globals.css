@@ -1268,13 +1268,13 @@ body {
   filter: blur(3px);
 }
 
-.landing-robot {
+.mascot-robot {
   position: relative;
   width: 60px;
   height: 72px;
 }
 
-.landing-robot__antenna {
+.mascot-robot__antenna {
   position: absolute;
   top: 7px;
   left: 28px;
@@ -1284,7 +1284,7 @@ body {
   background: #0f766e;
 }
 
-.landing-robot__signal {
+.mascot-robot__signal {
   position: absolute;
   top: 1px;
   left: 25px;
@@ -1295,7 +1295,7 @@ body {
   box-shadow: 0 0 0 4px rgba(103, 232, 249, 0.18);
 }
 
-.landing-robot__face {
+.mascot-robot__face {
   position: absolute;
   top: 16px;
   left: 7px;
@@ -1310,14 +1310,14 @@ body {
   box-shadow: 0 8px 18px -13px rgba(15, 118, 110, 0.9);
 }
 
-.landing-robot__eye {
+.mascot-robot__eye {
   width: 6px;
   height: 8px;
   border-radius: 999px;
   background: #ffffff;
 }
 
-.landing-robot__mouth {
+.mascot-robot__mouth {
   position: absolute;
   bottom: 5px;
   left: 20px;
@@ -1327,7 +1327,7 @@ body {
   background: #ccfbf1;
 }
 
-.landing-robot__body {
+.mascot-robot__body {
   position: absolute;
   bottom: 5px;
   left: 13px;
@@ -1339,14 +1339,14 @@ body {
   background: #0f766e;
 }
 
-.landing-robot__chest {
+.mascot-robot__chest {
   width: 11px;
   height: 8px;
   border: 2px solid #67e8f9;
   border-radius: 4px;
 }
 
-.landing-robot__arm {
+.mascot-robot__arm {
   position: absolute;
   bottom: 10px;
   width: 7px;
@@ -1355,17 +1355,17 @@ body {
   background: #14b8a6;
 }
 
-.landing-robot__arm--left {
+.mascot-robot__arm--left {
   left: 5px;
   transform: rotate(23deg);
 }
 
-.landing-robot__arm--right {
+.mascot-robot__arm--right {
   right: 5px;
   transform: rotate(-23deg);
 }
 
-.landing-hero__preview-wrap .landing-robot {
+.landing-hero__preview-wrap .mascot-robot {
   transform: scale(1.18);
   transform-origin: left bottom;
 }

@@ -9,6 +9,7 @@ import {
   useTransform,
 } from "motion/react";
 import { useEffect, useState } from "react";
+import { RobotAvatar } from "@/components/mascot/RobotAvatar";
 
 type MascotAnchor = "hero" | "modulos" | "rotina" | "faq" | "contato";
 
@@ -41,25 +42,6 @@ function getMascotAnchor(progress: number): MascotAnchor {
   });
 
   return currentAnchor;
-}
-
-export function RobotAvatar({ className = "" }: { className?: string }) {
-  return (
-    <div className={`landing-robot ${className}`} aria-hidden="true">
-      <span className="landing-robot__antenna" />
-      <span className="landing-robot__signal" />
-      <span className="landing-robot__face">
-        <span className="landing-robot__eye" />
-        <span className="landing-robot__eye" />
-        <span className="landing-robot__mouth" />
-      </span>
-      <span className="landing-robot__body">
-        <span className="landing-robot__chest" />
-      </span>
-      <span className="landing-robot__arm landing-robot__arm--left" />
-      <span className="landing-robot__arm landing-robot__arm--right" />
-    </div>
-  );
 }
 
 export function LandingMascot() {

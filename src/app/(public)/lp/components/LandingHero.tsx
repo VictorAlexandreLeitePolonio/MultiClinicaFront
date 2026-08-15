@@ -2,7 +2,7 @@
 
 import { ArrowRight, Sparkles } from "lucide-react";
 import { LandingProductPreview } from "./LandingProductPreview";
-import { RobotAvatar } from "./LandingMascot";
+import { RobotAvatar } from "@/components/mascot/RobotAvatar";
 import { LandingSmoothLink } from "./LandingSmoothLink";
 import type { LandingModuleId } from "./landingModules";
 
