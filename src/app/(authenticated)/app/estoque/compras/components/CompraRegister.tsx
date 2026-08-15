@@ -59,7 +59,7 @@ export function CompraRegister({ defaultValues, loading, onClose, onSubmit }: Pr
         </div>
 
         {/* Body */}
-        <div className="flex-1 space-y-6 overflow-y-auto px-6 py-5">
+        <div data-tutorial="purchase-form-fields" className="flex-1 space-y-6 overflow-y-auto px-6 py-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <Select
               id="compra-fornecedor"
@@ -137,7 +137,7 @@ export function CompraRegister({ defaultValues, loading, onClose, onSubmit }: Pr
           </div>
           <div className="flex w-auto gap-3">
             <div className="w-32"><Button type="button" variant="outline" onClick={onClose} disabled={loading}>Cancelar</Button></div>
-            <div className="w-32"><Button type="submit" loading={loading}>Salvar</Button></div>
+            <div data-tutorial="purchase-form-save" className="w-32"><Button type="submit" loading={loading}>Salvar</Button></div>
           </div>
         </div>
       </motion.form>

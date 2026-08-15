@@ -43,12 +43,12 @@ export function FornecedorRegister({ open, defaultValues, loading, onClose, onSu
             <X size={18} />
           </button>
         </div>
-        <div className="px-6 py-5">
+        <div data-tutorial="supplier-form-fields" className="px-6 py-5">
           <FormField id="fornecedor-nome" label="Nome" required error={errors.nome?.message} {...register("nome")} />
         </div>
         <div className="flex gap-3 border-t border-[#d7f3ea] px-6 py-4 dark:border-slate-800">
           <Button type="button" variant="outline" onClick={onClose} disabled={loading}>Cancelar</Button>
-          <Button type="submit" loading={loading}>Salvar</Button>
+          <div data-tutorial="supplier-form-save"><Button type="submit" loading={loading}>Salvar</Button></div>
         </div>
       </motion.form>
     </div>

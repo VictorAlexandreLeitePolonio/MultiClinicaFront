@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Ban } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTutorial } from "@/hooks/tutorial/useTutorial";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { MotivoDialog } from "@/components/ui/MotivoDialog";
@@ -23,6 +24,7 @@ const movementTypes: MovimentacaoEstoque["tipo"][] = ["Entrada", "Saida", "Ajust
 
 export function MovimentacaoList() {
   const { can } = useAuth();
+  const { completeTaskTutorial } = useTutorial();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [produtoId, setProdutoId] = useState<number | undefined>();
@@ -47,6 +49,7 @@ export function MovimentacaoList() {
         if (action === "perda") await mutations.registrarPerda(payload);
       }
       toast.success("Movimentação registrada!");
+      completeTaskTutorial("stock-movements", "create-movement");
       setAction(null);
     } catch {
       // useApiMutation exibe o erro.

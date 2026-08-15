@@ -4,6 +4,7 @@ import { ProdutoList } from "./ProdutoList";
 
 const can = vi.fn();
 vi.mock("@/contexts/AuthContext", () => ({ useAuth: () => ({ can }) }));
+vi.mock("@/hooks/tutorial/useTutorial", () => ({ useTutorial: () => ({ completeTaskTutorial: vi.fn() }) }));
 vi.mock("../hooks/useProdutos", () => ({
   useProdutos: () => ({ data: { data: [{ id: 1, nome: "Luva", categoriaProdutoId: null, descricao: null, codigoInterno: null, codigoBarras: null, valorCompra: 4, valorVenda: 8, quantidadeAtual: 3, quantidadeMinima: 1, isActive: true, createdAt: "" }], totalPages: 1 }, isLoading: false, isError: false, error: null, refetch: vi.fn() }),
   useProdutoMutations: () => ({ createProduto: vi.fn(), updateProduto: vi.fn(), setProdutoActive: vi.fn(), isCreating: false, isUpdating: false, isSettingActive: false }),

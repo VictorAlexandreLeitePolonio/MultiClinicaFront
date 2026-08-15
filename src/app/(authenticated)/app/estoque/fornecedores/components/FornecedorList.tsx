@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Ban, Pencil, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTutorial } from "@/hooks/tutorial/useTutorial";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -21,6 +22,7 @@ import { FornecedorRegister } from "./FornecedorRegister";
 // ponytail: sem permissão dedicada de fornecedor; reusa as de compras (consumidor direto).
 export function FornecedorList() {
   const { can } = useAuth();
+  const { completeTaskTutorial } = useTutorial();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -39,6 +41,7 @@ export function FornecedorList() {
       } else {
         await mutations.createFornecedor(data);
         toast.success("Fornecedor cadastrado!");
+        completeTaskTutorial("suppliers", "create-supplier");
       }
       setOpen(false);
     } catch {
