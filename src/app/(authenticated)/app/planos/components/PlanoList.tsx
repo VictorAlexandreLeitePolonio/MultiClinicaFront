@@ -66,21 +66,23 @@ export default function PlanoList({ onCreate, onViewDetails }: Props) {
       label: "",
       className: "text-right",
       render: (p) => (
-        <ActionsDropdown
-          actions={[
-            {
-              label: "Detalhes",
-              onClick: () => onViewDetails(p.id),
-              icon: <Eye size={14} />,
-            },
-            {
-              label: "Excluir",
-              onClick: () => setToDelete(p),
-              variant: "danger",
-              icon: <Trash2 size={14} />,
-            },
-          ]}
-        />
+        <span data-tutorial="plans-actions">
+          <ActionsDropdown
+            actions={[
+              {
+                label: "Detalhes",
+                onClick: () => onViewDetails(p.id),
+                icon: <Eye size={14} />,
+              },
+              {
+                label: "Excluir",
+                onClick: () => setToDelete(p),
+                variant: "danger",
+                icon: <Trash2 size={14} />,
+              },
+            ]}
+          />
+        </span>
       ),
     },
   ];
@@ -91,22 +93,30 @@ export default function PlanoList({ onCreate, onViewDetails }: Props) {
     <div className="space-y-4">
       <PageHeader
         title="Planos"
-        actions={<Button onClick={onCreate}>Novo Plano</Button>}
+        actions={
+          <div data-tutorial="plans-new">
+            <Button onClick={onCreate}>Novo Plano</Button>
+          </div>
+        }
       />
 
-      <SearchInput
-        value={search}
-        onChange={setSearch}
-        placeholder="Buscar por nome..."
-      />
+      <div data-tutorial="plans-search">
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Buscar por nome..."
+        />
+      </div>
 
-      <DataTable
-        columns={columns}
-        data={data}
-        loading={loading}
-        emptyMessage="Nenhum plano encontrado."
-        keyExtractor={(p) => p.id}
-      />
+      <div data-tutorial="plans-list">
+        <DataTable
+          columns={columns}
+          data={data}
+          loading={loading}
+          emptyMessage="Nenhum plano encontrado."
+          keyExtractor={(p) => p.id}
+        />
+      </div>
 
       <Pagination
         page={page}
