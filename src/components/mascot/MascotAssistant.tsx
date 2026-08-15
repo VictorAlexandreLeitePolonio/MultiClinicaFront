@@ -5,23 +5,26 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { RobotAvatar } from "@/components/mascot/RobotAvatar";
 import { MascotBubble } from "@/components/mascot/MascotBubble";
-import { MascotMenu } from "@/components/mascot/MascotMenu";
+import { MascotMenu, type MascotMenuTaskItem } from "@/components/mascot/MascotMenu";
 import { TutorialCatalog } from "@/components/tutorial/TutorialCatalog";
+import { useAuth } from "@/contexts/AuthContext";
 import { useTutorial } from "@/hooks/tutorial/useTutorial";
 import { useMascotTooltipAnchor } from "@/hooks/tutorial/useMascotTooltipAnchor";
-import { resolveTutorialByPathname } from "@/lib/tutorials/tutorial.registry";
+import { getTasksForModule, resolveTutorialByPathname } from "@/lib/tutorials/tutorial.registry";
 import {
   hasSeenTutorialInvite,
+  isTaskCompleted,
   isTutorialCompleted,
   markTutorialInviteSeen,
 } from "@/lib/tutorials/tutorial.storage";
-import type { ModuleTutorial } from "@/lib/tutorials/tutorial.types";
+import type { ModuleTutorial, TaskTutorial } from "@/lib/tutorials/tutorial.types";
 
 const FLIP_DURATION_MS = 600;
 
 export function MascotAssistant() {
   const pathname = usePathname();
   const reducedMotion = useReducedMotion();
+  const { user, can } = useAuth();
   const { isRunning, startTutorial } = useTutorial();
   const tooltipAnchor = useMascotTooltipAnchor(isRunning);
   // driver.js destroys and recreates its popover on every step — the anchor
@@ -81,11 +84,19 @@ export function MascotAssistant() {
     }, FLIP_DURATION_MS);
   };
 
-  const handleSelectTutorial = (tutorial: ModuleTutorial) => {
+  const handleSelectTutorial = (tutorial: ModuleTutorial | TaskTutorial) => {
     setMenuOpen(false);
     setCatalogOpen(false);
     startTutorial(tutorial);
   };
+
+  const taskItems: MascotMenuTaskItem[] = moduleTutorial
+    ? getTasksForModule(moduleTutorial.id, user?.role, can).map((task) => ({
+        id: task.id,
+        label: isTaskCompleted(task.moduleId, task.id) ? `Rever: ${task.title}` : task.title,
+        onClick: () => handleSelectTutorial(task),
+      }))
+    : [];
 
   if (isRunning) {
     return (
@@ -147,6 +158,7 @@ export function MascotAssistant() {
               onContextual={
                 moduleTutorial ? () => handleSelectTutorial(moduleTutorial) : undefined
               }
+              taskItems={taskItems}
               onOpenCatalog={() => {
                 setMenuOpen(false);
                 setCatalogOpen(true);

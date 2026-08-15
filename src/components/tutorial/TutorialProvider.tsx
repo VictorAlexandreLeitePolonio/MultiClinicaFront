@@ -7,24 +7,32 @@ import "driver.js/dist/driver.css";
 import { useAuth } from "@/contexts/AuthContext";
 import { TutorialContext } from "@/hooks/tutorial/useTutorial";
 import { filterAccessibleSteps } from "@/lib/tutorials/tutorial.registry";
-import type { ModuleTutorial } from "@/lib/tutorials/tutorial.types";
-import { markTutorialCompleted } from "@/lib/tutorials/tutorial.storage";
+import type { ModuleTutorial, TaskTutorial, TutorialStep } from "@/lib/tutorials/tutorial.types";
+import { markTaskCompleted, markTutorialCompleted } from "@/lib/tutorials/tutorial.storage";
 
 // Elements from the target module's page may not be mounted yet right after
 // navigating there — driver.js polls for up to this long before giving up.
 const WAIT_FOR_ELEMENT_MS = 3000;
+
+function isTaskTutorial(tutorial: ModuleTutorial | TaskTutorial): tutorial is TaskTutorial {
+  return "moduleId" in tutorial;
+}
 
 export function TutorialProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user, can } = useAuth();
-  const [activeTutorial, setActiveTutorial] = useState<ModuleTutorial | null>(null);
+  const [activeTutorial, setActiveTutorial] = useState<ModuleTutorial | TaskTutorial | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const driverRef = useRef<Driver | null>(null);
+  // Driver.js only carries {element, popover} per step — the route-change
+  // watcher below needs the original advanceOn/expectedPathname/
+  // expectedSearchParams, kept here in lockstep (same order) with driver's steps.
+  const activeStepsRef = useRef<TutorialStep[]>([]);
 
   const startTutorial = useCallback(
-    (tutorial: ModuleTutorial) => {
+    (tutorial: ModuleTutorial | TaskTutorial) => {
       driverRef.current?.destroy();
 
       // Modules like Pacientes/Agenda/Pagamentos reuse the same pathname for
@@ -36,6 +44,7 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
       }
 
       const accessibleSteps = filterAccessibleSteps(tutorial.steps, user?.role, can);
+      activeStepsRef.current = accessibleSteps;
 
       const driverObj = driver({
         animate: true,
@@ -50,25 +59,38 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
         skipMissingElement: true,
         waitForElement: WAIT_FOR_ELEMENT_MS,
         smoothScroll: true,
-        steps: accessibleSteps.map((step) => ({
-          element: step.target,
-          popover: {
-            title: step.title,
-            description: step.description,
-            side: step.placement,
-          },
-        })),
+        steps: accessibleSteps.map((step) => {
+          const advanceOn = step.advanceOn ?? "manual";
+          return {
+            element: step.target,
+            advanceOnClick: advanceOn === "target-click",
+            popover: {
+              title: step.title,
+              description: step.description,
+              side: step.placement,
+              // target-click / route-change steps advance on their own —
+              // showing "Próximo" would let the user skip past the real action.
+              showButtons: advanceOn === "manual" ? undefined : ["previous"],
+            },
+          };
+        }),
         onPopoverRender: (popoverDom) => {
           popoverDom.closeButton.textContent = "Pular tutorial";
           popoverDom.footerButtons.prepend(popoverDom.closeButton);
         },
         onDoneClick: () => {
-          markTutorialCompleted(tutorial.id);
+          // Task tutorials only complete via completeTaskTutorial(), fired
+          // from the module's own real success path — reaching the last
+          // step (even clicking Concluir) never marks a task done by itself.
+          if (!isTaskTutorial(tutorial)) {
+            markTutorialCompleted(tutorial.id);
+          }
           driverObj.destroy();
         },
         onDestroyed: () => {
           setIsRunning(false);
           setActiveTutorial(null);
+          activeStepsRef.current = [];
           driverRef.current = null;
         },
       });
@@ -81,6 +103,30 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
     [pathname, searchParams, router, user, can],
   );
 
+  const completeTaskTutorial = useCallback((moduleId: string, taskId: string) => {
+    markTaskCompleted(moduleId, taskId);
+    driverRef.current?.destroy();
+  }, []);
+
+  // route-change steps: advance once the URL matches what the step expects.
+  useEffect(() => {
+    const driverObj = driverRef.current;
+    if (!driverObj?.isActive()) return;
+
+    const index = driverObj.getActiveIndex();
+    if (index === undefined) return;
+
+    const step = activeStepsRef.current[index];
+    if (!step || step.advanceOn !== "route-change") return;
+
+    const pathMatches = !step.expectedPathname || pathname === step.expectedPathname;
+    const paramsMatch =
+      !step.expectedSearchParams ||
+      Object.entries(step.expectedSearchParams).every(([key, value]) => searchParams.get(key) === value);
+
+    if (pathMatches && paramsMatch) driverObj.moveNext();
+  }, [pathname, searchParams]);
+
   // A tour left mid-navigation (waiting on waitForElement) must not outlive
   // this provider — otherwise it keeps its document listeners bound.
   useEffect(() => {
@@ -88,8 +134,8 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ activeTutorial, isRunning, startTutorial }),
-    [activeTutorial, isRunning, startTutorial],
+    () => ({ activeTutorial, isRunning, startTutorial, completeTaskTutorial }),
+    [activeTutorial, isRunning, startTutorial, completeTaskTutorial],
   );
 
   return <TutorialContext.Provider value={value}>{children}</TutorialContext.Provider>;

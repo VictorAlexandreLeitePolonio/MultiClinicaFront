@@ -23,13 +23,17 @@ vi.mock("@/contexts/AuthContext", () => ({
 
 const hasSeenTutorialInvite = vi.fn();
 const isTutorialCompleted = vi.fn();
+const isTaskCompleted = vi.fn();
 const markTutorialInviteSeen = vi.fn();
 const markTutorialCompleted = vi.fn();
+const markTaskCompleted = vi.fn();
 vi.mock("@/lib/tutorials/tutorial.storage", () => ({
   hasSeenTutorialInvite: (...args: unknown[]) => hasSeenTutorialInvite(...args),
   isTutorialCompleted: (...args: unknown[]) => isTutorialCompleted(...args),
+  isTaskCompleted: (...args: unknown[]) => isTaskCompleted(...args),
   markTutorialInviteSeen: (...args: unknown[]) => markTutorialInviteSeen(...args),
   markTutorialCompleted: (...args: unknown[]) => markTutorialCompleted(...args),
+  markTaskCompleted: (...args: unknown[]) => markTaskCompleted(...args),
 }));
 
 function renderAssistant() {
@@ -46,6 +50,7 @@ describe("MascotAssistant", () => {
     reducedMotionValue = false;
     hasSeenTutorialInvite.mockReset().mockReturnValue(false);
     isTutorialCompleted.mockReset().mockReturnValue(false);
+    isTaskCompleted.mockReset().mockReturnValue(false);
     markTutorialInviteSeen.mockReset();
     markTutorialCompleted.mockReset();
   });

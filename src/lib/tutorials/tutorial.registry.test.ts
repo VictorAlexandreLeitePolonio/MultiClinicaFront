@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { canAccessTutorial, filterAccessibleSteps, resolveTutorialByPathname } from "./tutorial.registry";
+import {
+  canAccessTutorial,
+  filterAccessibleSteps,
+  getTasksForModule,
+  resolveTutorialByPathname,
+} from "./tutorial.registry";
 import type { TutorialStep } from "./tutorial.types";
 
 describe("resolveTutorialByPathname", () => {
@@ -83,5 +88,24 @@ describe("filterAccessibleSteps", () => {
   it("mantém todos os steps para quem tem role e permission", () => {
     const result = filterAccessibleSteps(steps, "Administrador", () => true);
     expect(result.map((s) => s.id)).toEqual(["public", "admin-only", "permission-only"]);
+  });
+});
+
+describe("getTasksForModule", () => {
+  it("retorna a ação guiada de pacientes só para o módulo patients", () => {
+    const result = getTasksForModule("patients", "Recepcao", () => true);
+    expect(result.map((t) => t.id)).toEqual(["create-patient"]);
+  });
+
+  it("retorna vazio para um módulo sem ações guiadas", () => {
+    expect(getTasksForModule("plans", "Administrador", () => true)).toEqual([]);
+  });
+
+  it("respeita roles/permission das ações guiadas", () => {
+    // create-record é restrita a Administrador/Profissional
+    expect(getTasksForModule("medical-records", "Recepcao", () => true)).toEqual([]);
+    expect(
+      getTasksForModule("medical-records", "Profissional", () => true).map((t) => t.id),
+    ).toEqual(["create-record"]);
   });
 });

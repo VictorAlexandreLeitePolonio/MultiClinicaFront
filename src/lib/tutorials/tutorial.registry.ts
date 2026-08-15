@@ -1,6 +1,9 @@
 import type { UserRole } from "@/types";
-import type { ModuleTutorial, TutorialStep } from "./tutorial.types";
+import type { ModuleTutorial, TaskTutorial, TutorialModuleId, TutorialStep } from "./tutorial.types";
 import { agendaTutorial } from "./definitions/agenda/module.tutorial";
+import { createAppointmentTask } from "./definitions/agenda/tasks/create-appointment.tutorial";
+import { createRecordTask } from "./definitions/medical-records/tasks/create-record.tutorial";
+import { createPatientTask } from "./definitions/patients/tasks/create-patient.tutorial";
 import { dashboardTutorial } from "./definitions/dashboard/module.tutorial";
 import { evolutionTemplatesTutorial } from "./definitions/evolution-templates/module.tutorial";
 import { financialTutorial } from "./definitions/financial/module.tutorial";
@@ -33,6 +36,18 @@ export const tutorialRegistry: ModuleTutorial[] = [
   plansTutorial,
   settingsTutorial,
 ];
+
+export const taskRegistry: TaskTutorial[] = [createPatientTask, createAppointmentTask, createRecordTask];
+
+export function getTasksForModule(
+  moduleId: TutorialModuleId,
+  role: UserRole | undefined,
+  can: (permission: string) => boolean,
+): TaskTutorial[] {
+  return taskRegistry.filter(
+    (task) => task.moduleId === moduleId && canAccessTutorial(task, role, can),
+  );
+}
 
 export function resolveTutorialByPathname(pathname: string): ModuleTutorial | null {
   const path = pathname.split("?")[0];

@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
   getTutorialStorage,
   hasSeenTutorialInvite,
+  isTaskCompleted,
   isTutorialCompleted,
+  markTaskCompleted,
   markTutorialCompleted,
   markTutorialInviteSeen,
 } from "./tutorial.storage";
@@ -15,7 +17,7 @@ beforeEach(() => {
 
 describe("tutorial.storage", () => {
   it("storage vazio retorna estado padrão", () => {
-    expect(getTutorialStorage()).toEqual({ modules: {}, invitesSeen: {} });
+    expect(getTutorialStorage()).toEqual({ modules: {}, invitesSeen: {}, tasks: {} });
   });
 
   it("completed é false quando módulo nunca foi concluído", () => {
@@ -44,11 +46,39 @@ describe("tutorial.storage", () => {
 
   it("JSON corrompido não derruba a aplicação e retorna estado padrão", () => {
     window.localStorage.setItem(KEY, "{not-valid-json");
-    expect(getTutorialStorage()).toEqual({ modules: {}, invitesSeen: {} });
+    expect(getTutorialStorage()).toEqual({ modules: {}, invitesSeen: {}, tasks: {} });
   });
 
   it("versão/formato desconhecido no storage retorna estado padrão", () => {
     window.localStorage.setItem(KEY, JSON.stringify({ unexpected: "shape" }));
-    expect(getTutorialStorage()).toEqual({ modules: {}, invitesSeen: {} });
+    expect(getTutorialStorage()).toEqual({ modules: {}, invitesSeen: {}, tasks: {} });
+  });
+
+  it("task completed é false quando nunca foi concluída", () => {
+    expect(isTaskCompleted("patients", "create-patient")).toBe(false);
+  });
+
+  it("task completed é true após markTaskCompleted", () => {
+    markTaskCompleted("patients", "create-patient");
+    expect(isTaskCompleted("patients", "create-patient")).toBe(true);
+  });
+
+  it("tasks de módulos diferentes não colidem", () => {
+    markTaskCompleted("patients", "create-patient");
+    expect(isTaskCompleted("agenda", "create-patient")).toBe(false);
+    expect(isTaskCompleted("patients", "create-appointment")).toBe(false);
+  });
+
+  it("storage antigo sem o campo tasks (versão anterior) não quebra e trata como vazio", () => {
+    window.localStorage.setItem(
+      KEY,
+      JSON.stringify({ modules: { agenda: { completed: true } }, invitesSeen: {} }),
+    );
+    expect(getTutorialStorage()).toEqual({
+      modules: { agenda: { completed: true } },
+      invitesSeen: {},
+      tasks: {},
+    });
+    expect(isTaskCompleted("patients", "create-patient")).toBe(false);
   });
 });

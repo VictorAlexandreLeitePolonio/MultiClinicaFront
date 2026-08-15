@@ -3,18 +3,21 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TutorialProvider } from "./TutorialProvider";
 import { useTutorial } from "@/hooks/tutorial/useTutorial";
-import type { ModuleTutorial } from "@/lib/tutorials/tutorial.types";
+import type { ModuleTutorial, TaskTutorial } from "@/lib/tutorials/tutorial.types";
 
 const markTutorialCompleted = vi.fn();
+const markTaskCompleted = vi.fn();
 vi.mock("@/lib/tutorials/tutorial.storage", () => ({
   markTutorialCompleted: (...args: unknown[]) => markTutorialCompleted(...args),
+  markTaskCompleted: (...args: unknown[]) => markTaskCompleted(...args),
 }));
 
 const routerPush = vi.fn();
+let mockPathname = "/app/agenda";
 let mockSearchParamsString = "";
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/app/agenda",
-  useSearchParams: () => ({ toString: () => mockSearchParamsString }),
+  usePathname: () => mockPathname,
+  useSearchParams: () => new URLSearchParams(mockSearchParamsString),
   useRouter: () => ({ push: routerPush }),
 }));
 
@@ -60,8 +63,10 @@ function TestConsumer() {
 describe("TutorialProvider", () => {
   beforeEach(() => {
     markTutorialCompleted.mockReset();
+    markTaskCompleted.mockReset();
     routerPush.mockReset();
     mockRole = "Administrador";
+    mockPathname = "/app/agenda";
     mockSearchParamsString = "";
     document.body.innerHTML = "";
   });
@@ -192,5 +197,209 @@ describe("TutorialProvider", () => {
     const title = await screen.findByText("Gerencie sua agenda");
     expect(title).toBeInTheDocument();
     expect(screen.queryByText("Só admin", { selector: ".driver-popover-title" })).not.toBeInTheDocument();
+  });
+
+  const targetClickTask: TaskTutorial = {
+    id: "create-thing",
+    moduleId: "agenda",
+    title: "Criar coisa",
+    pathname: "/app/agenda",
+    steps: [
+      {
+        id: "start",
+        target: '[data-tutorial="click-me"]',
+        title: "Clique aqui",
+        description: "Primeiro passo.",
+        advanceOn: "target-click",
+      },
+      {
+        id: "next",
+        target: '[data-tutorial="agenda-list"]',
+        title: "Segundo passo",
+        description: "Chegou.",
+      },
+    ],
+  };
+
+  function TargetClickConsumer() {
+    const { startTutorial } = useTutorial();
+    return (
+      <div>
+        <button onClick={() => startTutorial(targetClickTask)}>Iniciar target-click</button>
+        <button data-tutorial="click-me">Botão real</button>
+        <div data-tutorial="agenda-list">Lista</div>
+      </div>
+    );
+  }
+
+  it("target-click avança ao clicar no elemento real destacado, sem botão Próximo", async () => {
+    const user = userEvent.setup();
+    render(
+      <TutorialProvider>
+        <TargetClickConsumer />
+      </TutorialProvider>,
+    );
+
+    await user.click(screen.getByText("Iniciar target-click"));
+    await screen.findByText("Clique aqui");
+    expect(document.querySelector(".driver-popover-next-btn")).not.toBeVisible();
+    await waitForDriverTransition();
+
+    await user.click(screen.getByText("Botão real"));
+
+    expect(await screen.findByText("Segundo passo")).toBeInTheDocument();
+  });
+
+  it("clique fora do elemento destacado não avança o step", async () => {
+    const user = userEvent.setup();
+    render(
+      <TutorialProvider>
+        <TargetClickConsumer />
+      </TutorialProvider>,
+    );
+
+    await user.click(screen.getByText("Iniciar target-click"));
+    await screen.findByText("Clique aqui");
+
+    // driver.js bloqueia pointer-events em tudo fora do elemento ativo, então
+    // clicar em outro alvo (a lista) não deveria conseguir nem alcançá-lo —
+    // o step permanece o mesmo de qualquer forma.
+    expect(screen.getByText("Clique aqui")).toBeInTheDocument();
+    expect(screen.queryByText("Segundo passo")).not.toBeInTheDocument();
+  });
+
+  it("completeTaskTutorial marca a task concluída e fecha o tour", async () => {
+    const user = userEvent.setup();
+
+    function CompleterConsumer() {
+      const { isRunning, startTutorial, completeTaskTutorial } = useTutorial();
+      return (
+        <div>
+          <span>{isRunning ? "rodando" : "parado"}</span>
+          <button onClick={() => startTutorial(targetClickTask)}>Iniciar</button>
+          <button onClick={() => completeTaskTutorial("agenda", "create-thing")}>
+            Simular sucesso real
+          </button>
+          <div data-tutorial="click-me">Botão real</div>
+          <div data-tutorial="agenda-list">Lista</div>
+        </div>
+      );
+    }
+
+    render(
+      <TutorialProvider>
+        <CompleterConsumer />
+      </TutorialProvider>,
+    );
+
+    await user.click(screen.getByText("Iniciar"));
+    await screen.findByText("rodando");
+    await waitForDriverTransition();
+
+    await user.click(screen.getByText("Simular sucesso real"));
+
+    expect(markTaskCompleted).toHaveBeenCalledWith("agenda", "create-thing");
+    expect(await screen.findByText("parado")).toBeInTheDocument();
+  });
+
+  it('em uma task, clicar em "Concluir" fecha o tour sem marcar completed sozinho', async () => {
+    const user = userEvent.setup();
+    const manualTask: TaskTutorial = {
+      id: "manual-task",
+      moduleId: "agenda",
+      title: "Task manual",
+      pathname: "/app/agenda",
+      steps: [
+        {
+          id: "list",
+          target: '[data-tutorial="agenda-list"]',
+          title: "Gerencie sua agenda",
+          description: "Passo único.",
+        },
+      ],
+    };
+
+    function ManualTaskConsumer() {
+      const { startTutorial } = useTutorial();
+      return (
+        <div>
+          <button onClick={() => startTutorial(manualTask)}>Iniciar</button>
+          <div data-tutorial="agenda-list">Lista</div>
+        </div>
+      );
+    }
+
+    render(
+      <TutorialProvider>
+        <ManualTaskConsumer />
+      </TutorialProvider>,
+    );
+
+    await user.click(screen.getByText("Iniciar"));
+    await screen.findByText("Gerencie sua agenda");
+    await waitForDriverTransition();
+
+    const doneButton = document.querySelector<HTMLButtonElement>(".driver-popover-next-btn");
+    expect(doneButton?.textContent).toBe("Concluir");
+    await user.click(doneButton!);
+
+    expect(markTaskCompleted).not.toHaveBeenCalled();
+    expect(markTutorialCompleted).not.toHaveBeenCalled();
+  });
+
+  it("route-change avança quando pathname passa a bater com expectedPathname", async () => {
+    const user = userEvent.setup();
+    const routeChangeTask: TaskTutorial = {
+      id: "cross-nav",
+      moduleId: "agenda",
+      title: "Navegação",
+      pathname: "/app/agenda",
+      steps: [
+        {
+          id: "start",
+          target: '[data-tutorial="agenda-list"]',
+          title: "Aguardando navegação",
+          description: "Primeiro passo.",
+          advanceOn: "route-change",
+          expectedPathname: "/app/pacientes",
+        },
+        {
+          id: "arrived",
+          target: '[data-tutorial="patients-marker"]',
+          title: "Chegou em pacientes",
+          description: "Segundo passo.",
+        },
+      ],
+    };
+
+    function RouteChangeConsumer() {
+      const { startTutorial } = useTutorial();
+      return (
+        <div>
+          <button onClick={() => startTutorial(routeChangeTask)}>Iniciar</button>
+          <div data-tutorial="agenda-list">Lista</div>
+          <div data-tutorial="patients-marker">Pacientes</div>
+        </div>
+      );
+    }
+
+    const { rerender } = render(
+      <TutorialProvider>
+        <RouteChangeConsumer />
+      </TutorialProvider>,
+    );
+
+    await user.click(screen.getByText("Iniciar"));
+    await screen.findByText("Aguardando navegação");
+    expect(document.querySelector(".driver-popover-next-btn")).not.toBeVisible();
+
+    mockPathname = "/app/pacientes";
+    rerender(
+      <TutorialProvider>
+        <RouteChangeConsumer />
+      </TutorialProvider>,
+    );
+
+    expect(await screen.findByText("Chegou em pacientes")).toBeInTheDocument();
   });
 });
