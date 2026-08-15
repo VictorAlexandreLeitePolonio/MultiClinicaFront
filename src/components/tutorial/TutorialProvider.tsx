@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { driver, type Driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import { useAuth } from "@/contexts/AuthContext";
 import { TutorialContext } from "@/hooks/tutorial/useTutorial";
+import { filterAccessibleSteps } from "@/lib/tutorials/tutorial.registry";
 import type { ModuleTutorial } from "@/lib/tutorials/tutorial.types";
 import { markTutorialCompleted } from "@/lib/tutorials/tutorial.storage";
 
@@ -15,6 +17,7 @@ const WAIT_FOR_ELEMENT_MS = 3000;
 export function TutorialProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { user, can } = useAuth();
   const [activeTutorial, setActiveTutorial] = useState<ModuleTutorial | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const driverRef = useRef<Driver | null>(null);
@@ -26,6 +29,8 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
       if (pathname !== tutorial.pathname) {
         router.push(tutorial.pathname);
       }
+
+      const accessibleSteps = filterAccessibleSteps(tutorial.steps, user?.role, can);
 
       const driverObj = driver({
         animate: true,
@@ -40,7 +45,7 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
         skipMissingElement: true,
         waitForElement: WAIT_FOR_ELEMENT_MS,
         smoothScroll: true,
-        steps: tutorial.steps.map((step) => ({
+        steps: accessibleSteps.map((step) => ({
           element: step.target,
           popover: {
             title: step.title,
@@ -68,8 +73,14 @@ export function TutorialProvider({ children }: { children: ReactNode }) {
       setIsRunning(true);
       driverObj.drive();
     },
-    [pathname, router],
+    [pathname, router, user, can],
   );
+
+  // A tour left mid-navigation (waiting on waitForElement) must not outlive
+  // this provider — otherwise it keeps its document listeners bound.
+  useEffect(() => {
+    return () => driverRef.current?.destroy();
+  }, []);
 
   const value = useMemo(
     () => ({ activeTutorial, isRunning, startTutorial }),

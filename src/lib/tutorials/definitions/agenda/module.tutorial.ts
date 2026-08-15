@@ -1,4 +1,4 @@
-import type { ModuleTutorial } from "../tutorial.types";
+import type { ModuleTutorial } from "../../tutorial.types";
 
 export const agendaTutorial: ModuleTutorial = {
   id: "agenda",

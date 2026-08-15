@@ -16,6 +16,14 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: routerPush }),
 }));
 
+let mockRole: "Administrador" | "Recepcao" = "Administrador";
+vi.mock("@/contexts/AuthContext", () => ({
+  useAuth: () => ({
+    user: { role: mockRole },
+    can: () => true,
+  }),
+}));
+
 // driver.js's own highlight transition (animate:true, duration:200) only
 // finalizes __activeElement after ~200ms of real time — irrelevant for a
 // human clicking, but our synthetic click needs to wait for it too.
@@ -51,6 +59,7 @@ describe("TutorialProvider", () => {
   beforeEach(() => {
     markTutorialCompleted.mockReset();
     routerPush.mockReset();
+    mockRole = "Administrador";
     document.body.innerHTML = "";
   });
 
@@ -114,5 +123,53 @@ describe("TutorialProvider", () => {
     await user.click(screen.getByText("Iniciar em outra rota"));
 
     expect(routerPush).toHaveBeenCalledWith("/app/pacientes");
+  });
+
+  it("pula steps restritos por role para quem não tem a role exigida", async () => {
+    mockRole = "Recepcao";
+    const user = userEvent.setup();
+    const gatedTutorial: ModuleTutorial = {
+      id: "agenda",
+      title: "Agenda",
+      pathname: "/app/agenda",
+      steps: [
+        {
+          id: "admin-only",
+          target: '[data-tutorial="admin-only"]',
+          title: "Só admin",
+          description: "Não deveria aparecer para Recepcao.",
+          roles: ["Administrador"],
+        },
+        {
+          id: "list",
+          target: '[data-tutorial="agenda-list"]',
+          title: "Gerencie sua agenda",
+          description: "Visível para todos.",
+        },
+      ],
+    };
+
+    function GatedConsumer() {
+      const { startTutorial } = useTutorial();
+      return (
+        <div>
+          <button onClick={() => startTutorial(gatedTutorial)}>Iniciar restrito</button>
+          <div data-tutorial="admin-only">Só admin</div>
+          <div data-tutorial="agenda-list">Lista</div>
+        </div>
+      );
+    }
+
+    render(
+      <TutorialProvider>
+        <GatedConsumer />
+      </TutorialProvider>,
+    );
+
+    await user.click(screen.getByText("Iniciar restrito"));
+
+    const title = await screen.findByText("Gerencie sua agenda");
+    expect(title).toBeInTheDocument();
+    expect(screen.queryByText("Só admin", { selector: ".driver-popover-title" })).not.toBeInTheDocument();
   });
 });

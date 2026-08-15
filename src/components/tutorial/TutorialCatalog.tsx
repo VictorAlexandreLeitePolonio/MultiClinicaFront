@@ -2,7 +2,8 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/Button";
-import { tutorialRegistry } from "@/lib/tutorials/tutorial.registry";
+import { useAuth } from "@/contexts/AuthContext";
+import { canAccessTutorial, tutorialRegistry } from "@/lib/tutorials/tutorial.registry";
 import { isTutorialCompleted } from "@/lib/tutorials/tutorial.storage";
 import type { ModuleTutorial } from "@/lib/tutorials/tutorial.types";
 
@@ -13,6 +14,11 @@ interface TutorialCatalogProps {
 }
 
 export function TutorialCatalog({ open, onClose, onSelect }: TutorialCatalogProps) {
+  const { user, can } = useAuth();
+  const accessibleTutorials = tutorialRegistry.filter((tutorial) =>
+    canAccessTutorial(tutorial, user?.role, can),
+  );
+
   return (
     <Dialog.Root open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
       <Dialog.Portal>
@@ -23,7 +29,7 @@ export function TutorialCatalog({ open, onClose, onSelect }: TutorialCatalogProp
               Tutoriais
             </Dialog.Title>
             <div className="mt-4 space-y-3">
-              {tutorialRegistry.map((tutorial) => {
+              {accessibleTutorials.map((tutorial) => {
                 const completed = isTutorialCompleted(tutorial.id);
                 return (
                   <div

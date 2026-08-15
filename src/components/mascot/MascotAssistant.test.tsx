@@ -16,6 +16,10 @@ vi.mock("motion/react", async (importOriginal) => {
   return { ...actual, useReducedMotion: () => reducedMotionValue };
 });
 
+vi.mock("@/contexts/AuthContext", () => ({
+  useAuth: () => ({ user: { role: "Administrador" }, can: () => true }),
+}));
+
 const hasSeenTutorialInvite = vi.fn();
 const isTutorialCompleted = vi.fn();
 const markTutorialInviteSeen = vi.fn();
@@ -94,7 +98,7 @@ describe("MascotAssistant", () => {
   });
 
   it("rota sem tutorial mantém o mascote disponível sem oferta contextual", async () => {
-    mockPathname = "/app/pacientes";
+    mockPathname = "/app/rota-sem-tutorial";
     const user = userEvent.setup();
     renderAssistant();
 
