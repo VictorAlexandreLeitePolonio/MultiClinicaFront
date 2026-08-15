@@ -92,20 +92,22 @@ describe("filterAccessibleSteps", () => {
 });
 
 describe("getTasksForModule", () => {
-  it("retorna a ação guiada de pacientes só para o módulo patients", () => {
-    const result = getTasksForModule("patients", "Recepcao", () => true);
-    expect(result.map((t) => t.id)).toEqual(["create-patient"]);
+  it("retorna a ação guiada de produtos só para o módulo stock-products", () => {
+    const result = getTasksForModule("stock-products", "Administrador", () => true);
+    expect(result.map((t) => t.id)).toEqual(["create-product"]);
   });
 
   it("retorna vazio para um módulo sem ações guiadas", () => {
+    // patients/agenda/pagamentos etc. tiveram o guiado removido (navegam de rota).
     expect(getTasksForModule("plans", "Administrador", () => true)).toEqual([]);
+    expect(getTasksForModule("patients", "Administrador", () => true)).toEqual([]);
   });
 
-  it("respeita roles/permission das ações guiadas", () => {
-    // create-record é restrita a Administrador/Profissional
-    expect(getTasksForModule("medical-records", "Recepcao", () => true)).toEqual([]);
+  it("respeita a permission das ações guiadas", () => {
+    // create-product exige a permission "estoque.produtos.criar".
+    expect(getTasksForModule("stock-products", "Recepcao", () => false)).toEqual([]);
     expect(
-      getTasksForModule("medical-records", "Profissional", () => true).map((t) => t.id),
-    ).toEqual(["create-record"]);
+      getTasksForModule("stock-products", "Recepcao", () => true).map((t) => t.id),
+    ).toEqual(["create-product"]);
   });
 });

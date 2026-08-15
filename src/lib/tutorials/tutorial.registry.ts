@@ -1,9 +1,6 @@
 import type { UserRole } from "@/types";
 import type { ModuleTutorial, TaskTutorial, TutorialModuleId, TutorialStep } from "./tutorial.types";
 import { agendaTutorial } from "./definitions/agenda/module.tutorial";
-import { createAppointmentTask } from "./definitions/agenda/tasks/create-appointment.tutorial";
-import { createRecordTask } from "./definitions/medical-records/tasks/create-record.tutorial";
-import { createPatientTask } from "./definitions/patients/tasks/create-patient.tutorial";
 import { dashboardTutorial } from "./definitions/dashboard/module.tutorial";
 import { evolutionTemplatesTutorial } from "./definitions/evolution-templates/module.tutorial";
 import { financialTutorial } from "./definitions/financial/module.tutorial";
@@ -12,12 +9,17 @@ import { patientsTutorial } from "./definitions/patients/module.tutorial";
 import { paymentsTutorial } from "./definitions/payments/module.tutorial";
 import { stockCategoriesTutorial } from "./definitions/stock-categories/module.tutorial";
 import { stockMovementsTutorial } from "./definitions/stock-movements/module.tutorial";
+import { createMovementTask } from "./definitions/stock-movements/tasks/create-movement.tutorial";
 import { purchasesTutorial } from "./definitions/purchases/module.tutorial";
+import { createPurchaseTask } from "./definitions/purchases/tasks/create-purchase.tutorial";
 import { stockProductsTutorial } from "./definitions/stock-products/module.tutorial";
+import { createProductTask } from "./definitions/stock-products/tasks/create-product.tutorial";
 import { suppliersTutorial } from "./definitions/suppliers/module.tutorial";
+import { createSupplierTask } from "./definitions/suppliers/tasks/create-supplier.tutorial";
 import { usersTutorial } from "./definitions/users/module.tutorial";
 import { plansTutorial } from "./definitions/plans/module.tutorial";
 import { settingsTutorial } from "./definitions/settings/module.tutorial";
+import { updateSettingsTask } from "./definitions/settings/tasks/update-settings.tutorial";
 
 export const tutorialRegistry: ModuleTutorial[] = [
   dashboardTutorial,
@@ -37,7 +39,18 @@ export const tutorialRegistry: ModuleTutorial[] = [
   settingsTutorial,
 ];
 
-export const taskRegistry: TaskTutorial[] = [createPatientTask, createAppointmentTask, createRecordTask];
+// Ações guiadas: apenas fluxos que abrem o formulário na MESMA tela (modal ou
+// render condicional). Fluxos "criar" que fazem router.push para outra rota
+// (pacientes, agenda, prontuários, pagamentos, usuários, modelos) foram
+// removidos: durante a navegação do Next o tour some/trava, e um tour guiado
+// não pode depender de um alvo que só monta depois de uma troca de rota.
+export const taskRegistry: TaskTutorial[] = [
+  createProductTask,
+  createMovementTask,
+  createPurchaseTask,
+  createSupplierTask,
+  updateSettingsTask,
+];
 
 export function getTasksForModule(
   moduleId: TutorialModuleId,
