@@ -166,6 +166,28 @@ export interface CreatePaymentDto {
   paymentDate?: string | null;
 }
 
+/** Estado de ativação da identidade global (PatientAccount) do paciente. */
+export type PatientAccountStatus = "PendingActivation" | "Active" | "Inactive";
+
+/** Resultado da resolução de identidade + vínculo do paciente com a clínica. */
+export type PatientPortalLinkResult =
+  | "CreatedAccount"
+  | "LinkedExistingAccount"
+  | "AlreadyLinked";
+
+/**
+ * Resposta de POST /api/patients, /portal-access e /resend-invite: expõe a
+ * identidade global resolvida e o resultado do vínculo com a clínica.
+ */
+export interface PatientCreatedResponse {
+  id: number;
+  patientId: number;
+  patientAccountId: number;
+  patientAccountStatus: PatientAccountStatus;
+  linkResult: PatientPortalLinkResult;
+  invitationSent: boolean;
+}
+
 export interface Patient {
   id: number;
   name: string | null;
@@ -183,6 +205,8 @@ export interface Patient {
   createdAt?: string;
   appointmentStatus?: "Scheduled" | "Completed" | "Cancelled";
   paymentStatus?: "Pending" | "Paid" | "Cancelled";
+  /** null quando o paciente não possui acesso ao portal ("Sem acesso"). */
+  portalAccessStatus?: PatientAccountStatus | null;
 }
 
 export interface Appointment {
@@ -281,6 +305,8 @@ export interface PatientProfile {
   cep: string | null;
   isActive: boolean;
   createdAt: string;
+  /** null quando o paciente não possui acesso ao portal ("Sem acesso"). */
+  portalAccessStatus?: PatientAccountStatus | null;
   appointments: PatientProfileAppointment[];
   medicalRecords: PatientProfileMedicalRecord[];
   payments: PatientProfilePayment[];

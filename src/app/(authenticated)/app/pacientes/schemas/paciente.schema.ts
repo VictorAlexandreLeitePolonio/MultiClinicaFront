@@ -21,7 +21,10 @@ const phoneField = z
 
 export const PacienteSchema = z.object({
   name: textField,
-  email: z.union([z.string().email("E-mail inválido"), z.literal("")]).default(""),
+  email: z
+    .string()
+    .min(1, "E-mail é obrigatório")
+    .email("E-mail inválido"),
   cpf: cpfField,
   rg: rgField,
   phone: phoneField,

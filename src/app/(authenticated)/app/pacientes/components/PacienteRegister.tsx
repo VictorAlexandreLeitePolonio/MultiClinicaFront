@@ -11,7 +11,7 @@ import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
 import { PacienteSchema, PacienteFormData, step1Fields } from "../schemas/paciente.schema";
 import { usePacienteInsert } from "../hooks/insert";
-import { useTutorial } from "@/hooks/tutorial/useTutorial";
+import { PatientCreatedResponse } from "@/types";
 import { maskCPF, maskRG, maskPhone, maskCEP } from "@/utils/masks";
 import { unformatCPF, unformatRG, unformatPhone, unformatCEP } from "@/utils/formatters";
 
@@ -25,9 +25,17 @@ const toNullable = (value: string) => {
   return trimmed === "" ? null : trimmed;
 };
 
+/** Feedback do cadastro conforme a identidade global resolvida e o envio do convite. */
+const registrationMessage = (res: PatientCreatedResponse): string => {
+  if (res.patientAccountStatus === "PendingActivation" && !res.invitationSent)
+    return "Paciente cadastrado, mas não foi possível enviar o convite. Você pode reenviá-lo pelo perfil.";
+  if (res.linkResult === "LinkedExistingAccount")
+    return "Paciente cadastrado e vinculado à conta MultiClínica existente.";
+  return "Paciente cadastrado. Enviamos um convite para ele ativar sua conta MultiClínica.";
+};
+
 export default function PacienteRegister({ onBack, onSave }: Props) {
   const { insertPaciente, isPending } = usePacienteInsert();
-  const { completeTaskTutorial } = useTutorial();
   const [step, setStep] = useState<1 | 2>(1);
 
   const {
@@ -72,9 +80,8 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
         estado: toNullable(data.estado),
         cep: data.cep ? toNullable(unformatCEP(data.cep)) : null,
       };
-      await insertPaciente(payload);
-      toast.success("Paciente cadastrado com sucesso!");
-      completeTaskTutorial("patients", "create-patient");
+      const response = await insertPaciente(payload);
+      toast.success(registrationMessage(response));
       onSave();
     } catch {
       // erro já tratado no hook
@@ -148,7 +155,6 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {step === 1 && (
-        <div data-tutorial="patient-form-personal">
         <FormSection title="Dados Pessoais">
           <FormField label="Nome" error={errors.name?.message} {...register("name")} />
           <FormField label="E-mail" error={errors.email?.message} {...register("email")} />
@@ -194,11 +200,9 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
             )}
           />
         </FormSection>
-        </div>
         )}
 
         {step === 2 && (
-        <div data-tutorial="patient-form-address">
         <FormSection title="Endereço">
           <Controller
             control={control}
@@ -219,7 +223,6 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
           <FormField label="Cidade" error={errors.cidade?.message} {...register("cidade")} />
           <FormField label="Estado" error={errors.estado?.message} {...register("estado")} />
         </FormSection>
-        </div>
         )}
 
         {/* Botões de navegação */}
@@ -233,11 +236,9 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
               <Button type="button" variant="outline" onClick={goToPreviousStep}>
                 ← Voltar
               </Button>
-              <div data-tutorial="patient-form-save">
-                <Button type="submit" loading={isPending}>
-                  Cadastrar
-                </Button>
-              </div>
+              <Button type="submit" loading={isPending}>
+                Cadastrar
+              </Button>
             </>
           )}
         </div>

@@ -13,6 +13,7 @@ import { PacienteSchema, PacienteFormData } from "../schemas/paciente.schema";
 import { toast } from "sonner";
 import { usePacienteById } from "../hooks/getId";
 import { usePacienteUpdate } from "../hooks/update";
+import { PatientPortalAccessSection } from "./PatientPortalAccessSection";
 import { Eye, Edit3, Save, X } from "lucide-react";
 import { maskCPF, maskRG, maskPhone } from "@/utils/masks";
 import { unformatCPF, unformatRG, formatCEP, unformatCEP, unformatPhone } from "@/utils/formatters";
@@ -29,7 +30,7 @@ const toNullable = (value: string) => {
 };
 
 export default function PacienteDetails({ id, onBack, onSave }: Props) {
-  const { data, loading, error } = usePacienteById(id);
+  const { data, loading, error, refetch } = usePacienteById(id);
   const { updatePaciente, isPending } = usePacienteUpdate();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -205,6 +206,12 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
           </>
         )}
       </motion.div>
+
+      <PatientPortalAccessSection
+        patientId={id}
+        status={data?.portalAccessStatus}
+        onChanged={refetch}
+      />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <FormSection title="Dados Pessoais">
