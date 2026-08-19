@@ -1,5 +1,6 @@
 import patientApi from "@/lib/patientApi";
 import {
+  CreateAppointmentRequestPayload,
   PatientAppointment,
   PatientAppointmentRequest,
   PatientClinic,
@@ -32,9 +33,29 @@ export async function getMyClinics(): Promise<PatientClinic[]> {
   return response.data;
 }
 
-/** Lista de solicitações do paciente. O fluxo completo é construído na FRONT-4;
- *  aqui é usada apenas para o indicador de pendentes na dashboard. */
+/** Lista de solicitações do paciente. */
 export async function getMyAppointmentRequests(): Promise<PatientAppointmentRequest[]> {
   const response = await patientApi.get<PatientAppointmentRequest[]>("/api/patient/appointment-requests");
+  return response.data;
+}
+
+export async function createAppointmentRequest(
+  payload: CreateAppointmentRequestPayload,
+): Promise<PatientAppointmentRequest> {
+  const response = await patientApi.post<PatientAppointmentRequest>(
+    "/api/patient/appointment-requests",
+    payload,
+  );
+  return response.data;
+}
+
+export async function cancelAppointmentRequest(
+  id: number,
+  reason: string,
+): Promise<PatientAppointmentRequest> {
+  const response = await patientApi.patch<PatientAppointmentRequest>(
+    `/api/patient/appointment-requests/${id}/cancel`,
+    { reason },
+  );
   return response.data;
 }

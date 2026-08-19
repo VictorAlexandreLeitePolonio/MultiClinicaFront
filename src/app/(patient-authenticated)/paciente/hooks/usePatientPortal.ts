@@ -2,8 +2,10 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { patientPortalKeys } from "@/lib/queryKeys";
-import { PatientMe, UpdatePatientMePayload } from "@/types";
+import { CreateAppointmentRequestPayload, PatientMe, UpdatePatientMePayload } from "@/types";
 import {
+  cancelAppointmentRequest,
+  createAppointmentRequest,
   getHistoryAppointments,
   getMe,
   getMyAppointmentRequests,
@@ -46,4 +48,24 @@ export function useMyClinics() {
 
 export function useMyAppointmentRequests() {
   return useQuery({ queryKey: patientPortalKeys.requests, queryFn: getMyAppointmentRequests });
+}
+
+export function useCreateAppointmentRequest() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: CreateAppointmentRequestPayload) => createAppointmentRequest(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: patientPortalKeys.requests });
+    },
+  });
+}
+
+export function useCancelAppointmentRequest() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: number; reason: string }) => cancelAppointmentRequest(id, reason),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: patientPortalKeys.requests });
+    },
+  });
 }

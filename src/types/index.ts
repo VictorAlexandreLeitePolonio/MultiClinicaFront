@@ -235,12 +235,14 @@ export interface PatientClinic {
   state: string | null;
   likeCount: number;
   likedByMe: boolean;
+  /** Gate do CTA "Solicitar consulta". */
+  acceptsAppointmentRequests: boolean;
 }
 
 export type AppointmentRequestStatus = "Pending" | "Accepted" | "Rejected" | "Cancelled";
 export type CancellationOrigin = "Patient" | "Clinic";
 
-/** Solicitação de consulta como vista pelo paciente (fluxo completo na FRONT-4). */
+/** Solicitação de consulta (mesmo contrato para o paciente e para a clínica). */
 export interface PatientAppointmentRequest {
   id: number;
   patientAccountId: number;
@@ -255,6 +257,16 @@ export interface PatientAppointmentRequest {
   respondedAt: string | null;
   appointmentId: number | null;
   createdAt: string;
+}
+
+/** Alias usado no lado da clínica (Agenda) — mesmo shape do DTO do backend. */
+export type AppointmentRequest = PatientAppointmentRequest;
+
+/** Payload de criação de solicitação pelo paciente. */
+export interface CreateAppointmentRequestPayload {
+  clinicId: number;
+  requestedDate: string;
+  reason: string | null;
 }
 
 export interface Patient {

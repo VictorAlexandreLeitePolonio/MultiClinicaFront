@@ -14,6 +14,7 @@ const base: PatientClinic = {
   state: "SP",
   likeCount: 187,
   likedByMe: false,
+  acceptsAppointmentRequests: true,
 };
 
 describe("ClinicCard", () => {
