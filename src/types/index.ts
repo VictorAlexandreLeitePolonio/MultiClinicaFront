@@ -188,6 +188,14 @@ export interface PatientCreatedResponse {
   invitationSent: boolean;
 }
 
+/** Sessão do paciente no portal (retorno de /api/patient-auth login/me/activate). */
+export interface PatientSession {
+  id: number;
+  name: string | null;
+  email: string | null;
+  status: PatientAccountStatus;
+}
+
 export interface Patient {
   id: number;
   name: string | null;
