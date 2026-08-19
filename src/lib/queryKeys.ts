@@ -68,6 +68,15 @@ export const clinicSettingsKeys = {
   detail: () => ["clinic-settings", "detail"] as const,
 };
 
+export const patientPortalKeys = {
+  all: ["patient-portal"] as const,
+  me: ["patient-portal", "me"] as const,
+  appointments: (scope: "upcoming" | "history") =>
+    ["patient-portal", "appointments", scope] as const,
+  clinics: ["patient-portal", "clinics"] as const,
+  requests: ["patient-portal", "requests"] as const,
+};
+
 export const superAdminClinicSettingsKeys = {
   all: ["superadmin-clinic-settings"] as const,
   detail: (clinicId: number) => ["superadmin-clinic-settings", clinicId] as const,
