@@ -1,13 +1,18 @@
 "use client";
 
-import { Building2 } from "lucide-react";
+import { useState } from "react";
+import { Building2, CalendarPlus } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
+import { Button } from "@/components/ui/Button";
+import { PatientClinic } from "@/types";
 import { ClinicCard } from "../components/ClinicCard";
+import { RequestAppointmentModal } from "../components/RequestAppointmentModal";
 import { useMyClinics } from "../hooks/usePatientPortal";
 
 export default function PatientClinicsPage() {
   const { data, isLoading, isError, refetch } = useMyClinics();
+  const [requestClinic, setRequestClinic] = useState<PatientClinic | null>(null);
 
   return (
     <div className="space-y-6">
@@ -37,9 +42,26 @@ export default function PatientClinicsPage() {
       {!isLoading && !isError && (data?.length ?? 0) > 0 && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {data!.map((clinic) => (
-            <ClinicCard key={clinic.id} clinic={clinic} />
+            <div key={clinic.id} className="flex flex-col gap-2">
+              <ClinicCard clinic={clinic} />
+              {clinic.acceptsAppointmentRequests && (
+                <Button variant="outline" fullWidth={false} onClick={() => setRequestClinic(clinic)}>
+                  <CalendarPlus size={16} />
+                  Solicitar consulta
+                </Button>
+              )}
+            </div>
           ))}
         </div>
+      )}
+
+      {requestClinic && (
+        <RequestAppointmentModal
+          open
+          clinicId={requestClinic.id}
+          clinicName={requestClinic.displayName}
+          onClose={() => setRequestClinic(null)}
+        />
       )}
     </div>
   );
