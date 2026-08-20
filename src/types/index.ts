@@ -196,6 +196,67 @@ export interface PatientSession {
   status: PatientAccountStatus;
 }
 
+/** Perfil do paciente no portal (GET /api/patient/me). */
+export interface PatientMe {
+  id: number;
+  name: string | null;
+  email: string | null;
+  cpf: string | null;
+  phone: string | null;
+  status: PatientAccountStatus;
+}
+
+/** MVP: paciente só altera nome e telefone. */
+export interface UpdatePatientMePayload {
+  name: string | null;
+  phone: string | null;
+}
+
+/** Consulta exposta ao paciente — sem prontuário/evolução/pagamentos. */
+export interface PatientAppointment {
+  appointmentId: number;
+  clinicId: number;
+  clinicName: string | null;
+  clinicSlug: string | null;
+  professionalName: string | null;
+  appointmentDate: string;
+  status: "Scheduled" | "Completed" | "Cancelled";
+}
+
+/** Resumo público de uma clínica vinculada ("Minhas Clínicas"). */
+export interface PatientClinic {
+  id: number;
+  slug: string | null;
+  displayName: string | null;
+  logoUrl: string | null;
+  coverUrl: string | null;
+  categories: string[];
+  city: string | null;
+  state: string | null;
+  likeCount: number;
+  likedByMe: boolean;
+}
+
+export type AppointmentRequestStatus = "Pending" | "Accepted" | "Rejected" | "Cancelled";
+export type CancellationOrigin = "Patient" | "Clinic";
+
+/** Solicitação de consulta como vista pelo paciente (fluxo completo na FRONT-4). */
+export interface PatientAppointmentRequest {
+  id: number;
+  patientAccountId: number;
+  clinicId: number;
+  clinicName: string | null;
+  patientName: string | null;
+  requestedDate: string;
+  reason: string | null;
+  status: AppointmentRequestStatus;
+  responseReason: string | null;
+  cancelledBy: CancellationOrigin | null;
+  respondedAt: string | null;
+  appointmentId: number | null;
+  createdAt: string;
+}
+
 export interface Patient {
   id: number;
   name: string | null;

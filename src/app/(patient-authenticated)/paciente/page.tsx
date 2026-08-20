@@ -1,48 +1,103 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { KeyRound, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { CalendarClock, CalendarCheck, ClipboardList, Building2 } from "lucide-react";
+import { MetricCard } from "@/components/ui/MetricCard";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { usePatientAuth } from "@/contexts/PatientAuthContext";
+import { AppointmentCard } from "./components/AppointmentCard";
+import {
+  useMyAppointmentRequests,
+  useMyClinics,
+  useUpcomingAppointments,
+} from "./hooks/usePatientPortal";
 
-/**
- * Landing mínima do portal autenticado. Serve como âncora da sessão do paciente
- * na FRONT-2; o dashboard completo (indicadores, próxima consulta etc.) é
- * construído na FRONT-3.
- */
-export default function PatientHomePage() {
-  const { patient, logout } = usePatientAuth();
-  const router = useRouter();
+export default function PatientDashboardPage() {
+  const { patient } = usePatientAuth();
+  const upcoming = useUpcomingAppointments();
+  const clinics = useMyClinics();
+  const requests = useMyAppointmentRequests();
 
-  const handleLogout = async () => {
-    await logout();
-    router.replace("/paciente/login");
-  };
+  const nextAppointment = upcoming.data?.[0];
+  const pendingRequests = requests.data?.filter((r) => r.status === "Pending").length ?? 0;
+
+  const isLoading = upcoming.isLoading || clinics.isLoading || requests.isLoading;
+  const isError = upcoming.isError || clinics.isError || requests.isError;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 px-4 py-10">
-      <div className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <h1 className="text-xl font-bold text-[#0f172a] dark:text-white">
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-[#0f172a] dark:text-white">
           Olá{patient?.name ? `, ${patient.name}` : ""}!
         </h1>
         <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">
-          Bem-vindo(a) ao portal do paciente MultiClínica.
+          Aqui está o resumo da sua jornada na MultiClínica.
         </p>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/paciente/alterar-senha">
-            <Button variant="outline" fullWidth={false}>
-              <KeyRound size={16} />
-              Alterar senha
-            </Button>
-          </Link>
-          <Button variant="secondary" fullWidth={false} onClick={handleLogout}>
-            <LogOut size={16} />
-            Sair
-          </Button>
-        </div>
       </div>
+
+      {isLoading && (
+        <p className="py-8 text-center text-sm text-[#64748b] dark:text-slate-400">Carregando...</p>
+      )}
+
+      {isError && !isLoading && (
+        <ErrorState
+          message="Não foi possível carregar seu resumo."
+          onRetry={() => {
+            void upcoming.refetch();
+            void clinics.refetch();
+            void requests.refetch();
+          }}
+        />
+      )}
+
+      {!isLoading && !isError && (
+        <>
+          {/* Próxima consulta em destaque */}
+          <section className="space-y-3">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#64748b] dark:text-slate-400">
+              Próxima consulta
+            </h2>
+            {nextAppointment ? (
+              <AppointmentCard appointment={nextAppointment} />
+            ) : (
+              <EmptyState
+                icon={CalendarClock}
+                title="Nenhuma consulta agendada"
+                description="Quando você tiver uma consulta marcada, ela aparecerá aqui."
+              />
+            )}
+          </section>
+
+          {/* Indicadores */}
+          <section className="grid gap-4 sm:grid-cols-3">
+            <MetricCard
+              label="Consultas futuras"
+              value={upcoming.data?.length ?? 0}
+              icon={CalendarCheck}
+            />
+            <MetricCard
+              label="Solicitações pendentes"
+              value={pendingRequests}
+              icon={ClipboardList}
+            />
+            <MetricCard
+              label="Clínicas vinculadas"
+              value={clinics.data?.length ?? 0}
+              icon={Building2}
+            />
+          </section>
+
+          <div className="flex flex-wrap gap-3 text-sm">
+            <Link href="/paciente/consultas" className="font-medium text-[#0f766e] hover:text-[#14b8a6]">
+              Ver todas as consultas →
+            </Link>
+            <Link href="/paciente/clinicas" className="font-medium text-[#0f766e] hover:text-[#14b8a6]">
+              Minhas clínicas →
+            </Link>
+          </div>
+        </>
+      )}
     </div>
   );
 }
