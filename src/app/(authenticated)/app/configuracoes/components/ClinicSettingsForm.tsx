@@ -8,6 +8,10 @@ import { ClinicSettings, UpdateClinicSettingsRequest } from "@/types";
 import { ClinicThemePreview } from "./ClinicThemePreview";
 import { ColorInput } from "./ColorInput";
 import { LogoPreview } from "./LogoPreview";
+import { ClinicPublicProfileSection } from "./ClinicPublicProfileSection";
+import { ClinicVisibilitySection } from "./ClinicVisibilitySection";
+import { ClinicAddressSection } from "./ClinicAddressSection";
+import { ClinicPublicPreview } from "./ClinicPublicPreview";
 import {
   clinicSettingsSchema,
   ClinicSettingsFormValues,
@@ -37,22 +41,13 @@ export function ClinicSettingsForm({
     resolver: zodResolver(clinicSettingsSchema),
     values: toClinicSettingsFormValues(settings),
   });
-  const watchedValues = useWatch({ control });
-  const values = {
-    displayName: watchedValues.displayName ?? "",
-    logoUrl: watchedValues.logoUrl ?? "",
-    primaryColor: watchedValues.primaryColor ?? "",
-    secondaryColor: watchedValues.secondaryColor ?? "",
-    accentColor: watchedValues.accentColor ?? "",
-    contactEmail: watchedValues.contactEmail ?? "",
-    contactPhone: watchedValues.contactPhone ?? "",
-  };
+  const watched = useWatch({ control });
 
   return (
     <form onSubmit={handleSubmit((data) => onSubmit(toUpdateClinicSettingsRequest(data)))} className="space-y-6">
       <section className="grid gap-6 rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:grid-cols-[minmax(0,1fr)_18rem]">
         <div className="space-y-5">
-          <div data-tutorial="settings-identity" className="space-y-5">
+          <div className="space-y-5">
             <div>
               <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Minha clínica</h2>
               <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">
@@ -67,24 +62,22 @@ export function ClinicSettingsForm({
               {...register("displayName")}
             />
           </div>
-          <div data-tutorial="settings-logo">
-            <FormField
-              id="clinic-settings-logo-url"
-              label="Logo URL"
-              type="url"
-              disabled={!canEdit}
-              error={errors.logoUrl?.message}
-              {...register("logoUrl")}
-            />
-          </div>
+          <FormField
+            id="clinic-settings-logo-url"
+            label="Logo URL"
+            type="url"
+            disabled={!canEdit}
+            error={errors.logoUrl?.message}
+            {...register("logoUrl")}
+          />
         </div>
         <div>
           <p className="mb-2 text-sm font-semibold text-[#0f172a] dark:text-white">Preview da logo</p>
-          <LogoPreview logoUrl={values.logoUrl} displayName={values.displayName} />
+          <LogoPreview logoUrl={watched.logoUrl ?? ""} displayName={watched.displayName ?? ""} />
         </div>
       </section>
 
-      <section data-tutorial="settings-colors" className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Cores da clínica</h2>
         <div className="mt-5 grid gap-5 md:grid-cols-3">
           {([
@@ -113,7 +106,14 @@ export function ClinicSettingsForm({
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <div data-tutorial="settings-contact" className="space-y-5 rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <ClinicPublicProfileSection register={register} errors={errors} disabled={!canEdit} />
+        <ClinicVisibilitySection control={control} disabled={!canEdit} />
+      </section>
+
+      <ClinicAddressSection register={register} errors={errors} disabled={!canEdit} />
+
+      <section className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-5 rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div>
             <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Contato</h2>
             <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">Dados exibidos para os pacientes.</p>
@@ -134,22 +134,32 @@ export function ClinicSettingsForm({
             {...register("contactPhone")}
           />
         </div>
-        <div data-tutorial="settings-preview" className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Preview visual</h2>
-          <div className="mt-5">
+        <div className="space-y-5 rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Prévia do perfil público</h2>
+          <ClinicPublicPreview
+            displayName={watched.displayName ?? ""}
+            description={watched.description ?? ""}
+            logoUrl={watched.logoUrl ?? ""}
+            primaryColor={watched.primaryColor ?? ""}
+            isPublic={watched.isPublic ?? false}
+            city={watched.cidade ?? ""}
+            state={watched.estado ?? ""}
+          />
+          <div>
+            <p className="mb-2 text-sm font-semibold text-[#0f172a] dark:text-white">Prévia do tema</p>
             <ClinicThemePreview
-              displayName={values.displayName}
-              logoUrl={values.logoUrl}
-              primaryColor={values.primaryColor}
-              secondaryColor={values.secondaryColor}
-              accentColor={values.accentColor}
+              displayName={watched.displayName ?? ""}
+              logoUrl={watched.logoUrl ?? ""}
+              primaryColor={watched.primaryColor ?? ""}
+              secondaryColor={watched.secondaryColor ?? ""}
+              accentColor={watched.accentColor ?? ""}
             />
           </div>
         </div>
       </section>
 
       {canEdit && (
-        <div data-tutorial="settings-save" className="flex justify-end">
+        <div className="flex justify-end">
           <div className="w-full sm:w-48">
             <Button type="submit" loading={loading}>
               Salvar alterações

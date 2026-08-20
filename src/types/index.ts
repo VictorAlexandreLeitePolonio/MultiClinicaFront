@@ -36,6 +36,15 @@ export interface AuthResponse {
   permissions: string[];
 }
 
+export interface ClinicAddress {
+  rua: string | null;
+  numero: string | null;
+  bairro: string | null;
+  cidade: string | null;
+  estado: string | null;
+  cep: string | null;
+}
+
 export interface ClinicSettings {
   clinicId: number;
   name: string;
@@ -46,6 +55,15 @@ export interface ClinicSettings {
   accentColor: string | null;
   contactEmail: string | null;
   contactPhone: string | null;
+  // ── Presença pública (BACK-5) ──
+  publicSlug: string | null;
+  description: string | null;
+  isPublic: boolean;
+  acceptsAppointmentRequests: boolean;
+  latitude: number | null;
+  longitude: number | null;
+  address: ClinicAddress;
+  likeCount: number;
 }
 
 export interface UpdateClinicSettingsRequest {
@@ -56,6 +74,52 @@ export interface UpdateClinicSettingsRequest {
   accentColor?: string | null;
   contactEmail?: string | null;
   contactPhone?: string | null;
+  publicSlug?: string | null;
+  description?: string | null;
+  isPublic?: boolean;
+  acceptsAppointmentRequests?: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
+  address?: ClinicAddress;
+}
+
+/** Dia da semana como serializado pelo backend (System.DayOfWeek). */
+export type DayOfWeekName =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday";
+
+export interface ClinicCategory {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+/** Faixa de horário de funcionamento. startTime/endTime no formato "HH:mm:ss". */
+export interface BusinessHour {
+  id: number;
+  dayOfWeek: DayOfWeekName;
+  startTime: string;
+  endTime: string;
+}
+
+export interface CreateBusinessHourRequest {
+  dayOfWeek: DayOfWeekName;
+  startTime: string;
+  endTime: string;
+}
+
+export type ClinicMediaType = "Cover" | "Gallery";
+
+export interface ClinicMedia {
+  id: number;
+  type: ClinicMediaType;
+  sortOrder: number;
+  url: string;
 }
 
 export type BillingStatus = "Enabled" | "Blocked" | "Disabled";
