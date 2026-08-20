@@ -122,6 +122,26 @@ export interface ClinicMedia {
   url: string;
 }
 
+/** Perfil público da clínica (GET /api/public/clinics/{slug}). */
+export interface PublicClinic {
+  id: number;
+  slug: string | null;
+  displayName: string | null;
+  description: string | null;
+  logoUrl: string | null;
+  coverUrl: string | null;
+  gallery: string[];
+  categories: ClinicCategory[];
+  address: ClinicAddress;
+  latitude: number | null;
+  longitude: number | null;
+  businessHours: BusinessHour[];
+  contactEmail: string | null;
+  contactPhone: string | null;
+  likeCount: number;
+  acceptsAppointmentRequests: boolean;
+}
+
 export type BillingStatus = "Enabled" | "Blocked" | "Disabled";
 
 export interface SuperAdminDashboardMetrics {
