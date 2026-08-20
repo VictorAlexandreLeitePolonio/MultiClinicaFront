@@ -1,6 +1,6 @@
 import api from "@/lib/api";
 import { normalizePagedResult } from "@/lib/pagination";
-import { PagedResult, Patient, PatientProfile } from "@/types";
+import { PagedResult, Patient, PatientCreatedResponse, PatientProfile } from "@/types";
 
 export interface GetPatientsParams {
   name?: string;
@@ -49,8 +49,22 @@ export async function getPatientProfile(id: number): Promise<PatientProfile> {
   return response.data;
 }
 
-export async function createPatient(payload: PatientPayload): Promise<Patient> {
-  const response = await api.post<Patient>("/api/patients", payload);
+export async function createPatient(payload: PatientPayload): Promise<PatientCreatedResponse> {
+  const response = await api.post<PatientCreatedResponse>("/api/patients", payload);
+
+  return response.data;
+}
+
+/** Provisiona acesso ao portal para um paciente legado (sem identidade global). */
+export async function provisionPortalAccess(id: number): Promise<PatientCreatedResponse> {
+  const response = await api.post<PatientCreatedResponse>(`/api/patients/${id}/portal-access`);
+
+  return response.data;
+}
+
+/** Reenvia o convite de ativação para um paciente com conta pendente. */
+export async function resendPortalInvite(id: number): Promise<PatientCreatedResponse> {
+  const response = await api.post<PatientCreatedResponse>(`/api/patients/${id}/resend-invite`);
 
   return response.data;
 }

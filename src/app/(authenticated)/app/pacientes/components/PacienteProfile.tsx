@@ -9,6 +9,7 @@ import { formatDate, formatCurrency, formatCPF, formatPhone } from "@/utils/form
 import { Activity, Calendar, FileText, CreditCard, User, Phone, MapPin } from "lucide-react";
 import { fadeSlideUp, staggerContainer } from "@/lib/motion";
 import { PatientEvolutionSection } from "./evolution/PatientEvolutionSection";
+import { PatientPortalAccessSection } from "./PatientPortalAccessSection";
 
 type TabType = "appointments" | "medicalRecords" | "payments" | "evolution";
 
@@ -34,7 +35,7 @@ const formatAddress = (data: {
 };
 
 export default function PacienteProfile({ id, onBack }: Props) {
-  const { data, loading } = useGetPatientProfile(id);
+  const { data, loading, refetch } = useGetPatientProfile(id);
   const [activeTab, setActiveTab] = useState<TabType>("appointments");
 
   if (loading) {
@@ -222,6 +223,15 @@ export default function PacienteProfile({ id, onBack }: Props) {
             <p className="mt-1">{formatField(data.email)}</p>
           </div>
         </div>
+      </motion.div>
+
+      {/* Acesso ao portal */}
+      <motion.div variants={fadeSlideUp}>
+        <PatientPortalAccessSection
+          patientId={id}
+          status={data.portalAccessStatus}
+          onChanged={refetch}
+        />
       </motion.div>
 
       {/* Tabs */}
