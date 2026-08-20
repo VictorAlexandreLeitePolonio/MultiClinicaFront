@@ -1,7 +1,13 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ClinicCard } from "./ClinicCard";
 import { PatientClinic } from "@/types";
+
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock("../services/patient-portal.service", () => ({
+  likeClinic: vi.fn(),
+  unlikeClinic: vi.fn(),
+}));
 
 const base: PatientClinic = {
   id: 1,

@@ -1,14 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { Building2, Heart, MapPin } from "lucide-react";
+import { Building2, MapPin } from "lucide-react";
 import { PublicClinic } from "@/types";
+import { ClinicLikeButton } from "@/components/ClinicLikeButton";
+import { usePatientAuth } from "@/contexts/PatientAuthContext";
 
 function location(clinic: PublicClinic) {
   return [clinic.address.cidade, clinic.address.estado].filter(Boolean).join(" / ");
 }
 
 export function ClinicPublicHeader({ clinic }: { clinic: PublicClinic }) {
+  const { isAuthenticated } = usePatientAuth();
+
   return (
     <header className="overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
       <div className="relative h-40 bg-[#ecfdf5] dark:bg-slate-800 sm:h-56">
@@ -24,9 +28,13 @@ export function ClinicPublicHeader({ clinic }: { clinic: PublicClinic }) {
               <Building2 size={34} className="text-[#0f766e] dark:text-[#67e8f9]" />
             )}
           </div>
-          <div className="mb-1 flex items-center gap-1.5 text-sm font-semibold text-[#475569] dark:text-slate-300">
-            <Heart size={16} className="fill-red-500 text-red-500" />
-            {clinic.likeCount}
+          <div className="mb-1">
+            <ClinicLikeButton
+              clinicId={clinic.id}
+              likeCount={clinic.likeCount}
+              canLike={isAuthenticated}
+              size={18}
+            />
           </div>
         </div>
 
