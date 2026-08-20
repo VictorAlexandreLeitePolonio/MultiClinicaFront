@@ -73,6 +73,17 @@ export const clinicSettingsKeys = {
   detail: () => ["clinic-settings", "detail"] as const,
 };
 
+export const clinicProfileKeys = {
+  categoryCatalog: ["clinic-profile", "categories", "catalog"] as const,
+  categories: ["clinic-profile", "categories"] as const,
+  businessHours: ["clinic-profile", "business-hours"] as const,
+  media: ["clinic-profile", "media"] as const,
+};
+
+export const publicClinicKeys = {
+  detail: (slug: string) => ["public-clinic", slug] as const,
+};
+
 export const patientPortalKeys = {
   all: ["patient-portal"] as const,
   me: ["patient-portal", "me"] as const,

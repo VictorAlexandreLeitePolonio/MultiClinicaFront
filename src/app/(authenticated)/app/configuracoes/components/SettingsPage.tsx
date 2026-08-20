@@ -8,15 +8,16 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTutorial } from "@/hooks/tutorial/useTutorial";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { ClinicSettingsForm } from "./ClinicSettingsForm";
+import { ClinicCategoriesSection } from "./ClinicCategoriesSection";
+import { ClinicBusinessHoursSection } from "./ClinicBusinessHoursSection";
+import { ClinicMediaSection } from "./ClinicMediaSection";
 import { useClinicSettings, useUpdateClinicSettings } from "../hooks/useClinicSettings";
 
 export function SettingsPage() {
   const router = useRouter();
   const { can, updateTenant } = useAuth();
-  const { completeTaskTutorial } = useTutorial();
   const canView = can("clinic.settings.view");
   const canEdit = can("clinic.settings.update");
   const settingsQuery = useClinicSettings(canView);
@@ -74,7 +75,6 @@ export function SettingsPage() {
         contactPhone: updatedSettings.contactPhone,
       });
       toast.success("Configurações salvas com sucesso.");
-      completeTaskTutorial("settings", "update-settings");
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Não foi possível salvar as configurações."));
     }
@@ -89,6 +89,9 @@ export function SettingsPage() {
         loading={updateMutation.isPending}
         onSubmit={handleSubmit}
       />
+      <ClinicCategoriesSection canEdit={canEdit} />
+      <ClinicBusinessHoursSection canEdit={canEdit} />
+      <ClinicMediaSection canEdit={canEdit} />
     </div>
   );
 }
