@@ -1,5 +1,6 @@
 import patientApi from "@/lib/patientApi";
 import {
+  ClinicLikeResult,
   CreateAppointmentRequestPayload,
   PatientAppointment,
   PatientAppointmentRequest,
@@ -57,5 +58,17 @@ export async function cancelAppointmentRequest(
     `/api/patient/appointment-requests/${id}/cancel`,
     { reason },
   );
+  return response.data;
+}
+
+// ── Likes de clínica (BACK-6) ──────────────────────────────────────────────
+
+export async function likeClinic(clinicId: number): Promise<ClinicLikeResult> {
+  const response = await patientApi.post<ClinicLikeResult>(`/api/patient/clinics/${clinicId}/like`);
+  return response.data;
+}
+
+export async function unlikeClinic(clinicId: number): Promise<ClinicLikeResult> {
+  const response = await patientApi.delete<ClinicLikeResult>(`/api/patient/clinics/${clinicId}/like`);
   return response.data;
 }

@@ -122,6 +122,13 @@ export interface ClinicMedia {
   url: string;
 }
 
+/** Resultado de like/unlike de clínica (POST/DELETE /api/patient/clinics/{id}/like). */
+export interface ClinicLikeResult {
+  clinicId: number;
+  likeCount: number;
+  likedByMe: boolean;
+}
+
 /** Perfil público da clínica (GET /api/public/clinics/{slug}). */
 export interface PublicClinic {
   id: number;

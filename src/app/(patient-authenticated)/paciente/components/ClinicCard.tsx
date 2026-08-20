@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Building2, Heart, MapPin } from "lucide-react";
+import { Building2, MapPin } from "lucide-react";
 import { PatientClinic } from "@/types";
+import { ClinicLikeButton } from "@/components/ClinicLikeButton";
 
 function location(clinic: PatientClinic) {
   return [clinic.city, clinic.state].filter(Boolean).join(" / ");
@@ -31,10 +32,13 @@ export function ClinicCard({ clinic }: { clinic: PatientClinic }) {
           <h3 className="font-semibold text-[#0f172a] dark:text-white">
             {clinic.displayName ?? "Clínica"}
           </h3>
-          <span className="flex shrink-0 items-center gap-1 text-sm text-[#64748b] dark:text-slate-300">
-            <Heart size={14} className={clinic.likedByMe ? "fill-red-500 text-red-500" : ""} />
-            {clinic.likeCount}
-          </span>
+          <ClinicLikeButton
+            clinicId={clinic.id}
+            likeCount={clinic.likeCount}
+            likedByMe={clinic.likedByMe}
+            canLike
+            size={14}
+          />
         </div>
 
         {clinic.categories.length > 0 && (
