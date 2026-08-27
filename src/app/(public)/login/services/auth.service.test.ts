@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getCurrentUser, login } from "./auth.service";
+import { getCurrentUser, login, logout } from "./auth.service";
 
 const get = vi.fn();
 const post = vi.fn();
@@ -51,5 +51,13 @@ describe("auth.service", () => {
 
     await expect(getCurrentUser()).resolves.toEqual(auth);
     expect(get).toHaveBeenCalledWith("/api/auth/me");
+  });
+
+  it("logs out through the backend cookie endpoint", async () => {
+    post.mockResolvedValue({ data: { message: "Sessão encerrada." } });
+
+    await expect(logout()).resolves.toBeUndefined();
+
+    expect(post).toHaveBeenCalledWith("/api/auth/logout");
   });
 });

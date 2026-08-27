@@ -11,6 +11,7 @@ const base: AppointmentRequest = {
   clinicName: "Clínica Centro",
   patientName: "João Silva",
   requestedDate: "2026-08-25T14:00:00",
+  durationMinutes: 60,
   reason: "Avaliação inicial",
   status: "Pending",
   responseReason: null,

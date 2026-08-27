@@ -11,14 +11,16 @@ interface Props {
   clinicId: number;
   clinicName: string | null;
   acceptsAppointmentRequests: boolean;
+  onRequestsDisabled?: () => void;
 }
 
-export function ClinicAppointmentRequestCta({ clinicId, clinicName, acceptsAppointmentRequests }: Props) {
+export function ClinicAppointmentRequestCta({ clinicId, clinicName, acceptsAppointmentRequests, onRequestsDisabled }: Props) {
   const { isAuthenticated, isLoading } = usePatientAuth();
   const [open, setOpen] = useState(false);
+  const [disabledByServer, setDisabledByServer] = useState(false);
 
   // Sem ação de solicitação quando a clínica não aceita.
-  if (!acceptsAppointmentRequests) return null;
+  if (!acceptsAppointmentRequests || disabledByServer) return null;
 
   return (
     <section className="rounded-2xl border border-[#a7f3d0] bg-[#ecfdf5] p-5 dark:border-emerald-900 dark:bg-emerald-950/30">
@@ -53,6 +55,10 @@ export function ClinicAppointmentRequestCta({ clinicId, clinicName, acceptsAppoi
           clinicId={clinicId}
           clinicName={clinicName}
           onClose={() => setOpen(false)}
+          onRequestsDisabled={() => {
+            setDisabledByServer(true);
+            onRequestsDisabled?.();
+          }}
         />
       )}
     </section>

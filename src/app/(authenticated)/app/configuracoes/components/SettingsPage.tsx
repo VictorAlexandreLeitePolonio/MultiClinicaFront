@@ -14,6 +14,7 @@ import { ClinicCategoriesSection } from "./ClinicCategoriesSection";
 import { ClinicBusinessHoursSection } from "./ClinicBusinessHoursSection";
 import { ClinicMediaSection } from "./ClinicMediaSection";
 import { useClinicSettings, useUpdateClinicSettings } from "../hooks/useClinicSettings";
+import { AvailabilitySettingsSection } from "./AvailabilitySettingsSection";
 
 export function SettingsPage() {
   const router = useRouter();
@@ -89,6 +90,7 @@ export function SettingsPage() {
         loading={updateMutation.isPending}
         onSubmit={handleSubmit}
       />
+      <AvailabilitySettingsSection canEdit={canEdit} />
       <ClinicCategoriesSection canEdit={canEdit} />
       <ClinicBusinessHoursSection canEdit={canEdit} />
       <ClinicMediaSection canEdit={canEdit} />

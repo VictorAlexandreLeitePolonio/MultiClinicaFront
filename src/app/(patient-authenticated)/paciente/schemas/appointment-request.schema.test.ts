@@ -1,39 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { appointmentRequestSchema, dateTimeLocalToIso } from "./appointment-request.schema";
-
-function localInput(offsetDays: number): string {
-  const d = new Date(Date.now() + offsetDays * 24 * 60 * 60 * 1000);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
+import { appointmentRequestSchema, formatSlotTime } from "./appointment-request.schema";
 
 describe("appointmentRequestSchema", () => {
-  it("aceita data futura com motivo", () => {
+  it("accepts a backend slot and an empty optional reason", () => {
     const result = appointmentRequestSchema.safeParse({
-      requestedDate: localInput(2),
-      reason: "Avaliação inicial",
+      date: "2026-08-26",
+      requestedDate: "2026-08-26T10:00:00-03:00",
+      reason: "",
     });
     expect(result.success).toBe(true);
   });
 
-  it("rejeita data no passado", () => {
-    const result = appointmentRequestSchema.safeParse({
-      requestedDate: localInput(-2),
-      reason: "Avaliação inicial",
-    });
-    expect(result.success).toBe(false);
+  it("requires a selected backend slot", () => {
+    expect(appointmentRequestSchema.safeParse({ date: "2026-08-26", requestedDate: "", reason: "" }).success)
+      .toBe(false);
   });
 
-  it("exige motivo", () => {
-    const result = appointmentRequestSchema.safeParse({
-      requestedDate: localInput(2),
-      reason: "",
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("dateTimeLocalToIso converte para ISO válido", () => {
-    const iso = dateTimeLocalToIso("2026-08-25T14:30");
-    expect(new Date(iso).getMinutes()).toBe(30);
+  it("formats the offset string without browser timezone conversion", () => {
+    expect(formatSlotTime("2026-08-26T10:30:00-03:00")).toBe("10:30");
   });
 });

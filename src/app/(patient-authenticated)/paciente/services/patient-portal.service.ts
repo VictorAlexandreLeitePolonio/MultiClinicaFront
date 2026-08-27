@@ -1,6 +1,7 @@
 import patientApi from "@/lib/patientApi";
 import {
   ClinicLikeResult,
+  ClinicAvailability,
   CreateAppointmentRequestPayload,
   PatientAppointment,
   PatientAppointmentRequest,
@@ -8,6 +9,14 @@ import {
   PatientMe,
   UpdatePatientMePayload,
 } from "@/types";
+
+export async function getClinicAvailability(clinicId: number, date: string): Promise<ClinicAvailability> {
+  const response = await patientApi.get<ClinicAvailability>(
+    `/api/patient/marketplace/clinics/${clinicId}/availability`,
+    { params: { date } },
+  );
+  return response.data;
+}
 
 export async function getMe(): Promise<PatientMe> {
   const response = await patientApi.get<PatientMe>("/api/patient/me");
