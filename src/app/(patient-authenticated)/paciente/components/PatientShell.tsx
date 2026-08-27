@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, Calendar, ClipboardList, Building2, User, LogOut, LucideIcon } from "lucide-react";
+import { Home, Calendar, ClipboardList, Building2, Store, User, LogOut, LucideIcon } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { usePatientAuth } from "@/contexts/PatientAuthContext";
 
@@ -18,6 +18,7 @@ const NAV: NavItem[] = [
   { href: "/paciente/consultas", label: "Consultas", icon: Calendar },
   { href: "/paciente/solicitacoes", label: "Solicitações", icon: ClipboardList },
   { href: "/paciente/clinicas", label: "Minhas clínicas", icon: Building2 },
+  { href: "/paciente/marketplace", label: "Marketplace", icon: Store },
   { href: "/paciente/perfil", label: "Meu perfil", icon: User },
 ];
 
@@ -90,14 +91,14 @@ export function PatientShell({ children }: { children: ReactNode }) {
       </main>
 
       {/* Bottom nav — mobile */}
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t border-[#d7f3ea] bg-white dark:border-slate-800 dark:bg-slate-900 md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex overflow-x-auto border-t border-[#d7f3ea] bg-white dark:border-slate-800 dark:bg-slate-900 md:hidden">
         {NAV.map(({ href, label, icon: Icon }) => {
           const active = isActive(pathname, href);
           return (
             <Link
               key={href}
               href={href}
-              className={`flex flex-1 flex-col items-center gap-1 py-2 text-[10px] font-medium ${
+              className={`flex min-w-16 flex-1 flex-col items-center gap-1 py-2 text-[10px] font-medium ${
                 active ? "text-[#0f766e] dark:text-[#67e8f9]" : "text-[#94a3b8] dark:text-slate-400"
               }`}
             >

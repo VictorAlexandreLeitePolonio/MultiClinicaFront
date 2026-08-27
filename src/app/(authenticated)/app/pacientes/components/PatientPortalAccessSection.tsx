@@ -17,10 +17,13 @@ interface Props {
 
 /** Feedback de sucesso ao criar acesso, considerando vínculo e envio do convite. */
 function provisionMessage(res: PatientCreatedResponse): string {
-  if (res.linkResult === "LinkedExistingAccount")
+  if (res.patientAccountStatus === "PendingActivation" && !res.invitationSent) {
+    return res.linkResult === "CreatedAccount"
+      ? "Acesso criado, mas não foi possível enviar o convite. Tente reenviá-lo."
+      : "Acesso vinculado, mas não foi possível enviar o convite. Tente reenviá-lo.";
+  }
+  if (res.linkResult === "LinkedExistingAccount" || res.linkResult === "AlreadyLinked")
     return "Paciente vinculado a uma conta MultiClínica existente.";
-  if (!res.invitationSent)
-    return "Acesso criado, mas não foi possível enviar o convite. Tente reenviá-lo.";
   return "Acesso criado. Enviamos um convite para o paciente ativar a conta.";
 }
 
@@ -50,11 +53,11 @@ export function PatientPortalAccessSection({ patientId, status, onChanged }: Pro
   const handleResend = async () => {
     try {
       const res = await resendPortalInvite(patientId);
-      toast.success(
-        res.invitationSent
-          ? "Convite reenviado com sucesso."
-          : "Não foi possível reenviar o convite agora. Tente novamente.",
-      );
+      if (res.invitationSent) {
+        toast.success("Convite reenviado com sucesso.");
+      } else {
+        toast.error("Não foi possível reenviar o convite agora. Tente novamente.");
+      }
       await onChanged();
     } catch {
       // erro já tratado no hook

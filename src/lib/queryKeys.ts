@@ -80,6 +80,14 @@ export const clinicProfileKeys = {
   media: ["clinic-profile", "media"] as const,
 };
 
+export const availabilityKeys = {
+  all: ["clinic-availability"] as const,
+  settings: ["clinic-availability", "settings"] as const,
+  professionals: ["clinic-availability", "professionals"] as const,
+  professional: (professionalId: number) =>
+    ["clinic-availability", "professionals", professionalId] as const,
+};
+
 export const publicClinicKeys = {
   detail: (slug: string) => ["public-clinic", slug] as const,
 };
@@ -91,6 +99,15 @@ export const patientPortalKeys = {
     ["patient-portal", "appointments", scope] as const,
   clinics: ["patient-portal", "clinics"] as const,
   requests: ["patient-portal", "requests"] as const,
+};
+
+export const marketplaceKeys = {
+  all: ["patient-marketplace"] as const,
+  categories: ["patient-marketplace", "categories"] as const,
+  clinics: (filters: unknown) => ["patient-marketplace", "clinics", filters] as const,
+  detail: (clinicId: number) => ["patient-marketplace", "clinics", clinicId] as const,
+  availability: (clinicId: number, date: string) =>
+    ["patient-marketplace", "clinics", clinicId, "availability", date] as const,
 };
 
 export const superAdminClinicSettingsKeys = {

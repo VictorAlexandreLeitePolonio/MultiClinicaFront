@@ -2,15 +2,26 @@
 
 import Image from "next/image";
 import { Building2, MapPin } from "lucide-react";
-import { PublicClinic } from "@/types";
+import { ClinicAddress, ClinicCategory } from "@/types";
 import { ClinicLikeButton } from "@/components/ClinicLikeButton";
 import { usePatientAuth } from "@/contexts/PatientAuthContext";
 
-function location(clinic: PublicClinic) {
+interface ClinicHeaderData {
+  id: number;
+  displayName: string | null;
+  logoUrl: string | null;
+  coverUrl: string | null;
+  categories: ClinicCategory[];
+  address: ClinicAddress;
+  likeCount: number;
+  likedByMe?: boolean;
+}
+
+function location(clinic: ClinicHeaderData) {
   return [clinic.address.cidade, clinic.address.estado].filter(Boolean).join(" / ");
 }
 
-export function ClinicPublicHeader({ clinic }: { clinic: PublicClinic }) {
+export function ClinicPublicHeader({ clinic }: { clinic: ClinicHeaderData }) {
   const { isAuthenticated } = usePatientAuth();
 
   return (
@@ -32,6 +43,7 @@ export function ClinicPublicHeader({ clinic }: { clinic: PublicClinic }) {
             <ClinicLikeButton
               clinicId={clinic.id}
               likeCount={clinic.likeCount}
+              likedByMe={clinic.likedByMe}
               canLike={isAuthenticated}
               size={18}
             />

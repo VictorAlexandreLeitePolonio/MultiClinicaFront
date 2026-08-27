@@ -341,6 +341,7 @@ export interface PatientAppointmentRequest {
   clinicName: string | null;
   patientName: string | null;
   requestedDate: string;
+  durationMinutes: number;
   reason: string | null;
   status: AppointmentRequestStatus;
   responseReason: string | null;
@@ -358,6 +359,19 @@ export interface CreateAppointmentRequestPayload {
   clinicId: number;
   requestedDate: string;
   reason: string | null;
+}
+
+export interface ClinicAvailabilitySlot {
+  start: string;
+  end: string;
+  capacity: number;
+}
+
+export interface ClinicAvailability {
+  date: string;
+  durationMinutes: number;
+  timeZoneId: string;
+  slots: ClinicAvailabilitySlot[];
 }
 
 export interface Patient {

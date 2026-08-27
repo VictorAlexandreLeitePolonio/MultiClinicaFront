@@ -1,18 +1,27 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { patientPortalKeys } from "@/lib/queryKeys";
+import { marketplaceKeys, patientPortalKeys } from "@/lib/queryKeys";
 import { CreateAppointmentRequestPayload, PatientMe, UpdatePatientMePayload } from "@/types";
 import {
   cancelAppointmentRequest,
   createAppointmentRequest,
   getHistoryAppointments,
+  getClinicAvailability,
   getMe,
   getMyAppointmentRequests,
   getMyClinics,
   getUpcomingAppointments,
   updateMe,
 } from "../services/patient-portal.service";
+
+export function useClinicAvailability(clinicId: number, date: string, enabled = true) {
+  return useQuery({
+    queryKey: marketplaceKeys.availability(clinicId, date),
+    queryFn: () => getClinicAvailability(clinicId, date),
+    enabled: enabled && clinicId > 0 && date.length > 0,
+  });
+}
 
 export function usePatientMe() {
   return useQuery({ queryKey: patientPortalKeys.me, queryFn: getMe });

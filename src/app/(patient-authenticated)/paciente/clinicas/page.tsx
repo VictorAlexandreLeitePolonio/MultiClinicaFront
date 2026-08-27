@@ -61,6 +61,10 @@ export default function PatientClinicsPage() {
           clinicId={requestClinic.id}
           clinicName={requestClinic.displayName}
           onClose={() => setRequestClinic(null)}
+          onRequestsDisabled={() => {
+            setRequestClinic(null);
+            void refetch();
+          }}
         />
       )}
     </div>
