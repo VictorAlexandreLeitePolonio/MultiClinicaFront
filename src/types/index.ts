@@ -6,6 +6,20 @@ export interface PagedResult<T> {
   totalPages: number;
 }
 
+export interface AuditoriaRegistro {
+  id: number;
+  usuarioId: number;
+  usuarioNome: string;
+  modulo: string;
+  acao: string;
+  entidade: string;
+  entidadeId: number;
+  dadosAntes: string | null;
+  dadosDepois: string | null;
+  motivo: string | null;
+  dataAcao: string;
+}
+
 export type UserRole = "SuperAdmin" | "Administrador" | "Profissional" | "Recepcao";
 
 export interface User {
