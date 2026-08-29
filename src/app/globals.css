@@ -6,7 +6,9 @@
 @import "@fontsource/inter/500.css";
 @import "@fontsource/inter/600.css";
 
-@custom-variant dark (&:where(.dark, .dark *));
+/* `dark:` aplica sob `.dark`, exceto dentro de uma subárvore `.theme-light`
+   (LP e telas de login ficam sempre claras, mesmo com tema escuro ativo). */
+@custom-variant dark (&:where(.dark, .dark *):not(:where(.theme-light, .theme-light *)));
 
 :root {
   /* Paleta healthtech MultiClinica */
@@ -59,6 +61,21 @@
   --color-gray-200: #334155;
   --color-gray-600: #94a3b8;
   --color-gray-800: #e5e7eb;
+}
+
+/* Força tema claro numa subárvore mesmo sob `.dark` (LP + telas de login).
+   Repõe os tokens que `.dark` sobrescreve com os valores de `:root`. */
+.theme-light {
+  --color-bg-warm: #f8fffc;
+  --color-bg-card: #ffffff;
+  --color-secondary: #0f172a;
+  --color-secondary-dark: #020617;
+  --color-primary-muted: #ccfbf1;
+  --color-gray-50: #f0fdf9;
+  --color-gray-100: #e6fbf4;
+  --color-gray-200: #d7f3ea;
+  --color-gray-600: #64748b;
+  --color-gray-800: #0f172a;
 }
 
 @theme inline {

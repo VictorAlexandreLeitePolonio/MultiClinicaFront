@@ -6,8 +6,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { AuthLayout } from "./components/layout/AuthLayout";
-import type { AuthRobotState } from "./components/layout/AuthMouseRobot";
+import { AuthLayout } from "@/components/auth/AuthLayout";
+import type { AuthRobotState } from "@/components/auth/AuthMouseRobot";
 import { useLogin } from "./hooks/login";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDashboardPathByRole } from "@/lib/auth/routes";
@@ -53,7 +53,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="theme-light flex min-h-screen">
       <AuthLayout robotState={loading ? "loading" : robotState}>
         <Logo light />
 

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <main className="landing-page min-h-screen overflow-x-clip bg-background text-secondary">
+    <main className="theme-light landing-page min-h-screen overflow-x-clip bg-background text-secondary">
       <LandingHeader />
       <LandingMascot />
       <LandingExperience />
