@@ -1,22 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { Building2, MapPin } from "lucide-react";
 import { ClinicLikeButton } from "@/components/ClinicLikeButton";
 import { MarketplaceClinicCard as MarketplaceClinicCardType } from "../types/marketplace.types";
 
 interface Props {
   clinic: MarketplaceClinicCardType;
+  onSelect: (id: number) => void;
 }
 
-export function MarketplaceClinicCard({ clinic }: Props) {
+export function MarketplaceClinicCard({ clinic, onSelect }: Props) {
   const location = [clinic.city, clinic.state].filter(Boolean).join(" / ");
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-[#14b8a6] hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
-      <Link
-        href={`/paciente/marketplace/clinicas/${clinic.id}`}
+      <button
+        type="button"
+        onClick={() => onSelect(clinic.id)}
         aria-label={`Ver detalhes de ${clinic.displayName}`}
         className="absolute inset-0 z-10 rounded-2xl focus:outline-none focus-visible:ring-4 focus-visible:ring-[#99f6e4]/70"
       />

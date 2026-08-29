@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { useDebounce } from "@/app/hooks/useDebounce";
 import { MarketplaceClinicCard } from "./components/MarketplaceClinicCard";
 import { MarketplaceFilters } from "./components/MarketplaceFilters";
+import { ClinicDetailModal } from "@/components/clinic/ClinicDetailModal";
 import { useMarketplaceCategories, useMarketplaceClinics } from "./hooks/useMarketplace";
 import { MarketplaceClinicFilters } from "./types/marketplace.types";
 
@@ -24,6 +25,7 @@ export function MarketplacePageContent() {
   const searchParams = useSearchParams();
   const urlSearch = searchParams.get("search") ?? "";
   const [search, setSearch] = useState(urlSearch);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const debouncedSearch = useDebounce(search, 400);
 
   const filters = useMemo<MarketplaceClinicFilters>(() => ({
@@ -116,7 +118,7 @@ export function MarketplacePageContent() {
         <>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {clinicsQuery.data!.data.map((clinic) => (
-              <MarketplaceClinicCard key={clinic.id} clinic={clinic} />
+              <MarketplaceClinicCard key={clinic.id} clinic={clinic} onSelect={setSelectedId} />
             ))}
           </div>
           <Pagination
@@ -129,6 +131,11 @@ export function MarketplacePageContent() {
           />
         </>
       )}
+
+      <ClinicDetailModal
+        source={selectedId ? { mode: "marketplace", id: selectedId } : null}
+        onClose={() => setSelectedId(null)}
+      />
     </div>
   );
 }

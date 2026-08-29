@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { publicClinicKeys } from "@/lib/queryKeys";
-import { getPublicClinic } from "../services/public-clinic.service";
+import { getPublicClinic } from "./public-clinic.service";
 
 export function usePublicClinic(slug: string) {
   const query = useQuery({

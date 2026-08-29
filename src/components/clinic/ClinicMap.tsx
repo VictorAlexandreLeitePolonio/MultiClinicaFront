@@ -10,7 +10,7 @@ interface Props {
   address: string
 }
 
-export function MarketplaceClinicMap({
+export function ClinicMap({
   latitude,
   longitude,
   displayName,
