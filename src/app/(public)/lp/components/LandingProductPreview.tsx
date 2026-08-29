@@ -17,6 +17,7 @@ import {
   landingModules,
   type LandingModuleId,
 } from "./landingModules";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 
 interface LandingProductPreviewProps {
   activeModuleId: LandingModuleId;
@@ -162,7 +163,7 @@ export function LandingProductPreview({
     <div className={`landing-preview ${compact ? "landing-preview--compact" : ""}`}>
       <div className="landing-preview__topbar">
         <div className="flex items-center gap-3">
-          <div className="landing-preview__brand-mark">M</div>
+          <BrandLogo variant="mark" size={30} className="rounded-lg" />
           <div>
             <p className="text-xs font-bold tracking-tight text-slate-900">Cliniq</p>
             <p className="text-[10px] font-medium text-teal-700">Visão rápida do sistema</p>

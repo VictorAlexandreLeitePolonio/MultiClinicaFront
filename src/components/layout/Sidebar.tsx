@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import { SidebarGroup } from './SidebarGroup'
 import { SidebarLink } from './SidebarLink'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { BrandLogo } from '@/components/ui/BrandLogo'
 import { getRoleLabel } from '@/lib/auth/routes'
 import {
   Home,
@@ -217,24 +218,24 @@ export function Sidebar({ area }: SidebarProps) {
       >
         {!collapsed && (
           <div className="flex flex-col items-center gap-2 w-full">
-            <div
-              className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-[#a7f3d0] text-white shadow-[0_18px_34px_-24px_rgba(20,184,166,0.85)]"
-              style={isPatient ? undefined : { backgroundColor: tenantTheme.primaryColor }}
-            >
-              {isPatient ? (
-                <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#14b8a6] via-[#10b981] to-[#06b6d4]">
+            {isPatient || area === 'superadmin' ? (
+              <BrandLogo variant="mark" size={56} className="rounded-2xl" priority />
+            ) : (
+              <div
+                className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-[#a7f3d0] text-white shadow-[0_18px_34px_-24px_rgba(20,184,166,0.85)]"
+                style={{ backgroundColor: tenantTheme.primaryColor }}
+              >
+                {tenant?.logoUrl ? (
+                  <img
+                    src={tenant.logoUrl}
+                    alt={clinicName}
+                    className="h-full w-full object-contain p-1.5"
+                  />
+                ) : (
                   <Building2 size={28} />
-                </span>
-              ) : area === 'clinic' && tenant?.logoUrl ? (
-                <img
-                  src={tenant.logoUrl}
-                  alt={clinicName}
-                  className="h-full w-full object-contain p-1.5"
-                />
-              ) : (
-                <Building2 size={28} />
-              )}
-            </div>
+                )}
+              </div>
+            )}
             <div className="text-center">
               <p className="text-xs font-bold uppercase tracking-wide text-[#0f172a] dark:text-white">
                 {isPatient ? 'Cliniq' : area === 'superadmin' ? 'Cliniq' : clinicName}

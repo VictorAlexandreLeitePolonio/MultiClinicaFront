@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { LandingSmoothLink } from "./LandingSmoothLink";
 
 export function LandingHeader() {
@@ -7,12 +8,7 @@ export function LandingHeader() {
     <header className="landing-header sticky top-0 z-40">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <div className="landing-header__mark">
-            <svg width="22" height="22" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-              <circle cx="24" cy="24" r="13" stroke="currentColor" strokeWidth="6" fill="none" />
-              <path d="M32 32 L41 41" stroke="#a5f3fc" strokeWidth="6" strokeLinecap="round" />
-            </svg>
-          </div>
+          <BrandLogo variant="mark" size={42} className="rounded-[13px]" priority />
           <div>
             <p className="text-sm font-bold tracking-tight text-slate-950">Cliniq</p>
             <p className="text-xs font-medium text-teal-700">A clínica, inteligente.</p>
