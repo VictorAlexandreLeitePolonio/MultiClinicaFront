@@ -94,6 +94,12 @@ export default function LoginPage() {
         </form>
 
         <Link
+          href="/paciente/login"
+          className="text-center text-sm font-medium text-[#0f766e] transition-colors hover:text-[#14b8a6]"
+        >
+          É paciente? Acesse o portal do paciente
+        </Link>
+        <Link
           href="/"
           className="text-center text-sm font-medium text-[#0f766e] transition-colors hover:text-[#14b8a6]"
         >

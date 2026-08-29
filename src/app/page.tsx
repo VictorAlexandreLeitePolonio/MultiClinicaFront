@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { LandingHeader } from "./(public)/lp/components/LandingHeader";
 import { LandingExperience } from "./(public)/lp/components/LandingExperience";
 import { LandingClients } from "./(public)/lp/components/LandingClients";
+import { LandingClinicsShowcase } from "./(public)/lp/components/LandingClinicsShowcase";
 import { LandingTestimonials } from "./(public)/lp/components/LandingTestimonials";
 import { LandingFaq } from "./(public)/lp/components/LandingFaq";
 import { LandingCTA } from "./(public)/lp/components/LandingCTA";
@@ -20,6 +21,7 @@ export default function HomePage() {
       <LandingMascot />
       <LandingExperience />
       <LandingClients />
+      <LandingClinicsShowcase />
       <LandingTestimonials />
       <LandingFaq />
       <LandingCTA />

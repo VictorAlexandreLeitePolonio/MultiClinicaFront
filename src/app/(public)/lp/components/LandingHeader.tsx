@@ -38,8 +38,15 @@ export function LandingHeader() {
               <LandingSmoothLink href="#modulos">Módulos</LandingSmoothLink>
               <LandingSmoothLink href="#como-funciona">Como funciona</LandingSmoothLink>
               <LandingSmoothLink href="#faq">FAQ</LandingSmoothLink>
+              <Link href="/paciente/login">Portal do paciente</Link>
             </div>
           </details>
+          <Link
+            href="/paciente/login"
+            className="hidden text-sm font-semibold text-slate-500 transition-colors hover:text-teal-700 lg:inline-flex"
+          >
+            Portal do paciente
+          </Link>
           <Link href="/login" className="landing-header__login">
             Entrar
           </Link>

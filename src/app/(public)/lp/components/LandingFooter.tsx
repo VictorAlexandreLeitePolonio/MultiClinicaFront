@@ -14,10 +14,18 @@ export function LandingFooter() {
           <span className="text-sm font-bold text-slate-950">MultiClinica</span>
         </Link>
         <div className="flex flex-col items-center gap-2 text-xs text-slate-500 sm:items-end">
-          <a href="mailto:victorpolonio123@gmail.com" className="inline-flex items-center gap-2 transition-colors hover:text-teal-700">
-            <Mail size={13} />
-            Fale com a gente
-          </a>
+          <div className="flex items-center gap-4">
+            <Link href="/paciente/login" className="font-semibold transition-colors hover:text-teal-700">
+              Portal do paciente
+            </Link>
+            <Link href="/login" className="font-semibold transition-colors hover:text-teal-700">
+              Acesso da clínica
+            </Link>
+            <a href="mailto:victorpolonio123@gmail.com" className="inline-flex items-center gap-2 transition-colors hover:text-teal-700">
+              <Mail size={13} />
+              Fale com a gente
+            </a>
+          </div>
           <p>© {year} MultiClinica. Todos os direitos reservados.</p>
         </div>
       </div>

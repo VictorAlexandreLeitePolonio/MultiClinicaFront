@@ -13,14 +13,14 @@ function Harness({ isPublic }: { isPublic: boolean }) {
 }
 
 describe("ClinicVisibilitySection", () => {
-  it("desabilita 'Aceitar solicitações' quando o perfil não é público", () => {
+  it("mantém 'Aceitar solicitações' habilitado mesmo sem perfil público (pacientes vinculados)", () => {
     render(<Harness isPublic={false} />);
     const accepts = screen.getByRole("switch", { name: "Aceitar solicitações online" });
-    expect(accepts).toBeDisabled();
-    expect(accepts).toHaveAttribute("aria-checked", "false");
+    expect(accepts).not.toBeDisabled();
+    expect(accepts).toHaveAttribute("aria-checked", "true");
   });
 
-  it("habilita 'Aceitar solicitações' quando o perfil é público", async () => {
+  it("permite alternar 'Aceitar solicitações' independentemente do perfil público", async () => {
     render(<Harness isPublic />);
     const accepts = screen.getByRole("switch", { name: "Aceitar solicitações online" });
     expect(accepts).not.toBeDisabled();

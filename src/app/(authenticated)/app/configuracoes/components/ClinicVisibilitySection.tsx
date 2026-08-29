@@ -1,6 +1,6 @@
 "use client";
 
-import { Control, Controller, useWatch } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import { ClinicSettingsFormValues } from "../schemas/clinic-settings.schema";
 import { Toggle } from "./Toggle";
 
@@ -10,7 +10,6 @@ interface Props {
 }
 
 export function ClinicVisibilitySection({ control, disabled }: Props) {
-  const isPublic = useWatch({ control, name: "isPublic" });
 
   return (
     <section className="space-y-5 rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -43,14 +42,10 @@ export function ClinicVisibilitySection({ control, disabled }: Props) {
           <Toggle
             id="clinic-accepts-requests"
             label="Aceitar solicitações online"
-            description={
-              isPublic
-                ? "Pacientes podem solicitar consultas pelo portal."
-                : "Ative o perfil público para habilitar esta opção."
-            }
-            checked={isPublic && field.value}
+            description="Seus pacientes vinculados podem solicitar consultas pelo portal; com o perfil público ativo, qualquer paciente pode solicitar pelo marketplace."
+            checked={field.value}
             onChange={field.onChange}
-            disabled={disabled || !isPublic}
+            disabled={disabled}
           />
         )}
       />

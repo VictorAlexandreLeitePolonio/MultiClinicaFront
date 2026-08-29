@@ -44,11 +44,15 @@ export default function PatientClinicsPage() {
           {data!.map((clinic) => (
             <div key={clinic.id} className="flex flex-col gap-2">
               <ClinicCard clinic={clinic} />
-              {clinic.acceptsAppointmentRequests && (
+              {clinic.acceptsAppointmentRequests ? (
                 <Button variant="outline" fullWidth={false} onClick={() => setRequestClinic(clinic)}>
                   <CalendarPlus size={16} />
                   Solicitar consulta
                 </Button>
+              ) : (
+                <p className="text-xs text-[#94a3b8] dark:text-slate-500">
+                  Esta clínica não recebe solicitações online — entre em contato diretamente.
+                </p>
               )}
             </div>
           ))}
