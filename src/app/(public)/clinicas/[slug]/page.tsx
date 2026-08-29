@@ -11,6 +11,14 @@ import { ClinicGallery } from "./components/ClinicGallery";
 import { ClinicAddress } from "./components/ClinicAddress";
 import { ClinicBusinessHours } from "./components/ClinicBusinessHours";
 import { ClinicAppointmentRequestCta } from "./components/ClinicAppointmentRequestCta";
+import { MarketplaceClinicMap } from "@/app/(patient-authenticated)/paciente/marketplace/clinicas/[id]/components/MarketplaceClinicMap";
+import { ClinicAddress as ClinicAddressType } from "@/types";
+
+function addressText(address: ClinicAddressType) {
+  return [address.rua, address.numero, address.bairro, address.cidade, address.estado]
+    .filter(Boolean)
+    .join(", ");
+}
 
 export default function PublicClinicPage() {
   const slug = String(useParams().slug ?? "");
@@ -57,6 +65,15 @@ export default function PublicClinicPage() {
             <ClinicGallery images={clinic.gallery} />
 
             <ClinicAddress address={clinic.address} latitude={clinic.latitude} longitude={clinic.longitude} />
+
+            {clinic.latitude != null && clinic.longitude != null && (
+              <MarketplaceClinicMap
+                latitude={clinic.latitude}
+                longitude={clinic.longitude}
+                displayName={clinic.displayName ?? ""}
+                address={addressText(clinic.address)}
+              />
+            )}
 
             <ClinicBusinessHours hours={clinic.businessHours} />
 

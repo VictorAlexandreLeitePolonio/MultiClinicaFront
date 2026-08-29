@@ -74,6 +74,13 @@ const adminModules = [
     roles: ['Administrador'],
   },
   {
+    // ponytail: só Administrador tem financeiro.auditoria.visualizar, então gate por role == gate por can
+    href: '/app/financeiro/auditoria',
+    label: 'Auditoria',
+    icon: <FileText size={18} />,
+    roles: ['Administrador'],
+  },
+  {
     href: '/app/usuarios',
     label: 'Usuários',
     icon: <Shield size={18} />,

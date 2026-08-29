@@ -27,12 +27,6 @@ export function ClinicAddress({ address, latitude, longitude }: Props) {
           {line1 && <p>{line1}</p>}
           {line2 && <p>{line2}</p>}
           {line3 && <p>{line3}</p>}
-          {/* Coordenadas preparadas para o mapa (não implementado neste MVP). */}
-          {hasCoords && (
-            <p className="mt-1 text-xs text-[#94a3b8] dark:text-slate-500">
-              {latitude!.toFixed(5)}, {longitude!.toFixed(5)}
-            </p>
-          )}
         </div>
       </div>
     </section>
