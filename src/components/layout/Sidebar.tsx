@@ -3,10 +3,12 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
 import { useAuth } from '@/contexts/AuthContext'
+import { usePatientAuth } from '@/contexts/PatientAuthContext'
 import { logout } from '@/app/(public)/login/services/auth.service'
 import { useRouter } from 'next/navigation'
 import { SidebarGroup } from './SidebarGroup'
 import { SidebarLink } from './SidebarLink'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { getRoleLabel } from '@/lib/auth/routes'
 import {
   Home,
@@ -24,6 +26,8 @@ import {
   Building2,
   Package,
   Settings,
+  Store,
+  User,
 } from 'lucide-react'
 import { getTenantTheme } from '@/utils/tenant'
 
@@ -152,24 +156,45 @@ const superAdminModules = [
   },
 ]
 
+const patientModules = [
+  { href: '/paciente', label: 'Início', icon: <Home size={18} /> },
+  { href: '/paciente/consultas', label: 'Consultas', icon: <Calendar size={18} /> },
+  { href: '/paciente/solicitacoes', label: 'Solicitações', icon: <ClipboardList size={18} /> },
+  { href: '/paciente/clinicas', label: 'Minhas clínicas', icon: <Building2 size={18} /> },
+  { href: '/paciente/marketplace', label: 'Marketplace', icon: <Store size={18} /> },
+  { href: '/paciente/perfil', label: 'Meu perfil', icon: <User size={18} /> },
+]
+
 interface SidebarProps {
-  area: 'clinic' | 'superadmin'
+  area: 'clinic' | 'superadmin' | 'patient'
 }
 
 export function Sidebar({ area }: SidebarProps) {
   const { user, tenant, setUser, can } = useAuth()
+  const { patient, logout: patientLogout } = usePatientAuth()
   const router = useRouter()
   const [collapsed, setCollapsed] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
+  const isPatient = area === 'patient'
   const clinicModules = [...baseModules, ...adminModules].filter((module) =>
     user ? module.roles.includes(user.role) : false,
   )
-  const clinicName = tenant?.displayName?.trim() || 'MultiClinica'
+  const clinicName = tenant?.displayName?.trim() || 'Cliniq'
   const tenantTheme = getTenantTheme(tenant)
-  const modules = area === 'superadmin' ? superAdminModules : clinicModules
+  const modules = area === 'superadmin' ? superAdminModules : isPatient ? patientModules : clinicModules
 
   const handleLogout = async () => {
+    if (isPatient) {
+      try {
+        setIsLoggingOut(true)
+        await patientLogout()
+      } finally {
+        router.replace('/paciente/login')
+        setIsLoggingOut(false)
+      }
+      return
+    }
     try {
       setIsLoggingOut(true)
       await logout()
@@ -184,7 +209,7 @@ export function Sidebar({ area }: SidebarProps) {
     <motion.aside
       animate={{ width: collapsed ? 72 : 256 }}
       transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-      className="sticky top-0 flex h-screen flex-col overflow-hidden border-r border-[#d7f3ea] bg-white/95 px-3 py-6 shadow-[10px_0_40px_-34px_rgba(15,23,42,0.55)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/95"
+      className={`sticky top-0 h-screen flex-col overflow-hidden border-r border-[#d7f3ea] bg-white/95 px-3 py-6 shadow-[10px_0_40px_-34px_rgba(15,23,42,0.55)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/95 ${isPatient ? 'hidden md:flex' : 'flex'}`}
     >
       {/* Logo + botão colapsar */}
       <div
@@ -194,9 +219,13 @@ export function Sidebar({ area }: SidebarProps) {
           <div className="flex flex-col items-center gap-2 w-full">
             <div
               className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-[#a7f3d0] text-white shadow-[0_18px_34px_-24px_rgba(20,184,166,0.85)]"
-              style={{ backgroundColor: tenantTheme.primaryColor }}
+              style={isPatient ? undefined : { backgroundColor: tenantTheme.primaryColor }}
             >
-              {area === 'clinic' && tenant?.logoUrl ? (
+              {isPatient ? (
+                <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#14b8a6] via-[#10b981] to-[#06b6d4]">
+                  <Building2 size={28} />
+                </span>
+              ) : area === 'clinic' && tenant?.logoUrl ? (
                 <img
                   src={tenant.logoUrl}
                   alt={clinicName}
@@ -208,10 +237,10 @@ export function Sidebar({ area }: SidebarProps) {
             </div>
             <div className="text-center">
               <p className="text-xs font-bold uppercase tracking-wide text-[#0f172a] dark:text-white">
-                {area === 'superadmin' ? 'MultiClinica' : clinicName}
+                {isPatient ? 'Cliniq' : area === 'superadmin' ? 'Cliniq' : clinicName}
               </p>
               <p className="text-[10px] font-semibold uppercase tracking-wide text-[#14b8a6]">
-                {area === 'superadmin' ? 'Painel Global' : 'App Clínica'}
+                {isPatient ? 'Portal do Paciente' : area === 'superadmin' ? 'Painel Global' : 'App Clínica'}
               </p>
             </div>
           </div>
@@ -249,7 +278,7 @@ export function Sidebar({ area }: SidebarProps) {
       {/* Divisor */}
       <div className="mx-2 my-4 h-px shrink-0 bg-[#d7f3ea] dark:bg-slate-800" />
 
-      {!collapsed && user && (
+      {!collapsed && !isPatient && user && (
         <div className="mb-3 shrink-0 rounded-2xl border border-[#d7f3ea] bg-[#f8fffc] px-3 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <p className="truncate text-xs font-semibold text-[#0f172a] dark:text-white">
             {user.name}
@@ -257,6 +286,28 @@ export function Sidebar({ area }: SidebarProps) {
           <p className="truncate text-[11px] text-[#64748b] dark:text-slate-300">
             {getRoleLabel(user.role)}
           </p>
+        </div>
+      )}
+
+      {!collapsed && isPatient && patient && (
+        <div className="mb-3 shrink-0 rounded-2xl border border-[#d7f3ea] bg-[#f8fffc] px-3 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <p className="truncate text-xs font-semibold text-[#0f172a] dark:text-white">
+            {patient.name ?? 'Paciente'}
+          </p>
+          <p className="truncate text-[11px] text-[#64748b] dark:text-slate-300">
+            {patient.email ?? 'Paciente'}
+          </p>
+        </div>
+      )}
+
+      {isPatient && (
+        <div className={`mb-2 flex shrink-0 items-center ${collapsed ? 'justify-center' : 'justify-between px-1'}`}>
+          {!collapsed && (
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-[#64748b] dark:text-slate-400">
+              Tema
+            </span>
+          )}
+          <ThemeToggle />
         </div>
       )}
 
