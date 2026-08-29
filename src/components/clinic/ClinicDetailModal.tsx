@@ -39,23 +39,23 @@ export function ClinicDetailModal({ source, onClose }: Props) {
     <Dialog.Root open={source !== null} onOpenChange={(next) => !next && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50" />
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-6">
-          <Dialog.Content
-            className="relative my-auto w-full max-w-3xl rounded-2xl bg-[#f0fdf9] shadow-2xl focus:outline-none dark:bg-slate-950"
-            aria-describedby={undefined}
-          >
-            <Dialog.Close
-              className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#334155] shadow-sm backdrop-blur transition hover:bg-white dark:bg-slate-800/90 dark:text-slate-200 dark:hover:bg-slate-800"
-              aria-label="Fechar"
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
+            <Dialog.Content
+              className="relative w-full max-w-3xl rounded-2xl bg-[#f0fdf9] p-4 shadow-2xl focus:outline-none dark:bg-slate-950 sm:p-6"
+              aria-describedby={undefined}
             >
-              <X size={18} />
-            </Dialog.Close>
-            <div className="max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+              <Dialog.Close
+                className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#334155] shadow-sm backdrop-blur transition hover:bg-white dark:bg-slate-800/90 dark:text-slate-200 dark:hover:bg-slate-800"
+                aria-label="Fechar"
+              >
+                <X size={18} />
+              </Dialog.Close>
               <PatientAuthProvider>
                 {source && <ClinicDetailBody source={source} />}
               </PatientAuthProvider>
-            </div>
-          </Dialog.Content>
+            </Dialog.Content>
+          </div>
         </div>
       </Dialog.Portal>
     </Dialog.Root>

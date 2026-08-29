@@ -1,19 +1,30 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 import Image from "next/image";
 import { Building2, MapPin } from "lucide-react";
 import { PatientClinic } from "@/types";
 import { ClinicLikeButton } from "@/components/ClinicLikeButton";
+import { ClinicDetailModal } from "@/components/clinic/ClinicDetailModal";
 
 function location(clinic: PatientClinic) {
   return [clinic.city, clinic.state].filter(Boolean).join(" / ");
 }
 
-/** Cartão de clínica vinculada — navega para o perfil público /clinicas/{slug}. */
+/** Cartão de clínica vinculada — abre o perfil público no modal compartilhado. */
 export function ClinicCard({ clinic }: { clinic: PatientClinic }) {
-  const content = (
-    <article className="group h-full overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#a7f3d0] hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+  const [open, setOpen] = useState(false);
+
+  return (
+    <article className="group relative h-full overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#a7f3d0] hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+      {clinic.slug && (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label={`Ver detalhes de ${clinic.displayName ?? "clínica"}`}
+          className="absolute inset-0 z-10 rounded-2xl focus:outline-none focus-visible:ring-4 focus-visible:ring-[#99f6e4]/70"
+        />
+      )}
       <div className="relative h-24 bg-[#ecfdf5] dark:bg-slate-800">
         {clinic.coverUrl && (
           <Image src={clinic.coverUrl} alt="" fill className="object-cover" unoptimized />
@@ -32,13 +43,15 @@ export function ClinicCard({ clinic }: { clinic: PatientClinic }) {
           <h3 className="font-semibold text-[#0f172a] dark:text-white">
             {clinic.displayName ?? "Clínica"}
           </h3>
-          <ClinicLikeButton
-            clinicId={clinic.id}
-            likeCount={clinic.likeCount}
-            likedByMe={clinic.likedByMe}
-            canLike
-            size={14}
-          />
+          <div className="relative z-20">
+            <ClinicLikeButton
+              clinicId={clinic.id}
+              likeCount={clinic.likeCount}
+              likedByMe={clinic.likedByMe}
+              canLike
+              size={14}
+            />
+          </div>
         </div>
 
         {clinic.categories.length > 0 && (
@@ -61,13 +74,13 @@ export function ClinicCard({ clinic }: { clinic: PatientClinic }) {
           </p>
         )}
       </div>
-    </article>
-  );
 
-  if (!clinic.slug) return content;
-  return (
-    <Link href={`/clinicas/${clinic.slug}`} className="block h-full">
-      {content}
-    </Link>
+      {clinic.slug && (
+        <ClinicDetailModal
+          source={open ? { mode: "public", slug: clinic.slug } : null}
+          onClose={() => setOpen(false)}
+        />
+      )}
+    </article>
   );
 }

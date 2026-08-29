@@ -30,11 +30,11 @@ export function ClinicPublicHeader({ clinic }: { clinic: ClinicHeaderData }) {
         {clinic.coverUrl && <Image src={clinic.coverUrl} alt="" fill className="object-cover" unoptimized />}
       </div>
 
-      <div className="px-5 pb-5">
+      <div className="relative z-10 px-5 pb-5">
         <div className="-mt-10 flex items-end gap-4">
-          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white dark:border-slate-700 dark:bg-slate-900">
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white p-1.5 dark:border-slate-700 dark:bg-slate-900">
             {clinic.logoUrl ? (
-              <Image src={clinic.logoUrl} alt="" width={80} height={80} className="object-cover" unoptimized />
+              <Image src={clinic.logoUrl} alt="" width={80} height={80} className="h-full w-full object-contain" unoptimized />
             ) : (
               <Building2 size={34} className="text-[#0f766e] dark:text-[#67e8f9]" />
             )}

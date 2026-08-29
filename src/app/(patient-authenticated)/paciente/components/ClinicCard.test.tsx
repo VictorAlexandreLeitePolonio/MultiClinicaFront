@@ -33,13 +33,15 @@ describe("ClinicCard", () => {
     expect(screen.getByText("187")).toBeInTheDocument();
   });
 
-  it("navega para o perfil público /clinicas/{slug}", () => {
+  it("com slug expõe botão para abrir o detalhe", () => {
     render(<ClinicCard clinic={base} />);
-    expect(screen.getByRole("link")).toHaveAttribute("href", "/clinicas/clinica-centro");
+    expect(
+      screen.getByRole("button", { name: /ver detalhes de clínica centro/i }),
+    ).toBeInTheDocument();
   });
 
-  it("sem slug não vira link", () => {
+  it("sem slug não vira botão de detalhe", () => {
     render(<ClinicCard clinic={{ ...base, slug: null }} />);
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /ver detalhes/i })).not.toBeInTheDocument();
   });
 });
