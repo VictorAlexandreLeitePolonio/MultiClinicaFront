@@ -35,7 +35,7 @@ import { useSuperAdminClinicDetail } from "../../hooks/useSuperAdminClinicDetail
 import { useSuperAdminBilling } from "../../hooks/useSuperAdminBilling";
 import { useSuperAdminClinicUsers } from "../../hooks/useSuperAdminClinicUsers";
 import { useSuperAdminHistory } from "../../hooks/useSuperAdminHistory";
-import { SuperAdminClinicSettingsPanel } from "../../clinics/components/SuperAdminClinicSettingsPanel";
+import { SuperAdminClinicSettingsPanel } from "../components/SuperAdminClinicSettingsPanel";
 
 const tabs = [
   { value: "overview", label: "Visão geral" },

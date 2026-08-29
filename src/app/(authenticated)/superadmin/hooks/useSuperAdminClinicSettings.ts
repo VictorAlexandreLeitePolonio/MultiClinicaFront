@@ -5,7 +5,7 @@ import { superAdminClinicSettingsKeys } from "@/lib/queryKeys";
 import {
   getSuperAdminClinicSettings,
   updateSuperAdminClinicSettings,
-} from "../clinics/services/superadmin-clinic-settings.service";
+} from "../services/superadmin-clinic-settings.service";
 import { UpdateClinicSettingsRequest } from "@/types";
 
 export function useSuperAdminClinicSettings(clinicId: number, enabled = true) {
