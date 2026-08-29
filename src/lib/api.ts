@@ -1,34 +1,34 @@
-import axios from "axios";
-import { toast } from "sonner";
+import axios from 'axios'
+import { toast } from 'sonner'
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5045",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL,
   withCredentials: true,
-});
+})
 
 // Flag para evitar múltiplos redirects quando várias requisições retornam 401
-let isRedirectingToLogin = false;
+let isRedirectingToLogin = false
 
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const requestUrl = String(error.config?.url ?? "");
-    const isAuthBootstrapRequest = requestUrl.includes("/api/auth/me");
+    const requestUrl = String(error.config?.url ?? '')
+    const isAuthBootstrapRequest = requestUrl.includes('/api/auth/me')
 
     if (
       error.response?.status === 401 &&
       !isAuthBootstrapRequest &&
       !isRedirectingToLogin
     ) {
-      isRedirectingToLogin = true;
-      toast.error("Sua sessão expirou. Faça login novamente.");
+      isRedirectingToLogin = true
+      toast.error('Sua sessão expirou. Faça login novamente.')
       setTimeout(() => {
-        isRedirectingToLogin = false;
-        window.location.href = "/login";
-      }, 1500);
+        isRedirectingToLogin = false
+        window.location.href = '/login'
+      }, 1500)
     }
-    return Promise.reject(error);
-  }
-);
+    return Promise.reject(error)
+  },
+)
 
-export default api;
+export default api

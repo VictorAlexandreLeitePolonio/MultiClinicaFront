@@ -1,5 +1,5 @@
-import axios from "axios";
-import { toast } from "sonner";
+import axios from 'axios'
+import { toast } from 'sonner'
 
 /**
  * Cliente HTTP dedicado ao portal do paciente. Mantém a sessão do paciente
@@ -8,33 +8,33 @@ import { toast } from "sonner";
  * da clínica.
  */
 const patientApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5045",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL,
   withCredentials: true,
-});
+})
 
-let isRedirectingToLogin = false;
+let isRedirectingToLogin = false
 
 patientApi.interceptors.response.use(
   (response) => response,
   (error) => {
-    const requestUrl = String(error.config?.url ?? "");
+    const requestUrl = String(error.config?.url ?? '')
     // O bootstrap (/me) trata o 401 silenciosamente: significa "sem sessão".
-    const isAuthBootstrapRequest = requestUrl.includes("/api/patient-auth/me");
+    const isAuthBootstrapRequest = requestUrl.includes('/api/patient-auth/me')
 
     if (
       error.response?.status === 401 &&
       !isAuthBootstrapRequest &&
       !isRedirectingToLogin
     ) {
-      isRedirectingToLogin = true;
-      toast.error("Sua sessão expirou. Faça login novamente.");
+      isRedirectingToLogin = true
+      toast.error('Sua sessão expirou. Faça login novamente.')
       setTimeout(() => {
-        isRedirectingToLogin = false;
-        window.location.href = "/paciente/login";
-      }, 1500);
+        isRedirectingToLogin = false
+        window.location.href = '/paciente/login'
+      }, 1500)
     }
-    return Promise.reject(error);
-  }
-);
+    return Promise.reject(error)
+  },
+)
 
-export default patientApi;
+export default patientApi
