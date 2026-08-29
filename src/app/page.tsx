@@ -10,7 +10,7 @@ import { LandingFooter } from "./(public)/lp/components/LandingFooter";
 import { LandingMascot } from "./(public)/lp/components/LandingMascot";
 
 export const metadata: Metadata = {
-  title: "MultiClinica | A clínica inteira, em uma visão só",
+  title: "Cliniq | A clínica inteira, em uma visão só",
   description: "Gestão clínica com agenda, pacientes, prontuários, evolução e operação administrativa conectadas.",
 };
 

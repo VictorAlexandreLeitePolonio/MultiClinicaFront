@@ -22,7 +22,7 @@ export function Topbar({ area }: TopbarProps) {
   const pathname = usePathname();
   const { user, tenant } = useAuth();
   const segments = pathname.split("/").filter(Boolean);
-  const areaLabel = area === "superadmin" ? "SuperAdmin" : tenant?.displayName?.trim() || "MultiClinica";
+  const areaLabel = area === "superadmin" ? "SuperAdmin" : tenant?.displayName?.trim() || "Cliniq";
 
   return (
     <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between gap-4 border-b border-[#d7f3ea] bg-white/85 px-6 py-3 shadow-[0_10px_34px_-32px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/85">

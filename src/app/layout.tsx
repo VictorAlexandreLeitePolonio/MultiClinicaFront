@@ -4,8 +4,8 @@ import { ClientProviders } from "@/providers/ClientProviders";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MultiClinica",
-  description: "Sistema SaaS para gestão de clínicas",
+  title: "Cliniq",
+  description: "Cliniq — a clínica, inteligente. Agenda, pacientes, prontuários, financeiro e portal do paciente num só sistema.",
 };
 
 export default function RootLayout({

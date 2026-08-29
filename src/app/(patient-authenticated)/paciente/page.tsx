@@ -32,7 +32,7 @@ export default function PatientDashboardPage() {
           Olá{patient?.name ? `, ${patient.name}` : ""}!
         </h1>
         <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">
-          Aqui está o resumo da sua jornada na MultiClínica.
+          Aqui está o resumo da sua jornada na Cliniq.
         </p>
       </div>
 

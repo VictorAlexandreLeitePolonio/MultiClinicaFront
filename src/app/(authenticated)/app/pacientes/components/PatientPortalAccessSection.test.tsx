@@ -90,7 +90,7 @@ describe("PatientPortalAccessSection", () => {
 
     await waitFor(() =>
       expect(toastSuccess).toHaveBeenCalledWith(
-        "Paciente vinculado a uma conta MultiClínica existente.",
+        "Paciente vinculado a uma conta Cliniq existente.",
       ),
     );
     expect(toastError).not.toHaveBeenCalled();

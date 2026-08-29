@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Building2, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { LandingSmoothLink } from "./LandingSmoothLink";
 
 export function LandingHeader() {
@@ -8,11 +8,14 @@ export function LandingHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           <div className="landing-header__mark">
-            <Building2 size={22} />
+            <svg width="22" height="22" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+              <circle cx="24" cy="24" r="13" stroke="currentColor" strokeWidth="6" fill="none" />
+              <path d="M32 32 L41 41" stroke="#a5f3fc" strokeWidth="6" strokeLinecap="round" />
+            </svg>
           </div>
           <div>
-            <p className="text-sm font-bold tracking-tight text-slate-950">MultiClinica</p>
-            <p className="text-xs font-medium text-teal-700">SaaS para clínicas</p>
+            <p className="text-sm font-bold tracking-tight text-slate-950">Cliniq</p>
+            <p className="text-xs font-medium text-teal-700">A clínica, inteligente.</p>
           </div>
         </Link>
 

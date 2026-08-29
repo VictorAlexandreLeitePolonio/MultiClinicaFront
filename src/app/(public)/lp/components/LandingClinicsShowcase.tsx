@@ -19,7 +19,7 @@ export function LandingClinicsShowcase() {
             Clínicas que já estão aqui
           </h2>
           <p className="mt-3 text-sm text-slate-500 sm:text-base">
-            Conheça as clínicas com perfil público no MultiClinica — e, se você é paciente,
+            Conheça as clínicas com perfil público no Cliniq — e, se você é paciente,
             solicite sua consulta pelo portal.
           </p>
         </div>

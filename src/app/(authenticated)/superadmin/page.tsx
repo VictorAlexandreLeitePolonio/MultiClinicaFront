@@ -51,7 +51,7 @@ export default function SuperAdminDashboardPage() {
           SuperAdmin
         </p>
         <h1 className="mt-1 text-2xl font-bold text-secondary dark:text-slate-50">
-          Painel global MultiClinica
+          Painel global Cliniq
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-gray-600 dark:text-slate-300">
           Visão inicial para operação comercial e saúde da base de clínicas.

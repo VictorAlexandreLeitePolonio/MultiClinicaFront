@@ -6,7 +6,7 @@ import { useState } from "react";
 const questions = [
   {
     id: "what-is",
-    question: "O que é o MultiClinica?",
+    question: "O que é o Cliniq?",
     answer: "É um sistema de gestão para conectar a rotina clínica e administrativa em uma experiência única.",
   },
   {

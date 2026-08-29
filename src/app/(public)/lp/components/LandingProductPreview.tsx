@@ -164,7 +164,7 @@ export function LandingProductPreview({
         <div className="flex items-center gap-3">
           <div className="landing-preview__brand-mark">M</div>
           <div>
-            <p className="text-xs font-bold tracking-tight text-slate-900">MultiClinica</p>
+            <p className="text-xs font-bold tracking-tight text-slate-900">Cliniq</p>
             <p className="text-[10px] font-medium text-teal-700">Visão rápida do sistema</p>
           </div>
         </div>

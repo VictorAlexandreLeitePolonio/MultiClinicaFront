@@ -23,7 +23,7 @@ function provisionMessage(res: PatientCreatedResponse): string {
       : "Acesso vinculado, mas não foi possível enviar o convite. Tente reenviá-lo.";
   }
   if (res.linkResult === "LinkedExistingAccount" || res.linkResult === "AlreadyLinked")
-    return "Paciente vinculado a uma conta MultiClínica existente.";
+    return "Paciente vinculado a uma conta Cliniq existente.";
   return "Acesso criado. Enviamos um convite para o paciente ativar a conta.";
 }
 
@@ -72,7 +72,7 @@ export function PatientPortalAccessSection({ patientId, status, onChanged }: Pro
           Icon: ShieldOff,
           iconClass: "text-gray-500 dark:text-slate-400",
           label: "Sem acesso",
-          description: "Este paciente ainda não tem acesso ao portal MultiClínica.",
+          description: "Este paciente ainda não tem acesso ao portal Cliniq.",
           action: (
             <Button fullWidth={false} onClick={handleProvision} loading={isProvisioning}>
               <KeyRound size={16} />
@@ -100,7 +100,7 @@ export function PatientPortalAccessSection({ patientId, status, onChanged }: Pro
           Icon: ShieldCheck,
           iconClass: "text-emerald-600 dark:text-emerald-400",
           label: "Conta ativa",
-          description: "O paciente já ativou o acesso ao portal MultiClínica.",
+          description: "O paciente já ativou o acesso ao portal Cliniq.",
           action: null,
         };
       case "Inactive":

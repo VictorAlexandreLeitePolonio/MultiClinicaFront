@@ -18,7 +18,7 @@ export function LandingCTA() {
               Sua rotina pode ser mais clara a partir daqui.
             </h2>
             <p className="mt-5 max-w-xl text-base leading-7 text-teal-50/80 sm:text-lg">
-              Explore a visão geral ou entre em contato para conhecer o MultiClinica
+              Explore a visão geral ou entre em contato para conhecer o Cliniq
               por dentro. O acesso real continua sendo liberado por indicação.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">

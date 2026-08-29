@@ -30,8 +30,8 @@ const registrationMessage = (res: PatientCreatedResponse): string => {
   if (res.patientAccountStatus === "PendingActivation" && !res.invitationSent)
     return "Paciente cadastrado, mas não foi possível enviar o convite. Você pode reenviá-lo pelo perfil.";
   if (res.linkResult === "LinkedExistingAccount")
-    return "Paciente cadastrado e vinculado à conta MultiClínica existente.";
-  return "Paciente cadastrado. Enviamos um convite para ele ativar sua conta MultiClínica.";
+    return "Paciente cadastrado e vinculado à conta Cliniq existente.";
+  return "Paciente cadastrado. Enviamos um convite para ele ativar sua conta Cliniq.";
 };
 
 export default function PacienteRegister({ onBack, onSave }: Props) {

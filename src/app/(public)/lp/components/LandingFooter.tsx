@@ -11,7 +11,7 @@ export function LandingFooter() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-600 text-white">
             <Building2 size={16} />
           </div>
-          <span className="text-sm font-bold text-slate-950">MultiClinica</span>
+          <span className="text-sm font-bold text-slate-950">Cliniq</span>
         </Link>
         <div className="flex flex-col items-center gap-2 text-xs text-slate-500 sm:items-end">
           <div className="flex items-center gap-4">
@@ -26,7 +26,7 @@ export function LandingFooter() {
               Fale com a gente
             </a>
           </div>
-          <p>© {year} MultiClinica. Todos os direitos reservados.</p>
+          <p>© {year} Cliniq. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

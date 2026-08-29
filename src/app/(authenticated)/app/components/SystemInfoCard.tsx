@@ -28,7 +28,7 @@ export function SystemInfoCard() {
           <h3 
             className="text-lg font-bold text-[#0f172a] dark:text-white"
           >
-            MultiClinica
+            Cliniq
           </h3>
           <p className="text-xs font-medium text-[#0f766e] dark:text-[#67e8f9]">Sistema de Gestão</p>
         </div>
