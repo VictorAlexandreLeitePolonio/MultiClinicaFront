@@ -10,8 +10,15 @@ import { LandingFooter } from "./(public)/lp/components/LandingFooter";
 import { LandingMascot } from "./(public)/lp/components/LandingMascot";
 
 export const metadata: Metadata = {
-  title: "Cliniq | A clínica inteira, em uma visão só",
-  description: "Gestão clínica com agenda, pacientes, prontuários, evolução e operação administrativa conectadas.",
+  title: { absolute: "Cliniq | A clínica inteira, em uma visão só" },
+  description:
+    "Gestão clínica com agenda, pacientes, prontuários, evolução e operação administrativa conectadas — e um portal para o paciente.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Cliniq | A clínica inteira, em uma visão só",
+    description: "Agenda, pacientes, prontuários, financeiro e portal do paciente num só sistema.",
+    url: "/",
+  },
 };
 
 export default function HomePage() {
