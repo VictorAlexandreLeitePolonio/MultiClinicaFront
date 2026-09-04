@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/lib/site";
 
-export const alt = "Cliniq — A clínica, inteligente.";
+export const alt = `${siteConfig.name} — A clínica, inteligente.`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -49,7 +49,7 @@ export default function OpengraphImage() {
               }}
             />
           </div>
-          <div style={{ display: "flex", fontSize: "56px", fontWeight: 700 }}>Cliniq</div>
+          <div style={{ display: "flex", fontSize: "56px", fontWeight: 700 }}>{siteConfig.name}</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>

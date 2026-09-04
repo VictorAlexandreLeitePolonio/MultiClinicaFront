@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteConfig } from "@/lib/site";
 import { LandingHeader } from "./(public)/lp/components/LandingHeader";
 import { LandingExperience } from "./(public)/lp/components/LandingExperience";
 import { LandingClients } from "./(public)/lp/components/LandingClients";
@@ -10,12 +11,12 @@ import { LandingFooter } from "./(public)/lp/components/LandingFooter";
 import { LandingMascot } from "./(public)/lp/components/LandingMascot";
 
 export const metadata: Metadata = {
-  title: { absolute: "Cliniq | A clínica inteira, em uma visão só" },
+  title: { absolute: `${siteConfig.name} | A clínica inteira, em uma visão só` },
   description:
-    "Gestão clínica com agenda, pacientes, prontuários, evolução e operação administrativa conectadas — e um portal para o paciente.",
+    "Cliniq Care: gestão clínica com agenda, pacientes, prontuários, evolução e operação administrativa conectadas — e um portal para o paciente.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Cliniq | A clínica inteira, em uma visão só",
+    title: `${siteConfig.name} | A clínica inteira, em uma visão só`,
     description: "Agenda, pacientes, prontuários, financeiro e portal do paciente num só sistema.",
     url: "/",
   },
