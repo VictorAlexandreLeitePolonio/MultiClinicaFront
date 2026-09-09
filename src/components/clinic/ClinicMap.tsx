@@ -40,6 +40,7 @@ export function ClinicMap({
           style: styleUrl,
           center: [longitude, latitude],
           zoom: 14,
+          scrollZoom: false,
         })
         map = createdMap
         createdMap.addControl(new maplibregl.NavigationControl(), 'top-right')
