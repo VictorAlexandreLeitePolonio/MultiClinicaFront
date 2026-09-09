@@ -39,23 +39,22 @@ export function ClinicDetailModal({ source, onClose }: Props) {
     <Dialog.Root open={source !== null} onOpenChange={(next) => !next && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50" />
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
-            <Dialog.Content
-              className="relative w-full max-w-3xl rounded-2xl bg-[#f0fdf9] p-4 shadow-2xl focus:outline-none dark:bg-slate-950 sm:p-6"
-              aria-describedby={undefined}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <Dialog.Content
+            className="relative max-h-[calc(100dvh-2rem)] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-2xl bg-[#f0fdf9] p-4 shadow-2xl focus:outline-none dark:bg-slate-950 sm:max-h-[calc(100dvh-3rem)] sm:p-6"
+            aria-describedby={undefined}
+          >
+            <Dialog.Title className="sr-only">Detalhes da clínica</Dialog.Title>
+            <Dialog.Close
+              className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#334155] shadow-sm backdrop-blur transition hover:bg-white dark:bg-slate-800/90 dark:text-slate-200 dark:hover:bg-slate-800"
+              aria-label="Fechar"
             >
-              <Dialog.Close
-                className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#334155] shadow-sm backdrop-blur transition hover:bg-white dark:bg-slate-800/90 dark:text-slate-200 dark:hover:bg-slate-800"
-                aria-label="Fechar"
-              >
-                <X size={18} />
-              </Dialog.Close>
-              <PatientAuthProvider>
-                {source && <ClinicDetailBody source={source} />}
-              </PatientAuthProvider>
-            </Dialog.Content>
-          </div>
+              <X size={18} />
+            </Dialog.Close>
+            <PatientAuthProvider>
+              {source && <ClinicDetailBody source={source} />}
+            </PatientAuthProvider>
+          </Dialog.Content>
         </div>
       </Dialog.Portal>
     </Dialog.Root>
@@ -102,11 +101,8 @@ function ClinicDetailBody({ source }: { source: ClinicDetailSource }) {
   const clinic = query.data as ClinicDetail | undefined;
   if (!clinic) return null;
 
-  // Dialog exige um título acessível — usamos o nome da clínica.
   return (
     <div className="space-y-6">
-      <Dialog.Title className="sr-only">{clinic.displayName ?? "Clínica"}</Dialog.Title>
-
       <ClinicPublicHeader clinic={clinic} />
 
       <ClinicAppointmentRequestCta

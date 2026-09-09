@@ -35,6 +35,7 @@ export function ClinicMap({
     void import('maplibre-gl')
       .then((maplibregl) => {
         if (disposed || !containerRef.current) return
+        maplibregl.setWorkerUrl('/maplibre/maplibre-gl-worker.mjs')
         const createdMap = new maplibregl.Map({
           container: containerRef.current,
           style: styleUrl,
