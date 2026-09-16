@@ -60,7 +60,7 @@ export default function PlanoList({ onCreate, onViewDetails }: Props) {
         </span>
       ),
     },
-    { key: "tipoSessao", label: "Sessão" },
+    { key: "tipoSessaoName", label: "Sessão" },
     {
       key: "actions",
       label: "",

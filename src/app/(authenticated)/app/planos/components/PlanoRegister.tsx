@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { PlanoSchema, PlanoFormData } from "../schemas/plano.schema";
 import { usePlanoInsert } from "../hooks/insert";
 import { toast } from "sonner";
+import { SessionTypeField } from "./SessionTypeField";
 
 interface Props {
   onBack: () => void;
@@ -18,15 +19,6 @@ interface Props {
 const tipoPlanoOptions = [
   { value: "Mensal", label: "Mensal" },
   { value: "Avulso", label: "Avulso" },
-];
-
-const tipoSessaoOptions = [
-  "Fisioterapia",
-  "Pilates",
-  "Massagem",
-  "Hidrolipo",
-  "Lipedema",
-  "Linfedema",
 ];
 
 export default function PlanoRegister({ onBack, onSave }: Props) {
@@ -43,14 +35,14 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
       name: "",
       valor: 0,
       tipoPlano: "Mensal",
-      tipoSessao: "Fisioterapia",
+      tipoSessaoId: 0,
     },
   });
 
   const name = watch("name");
   const valor = watch("valor");
   const tipoPlano = watch("tipoPlano");
-  const tipoSessao = watch("tipoSessao");
+  const tipoSessaoId = watch("tipoSessaoId");
 
   const onSubmit = async (data: PlanoFormData) => {
     try {
@@ -117,38 +109,11 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
             </select>
           </div>
 
-          {/* Select Tipo Sessão */}
-          <div className="flex flex-col gap-2">
-            <label
-              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
-            >
-              Tipo de Sessão *
-            </label>
-            <select
-              value={tipoSessao}
-              onChange={(e) =>
-                setValue(
-                  "tipoSessao",
-                  e.target.value as
-                    | "Fisioterapia"
-                    | "Pilates"
-                    | "Massagem"
-                    | "Hidrolipo"
-                    | "Lipedema"
-                    | "Linfedema",
-                  { shouldValidate: true },
-                )
-              }
-              className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
-                focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
-            >
-              {tipoSessaoOptions.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-          </div>
+          <SessionTypeField
+            value={tipoSessaoId}
+            onChange={(id) => setValue("tipoSessaoId", id, { shouldValidate: true })}
+            error={errors.tipoSessaoId?.message}
+          />
         </FormSection>
 
         <Button type="submit" loading={isPending}>

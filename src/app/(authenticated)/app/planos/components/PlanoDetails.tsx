@@ -13,6 +13,7 @@ import { usePlanoById } from "../hooks/getId";
 import { usePlanoUpdate } from "../hooks/update";
 import { toast } from "sonner";
 import { Eye, Edit3, Save, X } from "lucide-react";
+import { SessionTypeField } from "./SessionTypeField";
 
 interface Props {
   id: number;
@@ -23,15 +24,6 @@ interface Props {
 const tipoPlanoOptions = [
   { value: "Mensal", label: "Mensal" },
   { value: "Avulso", label: "Avulso" },
-];
-
-const tipoSessaoOptions = [
-  "Fisioterapia",
-  "Pilates",
-  "Massagem",
-  "Hidrolipo",
-  "Lipedema",
-  "Linfedema",
 ];
 
 export default function PlanoDetails({ id, onBack, onSave }: Props) {
@@ -51,14 +43,14 @@ export default function PlanoDetails({ id, onBack, onSave }: Props) {
       name: "",
       valor: 0,
       tipoPlano: "Mensal",
-      tipoSessao: "Fisioterapia",
+      tipoSessaoId: 0,
     },
   });
 
   const name = watch("name");
   const valor = watch("valor");
   const tipoPlano = watch("tipoPlano");
-  const tipoSessao = watch("tipoSessao");
+  const tipoSessaoId = watch("tipoSessaoId");
 
   useEffect(() => {
     if (data) {
@@ -66,7 +58,7 @@ export default function PlanoDetails({ id, onBack, onSave }: Props) {
         name: data.name,
         valor: data.valor,
         tipoPlano: data.tipoPlano,
-        tipoSessao: data.tipoSessao,
+        tipoSessaoId: data.tipoSessaoId,
       });
     }
   }, [data, reset]);
@@ -89,7 +81,7 @@ export default function PlanoDetails({ id, onBack, onSave }: Props) {
         name: data.name,
         valor: data.valor,
         tipoPlano: data.tipoPlano,
-        tipoSessao: data.tipoSessao,
+        tipoSessaoId: data.tipoSessaoId,
       });
     }
   };
@@ -226,45 +218,12 @@ export default function PlanoDetails({ id, onBack, onSave }: Props) {
             </select>
           </div>
 
-          {/* Select Tipo Sessão */}
-          <div className="flex flex-col gap-2">
-            <label
-              className={`text-sm font-semibold uppercase tracking-wider ${
-                !isEditing ? "text-gray-400" : "text-secondary dark:text-white"
-              }`}
-            >
-              Tipo de Sessão *
-            </label>
-            <select
-              disabled={!isEditing}
-              value={tipoSessao}
-              onChange={(e) =>
-                setValue(
-                  "tipoSessao",
-                  e.target.value as
-                    | "Fisioterapia"
-                    | "Pilates"
-                    | "Massagem"
-                    | "Hidrolipo"
-                    | "Lipedema"
-                    | "Linfedema",
-                  { shouldValidate: true },
-                )
-              }
-              className={`w-full px-4 py-3 border rounded-xl transition-all
-                ${
-                  !isEditing
-                    ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
-                    : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
-                }`}
-            >
-              {tipoSessaoOptions.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-          </div>
+          <SessionTypeField
+            value={tipoSessaoId}
+            onChange={(sessionTypeId) => setValue("tipoSessaoId", sessionTypeId, { shouldValidate: true })}
+            disabled={!isEditing}
+            error={errors.tipoSessaoId?.message}
+          />
         </FormSection>
 
         <div className="flex gap-2 md:hidden">

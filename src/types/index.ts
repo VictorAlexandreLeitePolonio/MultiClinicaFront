@@ -232,14 +232,14 @@ export interface SuperAdminCommercialHistoryItem {
 }
 
 export type TipoPlano = "Mensal" | "Avulso";
-export type TipoSessao = "Fisioterapia" | "Pilates" | "Massagem" | "Hidrolipo" | "Lipedema" | "Linfedema";
 
 export interface Plan {
   id: number;
   name: string;
   valor: number;
   tipoPlano: TipoPlano;
-  tipoSessao: TipoSessao;
+  tipoSessaoId: number;
+  tipoSessaoName: string;
   createdAt: string;
 }
 
