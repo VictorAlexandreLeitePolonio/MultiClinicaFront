@@ -14,7 +14,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Pagination } from "@/components/ui/Pagination";
 import { usePagamentoDelete } from "../hooks/delete";
 import { Payment, Patient } from "@/types";
-import { formatCurrency, formatDate } from "@/utils/formatters";
+import { formatCivilDate, formatCurrency, todayCivilDate } from "@/utils/formatters";
 import { toast } from "sonner";
 import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
@@ -79,6 +79,11 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
       label: "Status do Pagamento",
       options: paymentStatusOptions,
     },
+    {
+      key: "referenceMonth",
+      label: "Mês de referência",
+      type: "date",
+    },
   ];
 
   const handleConfirmDelete = async () => {
@@ -105,6 +110,9 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
     if (filterValues.status) {
       newFilters.status = filterValues.status;
     }
+    if (filterValues.referenceMonth) {
+      newFilters.referenceMonth = filterValues.referenceMonth;
+    }
     applyFilters(newFilters);
   };
 
@@ -112,6 +120,7 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
     setFilterValues({
       patientId: "",
       status: "",
+      referenceMonth: "",
     });
     clearFilters();
   };
@@ -119,6 +128,7 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
   const [filterValues, setFilterValues] = useState<FilterValues>({
     patientId: filters.patientId || "",
     status: filters.status || "",
+    referenceMonth: filters.referenceMonth || "",
   });
 
   const columns: Column<Payment>[] = [
@@ -130,23 +140,24 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
       label: "Valor",
       render: (p) => formatCurrency(p.planAmount),
     },
-    { key: "referenceMonth", label: "Mês Ref." },
+    {
+      key: "referenceMonth",
+      label: "Mês Ref.",
+      render: (p) => formatCivilDate(p.referenceMonth),
+    },
     {
       key: "paymentDate",
       label: "Vencimento",
       render: (p) => {
         if (!p.paymentDate) return "-";
-        const paymentDate = new Date(p.paymentDate);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (paymentDate < today && p.status === "Pending") {
+        if (p.paymentDate < todayCivilDate() && p.status === "Pending") {
           return (
             <span className="px-2 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-700 border-red-200">
               Vencido
             </span>
           );
         }
-        return formatDate(p.paymentDate);
+        return formatCivilDate(p.paymentDate);
       },
     },
     { key: "paymentMethod", label: "Método" },
@@ -169,7 +180,7 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
     {
       key: "paidAt",
       label: "Data Pagamento",
-      render: (p) => (p.paidAt ? formatDate(p.paidAt) : "-"),
+      render: (p) => formatCivilDate(p.paidAt),
     },
     {
       key: "actions",

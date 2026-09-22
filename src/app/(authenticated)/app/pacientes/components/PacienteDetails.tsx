@@ -53,6 +53,7 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
       cpf: "",
       rg: "",
       phone: "",
+      birthDate: "",
       rua: "",
       numero: "",
       bairro: "",
@@ -71,6 +72,7 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
   const cidade = watch("cidade");
   const estado = watch("estado");
   const cep = watch("cep");
+  const birthDate = watch("birthDate");
 
   // Reset form when data is loaded
   useEffect(() => {
@@ -81,6 +83,7 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
         cpf: maskCPF(data.cpf ?? ""),
         rg: maskRG(data.rg || ""),
         phone: maskPhone(data.phone ?? ""),
+        birthDate: data.birthDate ?? "",
         rua: data.rua ?? "",
         numero: data.numero ?? "",
         bairro: data.bairro ?? "",
@@ -99,6 +102,7 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
         cpf: formData.cpf ? toNullable(unformatCPF(formData.cpf)) : null,
         rg: formData.rg ? toNullable(unformatRG(formData.rg)) : null,
         phone: formData.phone ? toNullable(unformatPhone(formData.phone)) : null,
+        birthDate: toNullable(formData.birthDate),
         rua: toNullable(formData.rua),
         numero: toNullable(formData.numero),
         bairro: toNullable(formData.bairro),
@@ -124,6 +128,7 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
         cpf: maskCPF(data.cpf ?? ""),
         rg: maskRG(data.rg || ""),
         phone: maskPhone(data.phone ?? ""),
+        birthDate: data.birthDate ?? "",
         rua: data.rua ?? "",
         numero: data.numero ?? "",
         bairro: data.bairro ?? "",
@@ -280,6 +285,18 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
                 onBlur={field.onBlur}
               />
             )}
+          />
+          <FormField
+            label="Data de nascimento"
+            id="birthDate"
+            name="birthDate"
+            type="date"
+            error={errors.birthDate?.message}
+            disabled={!isEditing}
+            value={birthDate || ""}
+            onChange={(event) =>
+              setValue("birthDate", event.target.value, { shouldValidate: true })
+            }
           />
         </FormSection>
 

@@ -1,9 +1,13 @@
-import { BusinessHour, ClinicAddress } from "@/types";
+import { BusinessHour, ClinicAddress, ClinicalModelStatus, ClinicCategoryKind } from "@/types";
 
 export interface MarketplaceCategory {
   id: number;
   name: string;
   slug: string;
+  kind?: ClinicCategoryKind;
+  parentCategoryId?: number | null;
+  clinicalProfileKey?: string | null;
+  clinicalModelStatus?: ClinicalModelStatus;
 }
 
 export type MarketplaceClinicSort = "MostLiked" | "NameAsc" | "NameDesc";

@@ -9,6 +9,7 @@ import { getApiErrorMessage } from "@/utils/apiError";
 export interface PagamentoFilters {
   patientId?: string;
   status?: string;
+  referenceMonth?: string;
 }
 
 export function usePagamentosPaginated(initialFilters?: PagamentoFilters) {
@@ -40,6 +41,7 @@ export function usePagamentosPaginated(initialFilters?: PagamentoFilters) {
           patientName: currentSearch || undefined,
           patientId: currentFilters.patientId,
           status: currentFilters.status,
+          referenceMonth: currentFilters.referenceMonth,
           page: currentPage,
           pageSize: currentPageSize,
         });

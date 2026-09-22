@@ -56,6 +56,7 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
       cpf: "",
       rg: "",
       phone: "",
+      birthDate: "",
       rua: "",
       numero: "",
       bairro: "",
@@ -73,6 +74,7 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
         cpf: toNullable(unformatCPF(data.cpf)),
         rg: data.rg ? toNullable(unformatRG(data.rg)) : null,
         phone: data.phone ? toNullable(unformatPhone(data.phone)) : null,
+        birthDate: toNullable(data.birthDate),
         rua: toNullable(data.rua),
         numero: toNullable(data.numero),
         bairro: toNullable(data.bairro),
@@ -198,6 +200,12 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
                 onBlur={field.onBlur}
               />
             )}
+          />
+          <FormField
+            label="Data de nascimento"
+            type="date"
+            error={errors.birthDate?.message}
+            {...register("birthDate")}
           />
         </FormSection>
         )}

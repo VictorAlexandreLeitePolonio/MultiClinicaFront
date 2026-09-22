@@ -7,11 +7,18 @@ export interface GetPaymentsParams {
   patientName?: string
   patientId?: string
   status?: string
+  referenceMonth?: string
   page?: number
   pageSize?: number
 }
 
 export type CreatePaymentPayload = PagamentoFormData & { responsavelId: number }
+
+const normalizePaymentDates = (payload: PagamentoFormData): PagamentoFormData => ({
+  ...payload,
+  paidAt: payload.paidAt || undefined,
+  paymentDate: payload.paymentDate || null,
+})
 
 export async function getPayments(
   params?: GetPaymentsParams,
@@ -35,7 +42,11 @@ export async function getPaymentById(id: number): Promise<Payment> {
 export async function createPayment(
   payload: CreatePaymentPayload,
 ): Promise<Payment> {
-  const response = await api.post<Payment>('/api/payments', payload)
+  const { responsavelId, ...formData } = payload
+  const response = await api.post<Payment>('/api/payments', {
+    ...normalizePaymentDates(formData),
+    responsavelId,
+  })
 
   return response.data
 }
@@ -44,7 +55,10 @@ export async function updatePayment(
   id: number,
   payload: PagamentoFormData,
 ): Promise<Payment> {
-  const response = await api.put<Payment>(`/api/payments/${id}`, payload)
+  const response = await api.put<Payment>(
+    `/api/payments/${id}`,
+    normalizePaymentDates(payload),
+  )
 
   return response.data
 }

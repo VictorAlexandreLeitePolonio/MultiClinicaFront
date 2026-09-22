@@ -15,7 +15,6 @@ import { usePlanos } from "../hooks/usePlanos";
 import { Eye, Edit3, Save, X } from "lucide-react";
 import { Patient } from "@/types";
 import { formatCurrency } from "@/utils/formatters";
-import { maskMonthReference } from "@/utils/masks";
 import { toast } from "sonner";
 import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
@@ -40,6 +39,8 @@ const paymentMethodOptions = [
   "Boleto",
   "Transferência",
 ];
+
+const dateInputValue = (value: string | null) => value?.slice(0, 10) ?? "";
 
 export default function PagamentoDetails({ id, onBack, onSave }: Props) {
   const { data, loading, error } = usePagamentoById(id);
@@ -96,9 +97,8 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
         referenceMonth: data.referenceMonth,
         paymentMethod: data.paymentMethod,
         status:        data.status,
-        // input[type=date] exige "YYYY-MM-DD" — a API retorna ISO completo "2026-03-25T00:00:00Z"
-        paidAt:      data.paidAt      ? data.paidAt.split("T")[0]      : "",
-        paymentDate: data.paymentDate ? data.paymentDate.split("T")[0] : null,
+        paidAt:      dateInputValue(data.paidAt),
+        paymentDate: data.paymentDate ? dateInputValue(data.paymentDate) : null,
       });
     }
   }, [data, reset]);
@@ -123,8 +123,8 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
         referenceMonth: data.referenceMonth,
         paymentMethod:  data.paymentMethod,
         status:         data.status,
-        paidAt:      data.paidAt      ? data.paidAt.split("T")[0]      : "",
-        paymentDate: data.paymentDate ? data.paymentDate.split("T")[0] : null,
+        paidAt:      dateInputValue(data.paidAt),
+        paymentDate: data.paymentDate ? dateInputValue(data.paymentDate) : null,
       });
     }
   };
@@ -280,11 +280,12 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
           <FormField
             label="Mês de Referência *"
             id="referenceMonth"
+            type="date"
             error={errors.referenceMonth?.message}
             disabled={!isEditing}
             value={referenceMonth || ""}
             onChange={(e) =>
-              setValue("referenceMonth", maskMonthReference(e.target.value), {
+              setValue("referenceMonth", e.target.value, {
                 shouldValidate: true,
               })
             }

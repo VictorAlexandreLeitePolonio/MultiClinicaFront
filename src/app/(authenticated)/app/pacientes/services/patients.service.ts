@@ -16,6 +16,7 @@ export interface PatientPayload {
   cpf: string | null;
   rg: string | null;
   phone: string | null;
+  birthDate: string | null;
   rua: string | null;
   numero: string | null;
   bairro: string | null;

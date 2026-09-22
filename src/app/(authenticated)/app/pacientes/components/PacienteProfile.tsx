@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable, Column } from "@/components/ui/DataTable";
 import { useGetPatientProfile } from "../hooks/profile";
-import { formatDate, formatCurrency, formatCPF, formatPhone } from "@/utils/formatters";
+import { formatCivilDate, formatDate, formatCurrency, formatCPF, formatPhone, todayCivilDate } from "@/utils/formatters";
 import { Activity, Calendar, FileText, CreditCard, User, Phone, MapPin } from "lucide-react";
 import { fadeSlideUp, staggerContainer } from "@/lib/motion";
 import { PatientEvolutionSection } from "./evolution/PatientEvolutionSection";
@@ -107,7 +107,11 @@ export default function PacienteProfile({ id, onBack }: Props) {
   ];
 
   const paymentColumns: Column<typeof data.payments[0]>[] = [
-    { key: "referenceMonth", label: "Mês Ref." },
+    {
+      key: "referenceMonth",
+      label: "Mês Ref.",
+      render: (p) => formatCivilDate(p.referenceMonth),
+    },
     { key: "planName", label: "Plano" },
     {
       key: "amount",
@@ -120,17 +124,14 @@ export default function PacienteProfile({ id, onBack }: Props) {
       label: "Vencimento",
       render: (p) => {
         if (!p.paymentDate) return "-";
-        const paymentDate = new Date(p.paymentDate);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (paymentDate < today && p.status === "Pending") {
+        if (p.paymentDate < todayCivilDate() && p.status === "Pending") {
           return (
             <span className="px-2 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-700 border-red-200">
               Vencido
             </span>
           );
         }
-        return formatDate(p.paymentDate);
+        return formatCivilDate(p.paymentDate);
       },
     },
     {
@@ -157,7 +158,7 @@ export default function PacienteProfile({ id, onBack }: Props) {
     {
       key: "paidAt",
       label: "Pago em",
-      render: (p) => (p.paidAt ? formatDate(p.paidAt) : "-"),
+      render: (p) => formatCivilDate(p.paidAt),
     },
   ];
 
@@ -216,6 +217,9 @@ export default function PacienteProfile({ id, onBack }: Props) {
                 <MapPin size={14} />
                 {formatAddress(data)}
               </div>
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">
+                Data de nascimento: {formatCivilDate(data.birthDate, "Não informado")}
+              </p>
             </div>
           </div>
           <div className="text-right text-sm text-gray-600 dark:text-slate-300">

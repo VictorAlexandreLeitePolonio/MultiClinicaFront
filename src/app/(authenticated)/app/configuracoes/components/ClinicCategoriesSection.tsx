@@ -16,7 +16,11 @@ export function ClinicCategoriesSection({ canEdit }: Props) {
   const save = useSetClinicCategories();
   // draft null = ainda sincronizado com o servidor; array = seleção editada localmente.
   const [draft, setDraft] = useState<number[] | null>(null);
+  const [search, setSearch] = useState("");
   const selected = draft ?? current.data?.map((c) => c.id) ?? [];
+  const visibleCategories = (catalog.data ?? []).filter((category) =>
+    `${category.name} ${category.slug}`.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()),
+  );
 
   const toggle = (id: number) => {
     if (!canEdit) return;
@@ -47,8 +51,17 @@ export function ClinicCategoriesSection({ canEdit }: Props) {
       ) : (catalog.data?.length ?? 0) === 0 ? (
         <p className="text-sm text-[#64748b] dark:text-slate-400">Nenhuma categoria disponível no catálogo.</p>
       ) : (
-        <div className="flex flex-wrap gap-2">
-          {catalog.data!.map((category) => {
+        <>
+          <input
+            type="search"
+            aria-label="Buscar categoria"
+            placeholder="Buscar categoria"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="w-full rounded-xl border border-[#d7f3ea] bg-white px-3 py-2 text-sm text-[#0f172a] focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/40 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+          />
+          <div className="flex flex-wrap gap-2">
+          {visibleCategories.map((category) => {
             const active = selected.includes(category.id);
             return (
               <button
@@ -66,7 +79,8 @@ export function ClinicCategoriesSection({ canEdit }: Props) {
               </button>
             );
           })}
-        </div>
+          </div>
+        </>
       )}
 
       {canEdit && (

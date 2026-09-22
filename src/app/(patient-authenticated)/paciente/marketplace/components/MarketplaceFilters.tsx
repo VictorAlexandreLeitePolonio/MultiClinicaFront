@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { MarketplaceCategory, MarketplaceClinicFilters } from "../types/marketplace.types";
 
 interface Props {
@@ -15,6 +16,12 @@ const inputClass =
 
 export function MarketplaceFilters({ filters, search, categories, onSearchChange, onChange }: Props) {
   const selectedCategories = filters.categoryIds ?? [];
+  const [categorySearch, setCategorySearch] = useState("");
+  const visibleCategories = categories.filter((category) =>
+    `${category.name} ${category.slug}`
+      .toLocaleLowerCase()
+      .includes(categorySearch.trim().toLocaleLowerCase()),
+  );
 
   const toggleCategory = (categoryId: number) => {
     onChange({
@@ -54,8 +61,16 @@ export function MarketplaceFilters({ filters, search, categories, onSearchChange
       {categories.length > 0 && (
         <fieldset>
           <legend className="mb-2 text-sm font-semibold text-[#0f172a] dark:text-white">Categorias</legend>
+          <input
+            type="search"
+            aria-label="Buscar categoria"
+            placeholder="Buscar categoria"
+            value={categorySearch}
+            onChange={(event) => setCategorySearch(event.target.value)}
+            className={`${inputClass} mb-3 w-full`}
+          />
           <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
+            {visibleCategories.map((category) => (
               <label
                 key={category.id}
                 className="flex cursor-pointer items-center gap-2 rounded-full border border-[#d7f3ea] px-3 py-1.5 text-xs text-[#475569] dark:border-slate-700 dark:text-slate-300"

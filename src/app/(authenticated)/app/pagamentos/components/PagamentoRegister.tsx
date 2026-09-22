@@ -11,7 +11,6 @@ import { PagamentoSchema, PagamentoFormData } from '../schemas/pagamento.schema'
 import { usePagamentoInsert } from '../hooks/insert'
 import { usePlanos } from '../hooks/usePlanos'
 import { Patient } from '@/types'
-import { maskMonthReference } from '@/utils/masks'
 import { formatCurrency } from '@/utils/formatters'
 import { toast } from 'sonner'
 import { useAuth } from '@/contexts/AuthContext'
@@ -183,11 +182,11 @@ export default function PagamentoRegister({ onBack, onSave }: Props) {
           <FormField
             label="Mês de Referência *"
             id="referenceMonth"
-            placeholder="01-2024"
+            type="date"
             error={errors.referenceMonth?.message}
             value={referenceMonth || ''}
             onChange={(e) =>
-              setValue('referenceMonth', maskMonthReference(e.target.value), {
+              setValue('referenceMonth', e.target.value, {
                 shouldValidate: true,
               })
             }

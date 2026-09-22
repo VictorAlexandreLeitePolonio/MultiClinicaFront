@@ -9,7 +9,8 @@ import { Button } from "./Button";
 export interface FilterOption {
   key: string;
   label: string;
-  options: { value: string; label: string }[];
+  options?: { value: string; label: string }[];
+  type?: "select" | "date";
 }
 
 export interface FilterValues {
@@ -103,18 +104,27 @@ export function FilterPopover({
                     >
                       {filter.label}
                     </label>
-                    <select
-                      value={values[filter.key] || ""}
-                      onChange={(e) => handleSelectChange(filter.key, e.target.value)}
-                      className="w-full rounded-xl border border-[#d7f3ea] bg-white px-3 py-2 text-[#0f172a] transition-all focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-                    >
-                      <option value="">Todos</option>
-                      {filter.options.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
+                    {filter.type === "date" ? (
+                      <input
+                        type="date"
+                        value={values[filter.key] || ""}
+                        onChange={(e) => handleSelectChange(filter.key, e.target.value)}
+                        className="w-full rounded-xl border border-[#d7f3ea] bg-white px-3 py-2 text-[#0f172a] transition-all focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                      />
+                    ) : (
+                      <select
+                        value={values[filter.key] || ""}
+                        onChange={(e) => handleSelectChange(filter.key, e.target.value)}
+                        className="w-full rounded-xl border border-[#d7f3ea] bg-white px-3 py-2 text-[#0f172a] transition-all focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                      >
+                        <option value="">Todos</option>
+                        {(filter.options ?? []).map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
+                    )}
                   </div>
                 ))}
               </div>

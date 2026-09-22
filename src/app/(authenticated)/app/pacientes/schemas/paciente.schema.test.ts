@@ -38,4 +38,10 @@ describe("PacienteSchema", () => {
   it("aceita um cadastro válido", () => {
     expect(PacienteSchema.safeParse(validBase).success).toBe(true);
   });
+
+  it("aceita nascimento bissexto válido e rejeita datas impossíveis ou futuras", () => {
+    expect(PacienteSchema.safeParse({ ...validBase, birthDate: "2000-02-29" }).success).toBe(true);
+    expect(PacienteSchema.safeParse({ ...validBase, birthDate: "2025-02-29" }).success).toBe(false);
+    expect(PacienteSchema.safeParse({ ...validBase, birthDate: "2999-01-01" }).success).toBe(false);
+  });
 });

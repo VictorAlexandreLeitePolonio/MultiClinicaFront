@@ -107,10 +107,17 @@ export type DayOfWeekName =
   | "Friday"
   | "Saturday";
 
+export type ClinicCategoryKind = "ProfessionalArea" | "MedicalSpecialty" | "Legacy";
+export type ClinicalModelStatus = "NotConfigured" | "PendingReview" | "Available";
+
 export interface ClinicCategory {
   id: number;
   name: string;
   slug: string;
+  kind?: ClinicCategoryKind;
+  parentCategoryId?: number | null;
+  clinicalProfileKey?: string | null;
+  clinicalModelStatus?: ClinicalModelStatus;
 }
 
 /** Faixa de horário de funcionamento. startTime/endTime no formato "HH:mm:ss". */
@@ -401,6 +408,7 @@ export interface Patient {
   cidade: string | null;
   estado: string | null;
   cep: string | null;
+  birthDate: string | null;
   isActive: boolean;
   createdAt?: string;
   appointmentStatus?: "Scheduled" | "Completed" | "Cancelled";
@@ -503,6 +511,7 @@ export interface PatientProfile {
   cidade: string | null;
   estado: string | null;
   cep: string | null;
+  birthDate: string | null;
   isActive: boolean;
   createdAt: string;
   /** null quando o paciente não possui acesso ao portal ("Sem acesso"). */

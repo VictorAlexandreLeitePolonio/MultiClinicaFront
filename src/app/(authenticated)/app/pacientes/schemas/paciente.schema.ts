@@ -1,4 +1,4 @@
-import { isValidCPF } from "@/utils/formatters";
+import { isValidCPF, isValidCivilDate, todayCivilDate } from "@/utils/formatters";
 import { z } from "zod";
 
 const textField = z.string({ error: "Campo inválido." }).default("");
@@ -28,6 +28,17 @@ export const PacienteSchema = z.object({
   cpf: cpfField,
   rg: rgField,
   phone: phoneField,
+  birthDate: z
+    .string()
+    .default("")
+    .refine(
+      (value) => value === "" || isValidCivilDate(value),
+      "Data de nascimento inválida",
+    )
+    .refine(
+      (value) => value === "" || value <= todayCivilDate(),
+      "Data de nascimento não pode ser futura",
+    ),
   rua: textField,
   numero: textField,
   bairro: textField,
@@ -44,6 +55,7 @@ export interface PacientePayload {
   cpf: string | null;
   rg: string | null;
   phone: string | null;
+  birthDate: string | null;
   rua: string | null;
   numero: string | null;
   bairro: string | null;
@@ -53,5 +65,5 @@ export interface PacientePayload {
 }
 
 // Campos de cada step para validação parcial
-export const step1Fields = ["name", "email", "cpf", "phone"] as const;
+export const step1Fields = ["name", "email", "cpf", "phone", "birthDate"] as const;
 export const step2Fields = ["rua", "numero", "bairro", "cidade", "estado", "cep"] as const;
