@@ -30,6 +30,31 @@ export interface ChangePatientStatusResponse {
   isActive: boolean;
 }
 
+export interface PatientImportRowError {
+  field: string;
+  code: string;
+  message: string;
+}
+
+export interface PatientImportRowResult {
+  row: number;
+  status: "Imported" | "Rejected";
+  patientId: number | null;
+  emailStatus: "Queued" | "SkippedNoEmail" | null;
+  errors: PatientImportRowError[];
+}
+
+export interface PatientImportResponse {
+  importId: string;
+  status: "Completed" | "CompletedWithErrors";
+  totalRows: number;
+  importedCount: number;
+  rejectedCount: number;
+  emailsQueuedCount: number;
+  emailsSkippedNoEmailCount: number;
+  results: PatientImportRowResult[];
+}
+
 export async function getPatients(params?: GetPatientsParams): Promise<PagedResult<Patient>> {
   const response = await api.get<PagedResult<Patient> | Patient[]>("/api/patients", {
     params,
@@ -52,6 +77,16 @@ export async function getPatientProfile(id: number): Promise<PatientProfile> {
 
 export async function createPatient(payload: PatientPayload): Promise<PatientCreatedResponse> {
   const response = await api.post<PatientCreatedResponse>("/api/patients", payload);
+
+  return response.data;
+}
+
+export async function importPatients(file: File, idempotencyKey: string): Promise<PatientImportResponse> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const response = await api.post<PatientImportResponse>("/api/patients/import", formData, {
+    headers: { "Idempotency-Key": idempotencyKey },
+  });
 
   return response.data;
 }

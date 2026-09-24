@@ -9,7 +9,7 @@ import { StatusToggleModal } from "@/components/ui/StatusToggleModal";
 import { FilterPopover, FilterOption, FilterValues } from "@/components/ui/FilterPopover";
 import { Button } from "@/components/ui/Button";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
-import { Eye, Power, Trash2, FileText, UserCircle } from "lucide-react";
+import { Eye, Power, Trash2, FileText, UserCircle, FileUp } from "lucide-react";
 import { usePacientesPaginated, PacienteFilters } from "../hooks/pagined";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Pagination } from "@/components/ui/Pagination";
@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { usePacienteChangeStatus } from "../hooks/changeStatus";
 import { Patient } from "@/types";
 import { formatCPF, formatPhone } from "@/utils/formatters";
+import { PatientImportDialog } from "./PatientImportDialog";
 
 interface Props {
   onCreate: () => void;
@@ -59,6 +60,7 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
 
   const [toDelete, setToDelete] = useState<Patient | null>(null);
   const [toToggleStatus, setToToggleStatus] = useState<Patient | null>(null);
+  const [patientImportOpen, setPatientImportOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<FilterValues>({
     appointmentStatus: "",
     paymentStatus: "",
@@ -222,6 +224,14 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
         title="Pacientes"
         actions={
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              fullWidth={false}
+              onClick={() => setPatientImportOpen(true)}
+            >
+              <FileUp size={16} aria-hidden="true" />
+              Importar pacientes
+            </Button>
             <div data-tutorial="patients-filters">
               <FilterPopover
                 filters={filterOptions}
@@ -262,6 +272,12 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
         pageSize={pageSize}
         onPageChange={setPage}
         onPageSizeChange={setPageSize}
+      />
+
+      <PatientImportDialog
+        open={patientImportOpen}
+        onClose={() => setPatientImportOpen(false)}
+        onImported={(hasImportedPatients) => hasImportedPatients && refetch()}
       />
 
       <DeleteConfirmDialog
