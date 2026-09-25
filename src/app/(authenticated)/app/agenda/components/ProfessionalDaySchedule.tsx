@@ -1,23 +1,18 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "@/lib/queryKeys";
-import { getProfessionalDaySchedule } from "../services/appointments.service";
+import type { ProfessionalDaySchedule as DaySchedule } from "../services/appointments.service";
 
 interface Props {
-  professionalId: number;
   date: string;
   selectedLocalDateTime: string;
   onSelect: (value: string) => void;
+  schedule: { data?: DaySchedule; isPending: boolean; isError: boolean; refetch: () => void };
 }
 
 const time = (iso: string) => iso.slice(11, 16);
 
-export function ProfessionalDaySchedule({ professionalId, date, selectedLocalDateTime, onSelect }: Props) {
-  const { data, isPending, isError, refetch } = useQuery({
-    queryKey: queryKeys.appointments.day(professionalId, date),
-    queryFn: () => getProfessionalDaySchedule(professionalId, date),
-  });
+export function ProfessionalDaySchedule({ date, selectedLocalDateTime, onSelect, schedule }: Props) {
+  const { data, isPending, isError, refetch } = schedule;
 
   return (
     <aside aria-label="Agenda do profissional" className="self-start rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900 lg:sticky lg:top-6">
