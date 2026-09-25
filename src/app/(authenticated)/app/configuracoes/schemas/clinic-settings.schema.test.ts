@@ -60,4 +60,10 @@ describe("clinicSettingsSchema", () => {
   it("rejeita slug com caracteres inválidos", () => {
     expect(clinicSettingsSchema.safeParse({ ...baseForm, publicSlug: "Slug Inválido!" }).success).toBe(false);
   });
+
+  it("aceita URL de logo válida com mais de 500 caracteres", () => {
+    const logoUrl = `https://cdn.example.com/${"a".repeat(600)}.png`;
+    const values = clinicSettingsSchema.parse({ ...baseForm, logoUrl });
+    expect(toUpdateClinicSettingsRequest(values).logoUrl).toBe(logoUrl);
+  });
 });

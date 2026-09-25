@@ -14,7 +14,7 @@ const coordinateField = z.union([
 export const clinicSettingsSchema = z.object({
   displayName: z.string().trim().max(120, "O nome de exibição deve ter no máximo 120 caracteres."),
   logoUrl: z.union([
-    z.string().trim().url("Informe uma URL válida.").max(500, "A URL da logo deve ter no máximo 500 caracteres."),
+    z.string().trim().url("Informe uma URL válida."),
     z.literal(""),
   ]),
   primaryColor: z.union([z.string().regex(hexColorRegex, "Use uma cor no formato #RRGGBB."), z.literal("")]),
