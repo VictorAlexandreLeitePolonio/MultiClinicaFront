@@ -1,7 +1,40 @@
 import api from "@/lib/api";
 import { normalizePagedResult } from "@/lib/pagination";
 import { Appointment, PagedResult } from "@/types";
-import { AgendaFormData } from "@/app/(authenticated)/app/agenda/schemas/agenda.schema";
+
+export interface AppointmentProfessional { id: number; name: string }
+export interface DayAppointment { id: number; patientName: string; start: string; end: string }
+export interface DaySlot { start: string; end: string; available: boolean }
+export interface ProfessionalDaySchedule {
+  date: string;
+  timeZoneId: string;
+  durationMinutes: number;
+  appointments: DayAppointment[];
+  slots: DaySlot[];
+}
+
+export interface CreateAppointmentPayload {
+  patientId: number;
+  professionalId: number;
+  appointmentDate: string;
+}
+
+export interface UpdateAppointmentPayload {
+  appointmentDate: string;
+  status: "Scheduled" | "Completed" | "Cancelled";
+}
+
+export async function getAppointmentProfessionals(): Promise<AppointmentProfessional[]> {
+  const response = await api.get<AppointmentProfessional[]>("/api/appointments/professionals");
+  return response.data;
+}
+
+export async function getProfessionalDaySchedule(professionalId: number, date: string): Promise<ProfessionalDaySchedule> {
+  const response = await api.get<ProfessionalDaySchedule>("/api/appointments/day-schedule", {
+    params: { professionalId, date },
+  });
+  return response.data;
+}
 
 export interface GetAppointmentsParams {
   patientName?: string;
@@ -37,7 +70,7 @@ export async function getAppointmentById(id: number): Promise<Appointment> {
   return response.data;
 }
 
-export async function createAppointment(payload: AgendaFormData): Promise<Appointment> {
+export async function createAppointment(payload: CreateAppointmentPayload): Promise<Appointment> {
   const response = await api.post<Appointment>("/api/appointments", payload);
 
   return response.data;
@@ -45,7 +78,7 @@ export async function createAppointment(payload: AgendaFormData): Promise<Appoin
 
 export async function updateAppointment(
   id: number,
-  payload: AgendaFormData
+  payload: UpdateAppointmentPayload
 ): Promise<Appointment> {
   const response = await api.put<Appointment>(`/api/appointments/${id}`, payload);
 

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { queryKeys } from "@/lib/queryKeys";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { AppointmentRequest } from "@/types";
-import { getUsers } from "@/app/(authenticated)/app/usuarios/services/users.service";
+import { getAppointmentProfessionals } from "../services/appointments.service";
 import { useAcceptRequest } from "../hooks/requests";
 
 interface Props {
@@ -32,15 +32,12 @@ export function AcceptAppointmentRequestModal({ request, onClose, onAccepted }: 
   const accept = useAcceptRequest();
   const [professionalId, setProfessionalId] = useState(0);
 
-  const usersQuery = useQuery({
-    queryKey: queryKeys.users.list({ pageSize: 100 }),
-    queryFn: () => getUsers({ pageSize: 100 }),
+  const professionalsQuery = useQuery({
+    queryKey: queryKeys.appointments.professionals,
+    queryFn: getAppointmentProfessionals,
   });
 
-  // Profissionais que atendem consultas (recepção não atende).
-  const professionals = (usersQuery.data?.data ?? []).filter(
-    (u) => u.role === "Profissional" || u.role === "Administrador",
-  );
+  const professionals = professionalsQuery.data ?? [];
 
   const handleConfirm = async () => {
     if (!professionalId) return;
@@ -90,7 +87,7 @@ export function AcceptAppointmentRequestModal({ request, onClose, onAccepted }: 
               className="w-full rounded-xl border border-[#d7f3ea] bg-white px-4 py-3 text-[#0f172a] focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
             >
               <option value={0}>
-                {usersQuery.isLoading ? "Carregando..." : "Selecionar profissional"}
+                {professionalsQuery.isLoading ? "Carregando..." : "Selecionar profissional"}
               </option>
               {professionals.map((u) => (
                 <option key={u.id} value={u.id}>

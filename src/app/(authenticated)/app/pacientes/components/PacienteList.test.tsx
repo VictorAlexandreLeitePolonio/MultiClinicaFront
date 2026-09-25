@@ -56,6 +56,10 @@ describe("PacienteList import action", () => {
     expect(await screen.findByRole("dialog", { name: /importar pacientes/i })).toBeInTheDocument();
     expect(screen.getByText(/apenas a coluna name é obrigatória/i)).toBeInTheDocument();
     expect(screen.getByText(/sem e-mail.*sem notificação/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /baixar template/i })).toHaveAttribute(
+      "href", "/templates/template-importacao-pacientes.xlsx",
+    );
+    expect(screen.getByText(/data de nascimento: dd\/mm\/aaaa ou aaaa-mm-dd/i)).toBeInTheDocument();
 
     const fileInput = screen.getByLabelText(/arquivo.*xlsx.*csv/i);
     expect(fileInput).toHaveAttribute("accept", ".xlsx,.csv");

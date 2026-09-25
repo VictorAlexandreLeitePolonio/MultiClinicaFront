@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { FileSpreadsheet, TriangleAlert, Upload, X } from "lucide-react";
+import { Download, FileSpreadsheet, TriangleAlert, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { usePatientImport } from "../hooks/import";
@@ -89,10 +89,19 @@ export function PatientImportDialog({ open, onClose, onImported }: PatientImport
           </div>
 
           <div className="mt-5 space-y-2 rounded-xl border border-[#d7f3ea] bg-[#f8fffc] p-4 text-sm leading-6 text-[#334155] dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-200">
-            <p><strong>A coluna Name é obrigatória.</strong> As demais são opcionais e podem estar em qualquer ordem.</p>
-            <p>Colunas aceitas: Name, Email, CPF, Rg, Phone, Rua, Numero, Bairro, Cidade, Estado e Cep.</p>
+            <p><strong>Apenas a coluna Name é obrigatória.</strong> As demais são opcionais e podem estar em qualquer ordem.</p>
+            <p>Colunas aceitas: Name, Email, CPF, Rg, BirthDate, Rua, Numero, Bairro, Cidade, Estado, Cep e Phone.</p>
+            <p>Data de nascimento: DD/MM/AAAA ou AAAA-MM-DD; células de data do Excel também são aceitas (opcional).</p>
             <p>Sem e-mail, o paciente será cadastrado sem notificação de acesso ao portal.</p>
             <p>Linhas válidas serão importadas; no resultado, veja o número e o motivo das linhas rejeitadas.</p>
+            <a
+              href="/templates/template-importacao-pacientes.xlsx"
+              download="template-importacao-pacientes.xlsx"
+              className="inline-flex items-center gap-2 rounded-lg border border-teal-700 px-3 py-1.5 font-semibold text-teal-800 transition-colors hover:bg-teal-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-300/50 dark:border-teal-400 dark:text-teal-200 dark:hover:bg-teal-950/40"
+            >
+              <Download size={16} aria-hidden="true" />
+              Baixar template
+            </a>
           </div>
 
           <div

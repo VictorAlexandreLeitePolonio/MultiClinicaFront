@@ -10,6 +10,8 @@
 
 **Spec:** [2026-09-25-professional-appointment-scheduling-design.md](../specs/2026-09-25-professional-appointment-scheduling-design.md)
 
+**Execution amendment (user correction):** Preserve the existing `appointmentDate` ISO/UTC request field and format. Convert the form's clinic-local value in the front using the selected clinic time zone from the day schedule response. The planned `appointmentLocalDateTime` request field and backend parser below are superseded by this correction.
+
 ## Global Constraints
 
 - Work in both repositories with clean, task-specific branches. Back is currently on `codex/issue-31-patient-import`; inspect its merge base before making the new branch. Preserve unrelated work.

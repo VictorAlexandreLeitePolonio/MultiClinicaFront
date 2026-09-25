@@ -9,7 +9,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { FormSection } from "@/components/ui/FormSection";
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
-import { PacienteSchema, PacienteFormData } from "../schemas/paciente.schema";
+import { PacienteUpdateSchema, PacienteUpdateFormData } from "../schemas/paciente.schema";
 import { toast } from "sonner";
 import { usePacienteById } from "../hooks/getId";
 import { usePacienteUpdate } from "../hooks/update";
@@ -42,11 +42,11 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
     watch,
     formState: { errors },
   } = useForm<
-    z.input<typeof PacienteSchema>,
+    z.input<typeof PacienteUpdateSchema>,
     unknown,
-    PacienteFormData
+    PacienteUpdateFormData
   >({
-    resolver: zodResolver(PacienteSchema),
+    resolver: zodResolver(PacienteUpdateSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -94,7 +94,7 @@ export default function PacienteDetails({ id, onBack, onSave }: Props) {
     }
   }, [data, reset]);
 
-  const onSubmit = async (formData: PacienteFormData) => {
+  const onSubmit = async (formData: PacienteUpdateFormData) => {
     try {
       const payload = {
         name: toNullable(formData.name),

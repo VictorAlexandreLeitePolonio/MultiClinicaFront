@@ -4,7 +4,10 @@ export const AgendaSchema = z.object({
   patientId: z.number().min(1, "Paciente é obrigatório"),
   appointmentDate: z.string().min(1, "Data e hora são obrigatórias"),
   status: z.enum(["Scheduled", "Completed", "Cancelled"]).optional(),
-  professionalId: z.number().optional(),
 });
 
 export type AgendaFormData = z.infer<typeof AgendaSchema>;
+export const AgendaCreateSchema = AgendaSchema.extend({
+  professionalId: z.number().min(1, "Profissional é obrigatório"),
+});
+export type AgendaCreateFormData = z.infer<typeof AgendaCreateSchema>;

@@ -12,7 +12,8 @@ import { AgendaSchema, AgendaFormData } from "../schemas/agenda.schema";
 import { useAgendaById } from "../hooks/getId";
 import { useAgendaUpdate } from "../hooks/update";
 import { Patient } from "@/types";
-import { useAuth } from "@/contexts/AuthContext";
+import { getApiErrorMessage } from "@/utils/apiError";
+import { clinicDateTimeToIso } from "../services/clinicDateTime";
 import { Eye, Edit3, Save, X } from "lucide-react";
 import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
 
@@ -24,37 +25,23 @@ interface Props {
 
 
 // Converte ISO para datetime-local (YYYY-MM-DDTHH:MM)
-const isoToDateTimeLocal = (isoDate?: string): string => {
+const isoToDateTimeLocal = (isoDate?: string, timeZoneId = "America/Sao_Paulo"): string => {
   if (!isoDate) return "";
   try {
-    const date = new Date(isoDate);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: timeZoneId, year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+    }).formatToParts(new Date(isoDate));
+    const value = (part: string) => parts.find((item) => item.type === part)?.value ?? "";
+    return `${value("year")}-${value("month")}-${value("day")}T${value("hour")}:${value("minute")}`;
   } catch {
     return "";
   }
 };
 
-// Converte datetime-local para ISO preservando o fuso horário local
-const dateTimeLocalToIso = (dateTimeLocal: string): string => {
-  if (!dateTimeLocal) return "";
-  // datetime-local tem formato "YYYY-MM-DDTHH:mm" sem fuso horário
-  // Construímos a data manualmente para preservar o horário local
-  const [datePart, timePart] = dateTimeLocal.split("T");
-  const [year, month, day] = datePart.split("-").map(Number);
-  const [hours, minutes] = timePart.split(":").map(Number);
-  const localDate = new Date(year, month - 1, day, hours, minutes);
-  return localDate.toISOString();
-};
-
 export default function AgendaDetails({ id, onBack, onSave }: Props) {
   const { data, loading, error } = useAgendaById(id);
   const { updateAgenda, isPending } = useAgendaUpdate();
-  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loadingPatients, setLoadingPatients] = useState(false);
@@ -63,6 +50,8 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
     handleSubmit,
     reset,
     setValue,
+    setError,
+    clearErrors,
     watch,
     formState: { errors },
   } = useForm<AgendaFormData>({
@@ -99,7 +88,7 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
       reset({
         patientId: data.patientId,
         // Converte ISO para datetime-local para edição
-        appointmentDate: isoToDateTimeLocal(data.appointmentDate),
+        appointmentDate: isoToDateTimeLocal(data.appointmentDate, data.timeZoneId),
         status: data.status,
       });
     }
@@ -107,20 +96,15 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
 
   const onSubmit = async (formData: AgendaFormData) => {
     try {
-      if (!user?.id) {
-        throw new Error("Usuário não autenticado");
-      }
-      const payload = {
-        ...formData,
-        professionalId: user.id,
-        appointmentDate: dateTimeLocalToIso(formData.appointmentDate),
-      };
+      const payload = { appointmentDate: clinicDateTimeToIso(formData.appointmentDate, data?.timeZoneId ?? "America/Sao_Paulo"),
+        status: formData.status ?? "Scheduled" as const };
       await updateAgenda(id, payload);
       toast.success("Agendamento atualizado com sucesso!");
       setIsEditing(false);
       onSave();
-    } catch {
-      // erro já tratado no hook
+    } catch (error) {
+      setError("appointmentDate", { type: "server", message: getApiErrorMessage(error,
+        error instanceof Error ? error.message : "Não foi possível atualizar a consulta.") });
     }
   };
 
@@ -129,7 +113,7 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
     if (data) {
       reset({
         patientId: data.patientId,
-        appointmentDate: isoToDateTimeLocal(data.appointmentDate),
+        appointmentDate: isoToDateTimeLocal(data.appointmentDate, data.timeZoneId),
         status: data.status,
       });
     }
@@ -138,14 +122,8 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
   const formatDateTimeDisplay = (dateTimeLocal?: string) => {
     if (!dateTimeLocal) return "-";
     try {
-      const date = new Date(dateTimeLocal);
-      return date.toLocaleString("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+      const [day, hour] = dateTimeLocal.split("T");
+      return `${day.split("-").reverse().join("/")} ${hour}`;
     } catch {
       return "-";
     }
@@ -239,6 +217,7 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
           {/* Paciente */}
           <div className="flex flex-col gap-2">
             <label
+              htmlFor="detail-patient"
               className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
             >
               Paciente *
@@ -246,6 +225,7 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
             {isEditing ? (
               <>
                 <select
+                  id="detail-patient"
                   value={patientId || 0}
                   onChange={(e) => setValue("patientId", Number(e.target.value), { shouldValidate: true })}
                   className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
@@ -274,6 +254,7 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
           {/* Data e Hora */}
           <div className="flex flex-col gap-2">
             <label
+              htmlFor="detail-datetime"
               className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
             >
               Data e Hora *
@@ -281,9 +262,10 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
             {isEditing ? (
               <>
                 <input
+                  id="detail-datetime"
                   type="datetime-local"
                   value={appointmentDate || ""}
-                  onChange={(e) => setValue("appointmentDate", e.target.value, { shouldValidate: true })}
+                  onChange={(e) => { clearErrors("appointmentDate"); setValue("appointmentDate", e.target.value, { shouldValidate: true }); }}
                   className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
                     focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
                 />

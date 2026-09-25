@@ -411,8 +411,8 @@ export interface Patient {
   birthDate: string | null;
   isActive: boolean;
   createdAt?: string;
-  appointmentStatus?: "Scheduled" | "Completed" | "Cancelled";
-  paymentStatus?: "Pending" | "Paid" | "Cancelled";
+  appointmentStatus: "Scheduled" | "Completed" | "Cancelled" | null;
+  paymentStatus: "Pending" | "Paid" | "Cancelled" | null;
   /** null quando o paciente não possui acesso ao portal ("Sem acesso"). */
   portalAccessStatus?: PatientAccountStatus | null;
 }
@@ -425,6 +425,7 @@ export interface Appointment {
   appointmentDate: string;
   status: "Scheduled" | "Completed" | "Cancelled";
   createdAt: string;
+  timeZoneId?: string;
 }
 
 export interface MedicalRecord {

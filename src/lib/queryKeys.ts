@@ -10,6 +10,8 @@ export const queryKeys = {
     list: (params: unknown) => ["appointments", "list", params] as const,
     detail: (appointmentId: number) => ["appointments", "detail", appointmentId] as const,
     calendar: (params: unknown) => ["appointments", "calendar", params] as const,
+    professionals: ["appointments", "professionals"] as const,
+    day: (professionalId: number, date: string) => ["appointments", "day", professionalId, date] as const,
   },
   appointmentRequests: {
     all: ["appointment-requests"] as const,

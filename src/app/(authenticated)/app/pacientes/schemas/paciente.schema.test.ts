@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PacienteSchema } from "./paciente.schema";
+import { PacienteSchema, PacienteUpdateSchema } from "./paciente.schema";
 
 const validBase = {
   name: "João Silva",
@@ -43,5 +43,20 @@ describe("PacienteSchema", () => {
     expect(PacienteSchema.safeParse({ ...validBase, birthDate: "2000-02-29" }).success).toBe(true);
     expect(PacienteSchema.safeParse({ ...validBase, birthDate: "2025-02-29" }).success).toBe(false);
     expect(PacienteSchema.safeParse({ ...validBase, birthDate: "2999-01-01" }).success).toBe(false);
+  });
+});
+
+describe("PacienteUpdateSchema", () => {
+  it("permite editar somente nome e cidade sem dados opcionais", () => {
+    expect(PacienteUpdateSchema.safeParse({ ...validBase, name: "Maria", email: "", cpf: "", phone: "", cidade: "Recife" }).success).toBe(true);
+  });
+
+  it("exige nome e valida opcionais apenas quando preenchidos", () => {
+    expect(PacienteUpdateSchema.safeParse({ ...validBase, name: "  ", email: "", cpf: "", phone: "" }).success).toBe(false);
+    expect(PacienteUpdateSchema.safeParse({ ...validBase, email: "inválido" }).success).toBe(false);
+    expect(PacienteUpdateSchema.safeParse({ ...validBase, cpf: "123" }).success).toBe(false);
+    expect(PacienteUpdateSchema.safeParse({ ...validBase, phone: "123" }).success).toBe(false);
+    expect(PacienteUpdateSchema.safeParse({ ...validBase, cep: "123" }).success).toBe(false);
+    expect(PacienteUpdateSchema.safeParse({ ...validBase, birthDate: "2999-01-01" }).success).toBe(false);
   });
 });

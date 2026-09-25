@@ -49,6 +49,15 @@ export const PacienteSchema = z.object({
 
 export type PacienteFormData = z.infer<typeof PacienteSchema>;
 
+export const PacienteUpdateSchema = PacienteSchema.extend({
+  name: z.string().trim().min(1, "Nome é obrigatório"),
+  email: z.string().trim().refine((value) => value === "" || z.email().safeParse(value).success, "E-mail inválido"),
+  cpf: z.string().refine((value) => value === "" || /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(value) && isValidCPF(value), "CPF inválido"),
+  phone: z.string().refine((value) => value === "" || /^\(\d{2}\) \d{4,5}-\d{4}$/.test(value), "Telefone inválido"),
+  cep: z.string().refine((value) => value === "" || /^\d{8}$/.test(value), "CEP inválido"),
+});
+export type PacienteUpdateFormData = z.infer<typeof PacienteUpdateSchema>;
+
 export interface PacientePayload {
   name: string | null;
   email: string | null;
