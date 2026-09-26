@@ -1,11 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { Popover } from "radix-ui";
+import { ChevronDown } from "lucide-react";
 import { MarketplaceCategory, MarketplaceClinicFilters } from "../types/marketplace.types";
 
 interface Props {
   filters: MarketplaceClinicFilters;
   search: string;
+  city: string;
+  state: string;
+  onCityChange: (value: string) => void;
+  onStateChange: (value: string) => void;
   categories: MarketplaceCategory[];
   onSearchChange: (value: string) => void;
   onChange: (patch: Partial<MarketplaceClinicFilters>) => void;
@@ -14,7 +20,7 @@ interface Props {
 const inputClass =
   "rounded-xl border border-[#d7f3ea] bg-white px-3 py-2 text-sm text-[#0f172a] focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/40 dark:border-slate-800 dark:bg-slate-900 dark:text-white";
 
-export function MarketplaceFilters({ filters, search, categories, onSearchChange, onChange }: Props) {
+export function MarketplaceFilters({ filters, search, city, state, categories, onSearchChange, onCityChange, onStateChange, onChange }: Props) {
   const selectedCategories = filters.categoryIds ?? [];
   const [categorySearch, setCategorySearch] = useState("");
   const visibleCategories = categories.filter((category) =>
@@ -44,47 +50,61 @@ export function MarketplaceFilters({ filters, search, categories, onSearchChange
         <input
           aria-label="Cidade"
           placeholder="Cidade"
-          value={filters.city ?? ""}
-          onChange={(event) => onChange({ city: event.target.value || undefined })}
+          value={city}
+          onChange={(event) => onCityChange(event.target.value)}
           className={inputClass}
         />
         <input
           aria-label="UF"
           placeholder="UF"
           maxLength={2}
-          value={filters.state ?? ""}
-          onChange={(event) => onChange({ state: event.target.value.toUpperCase() || undefined })}
+          value={state}
+          onChange={(event) => onStateChange(event.target.value.toUpperCase())}
           className={inputClass}
         />
       </div>
 
       {categories.length > 0 && (
-        <fieldset>
-          <legend className="mb-2 text-sm font-semibold text-[#0f172a] dark:text-white">Categorias</legend>
-          <input
-            type="search"
-            aria-label="Buscar categoria"
-            placeholder="Buscar categoria"
-            value={categorySearch}
-            onChange={(event) => setCategorySearch(event.target.value)}
-            className={`${inputClass} mb-3 w-full`}
-          />
-          <div className="flex flex-wrap gap-2">
-            {visibleCategories.map((category) => (
-              <label
-                key={category.id}
-                className="flex cursor-pointer items-center gap-2 rounded-full border border-[#d7f3ea] px-3 py-1.5 text-xs text-[#475569] dark:border-slate-700 dark:text-slate-300"
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.includes(category.id)}
-                  onChange={() => toggleCategory(category.id)}
-                />
-                {category.name}
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        <Popover.Root onOpenChange={() => setCategorySearch("")}>
+          <Popover.Trigger asChild>
+            <button type="button" className={`${inputClass} flex w-full items-center justify-between gap-3 sm:w-72`}>
+              {selectedCategories.length > 0 ? `Categorias (${selectedCategories.length} selecionadas)` : "Todas as categorias"}
+              <ChevronDown size={16} aria-hidden="true" />
+            </button>
+          </Popover.Trigger>
+          <Popover.Portal>
+            <Popover.Content
+              aria-label="Categorias"
+              align="start"
+              sideOffset={6}
+              className="z-50 w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] rounded-xl border border-[#d7f3ea] bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-slate-900"
+            >
+              <input
+                type="search"
+                aria-label="Buscar categoria"
+                placeholder="Buscar categoria"
+                value={categorySearch}
+                onChange={(event) => setCategorySearch(event.target.value)}
+                className={`${inputClass} mb-2 w-full`}
+              />
+              <fieldset className="max-h-60 overflow-y-auto overscroll-contain">
+                <legend className="sr-only">Selecione as categorias</legend>
+                {visibleCategories.map((category) => (
+                  <label key={category.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-2 py-2 text-sm text-[#475569] hover:bg-[#ecfdf5] dark:text-slate-300 dark:hover:bg-slate-800">
+                    <input type="checkbox" checked={selectedCategories.includes(category.id)} onChange={() => toggleCategory(category.id)} />
+                    {category.name}
+                  </label>
+                ))}
+                {visibleCategories.length === 0 && <p role="status" className="px-2 py-3 text-sm text-[#475569] dark:text-slate-300">Nenhuma categoria encontrada.</p>}
+              </fieldset>
+              {selectedCategories.length > 0 && (
+                <button type="button" onClick={() => onChange({ categoryIds: [] })} className={`${inputClass} mt-2 w-full`}>
+                  Limpar seleção
+                </button>
+              )}
+            </Popover.Content>
+          </Popover.Portal>
+        </Popover.Root>
       )}
 
       <div className="flex flex-wrap items-center gap-4">

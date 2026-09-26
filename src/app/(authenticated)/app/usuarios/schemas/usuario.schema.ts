@@ -14,3 +14,10 @@ export const UsuarioCreateSchema = UsuarioSchema.extend({
 });
 
 export type UsuarioCreateFormData = z.infer<typeof UsuarioCreateSchema>;
+
+export const UsuarioInviteSchema = UsuarioSchema.extend({
+  name: z.string().trim().min(1, "Nome é obrigatório").max(200),
+  email: z.string().trim().email("E-mail inválido").max(254),
+  role: z.enum(["Profissional", "Recepcao"]),
+});
+export type UsuarioInviteFormData = z.infer<typeof UsuarioInviteSchema>;

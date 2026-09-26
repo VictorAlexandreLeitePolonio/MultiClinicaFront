@@ -27,6 +27,7 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  invitationPending?: boolean;
   clinicId?: number | null;
   clinicName?: string | null;
   createdAt?: string;

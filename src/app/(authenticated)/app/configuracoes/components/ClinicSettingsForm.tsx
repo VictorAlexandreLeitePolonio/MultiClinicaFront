@@ -51,7 +51,7 @@ export function ClinicSettingsForm({
             <div>
               <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Minha clínica</h2>
               <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">
-                Atualize a identidade visual e os canais públicos da clínica.
+                Identidade, cores, perfil público, endereço e contato são salvos juntos em “Salvar perfil da clínica”.
               </p>
             </div>
             <FormField
@@ -162,7 +162,7 @@ export function ClinicSettingsForm({
         <div className="flex justify-end">
           <div className="w-full sm:w-48">
             <Button type="submit" loading={loading}>
-              Salvar alterações
+              Salvar perfil da clínica
             </Button>
           </div>
         </div>

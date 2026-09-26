@@ -28,7 +28,8 @@ test("mostra a agenda do profissional e preenche um horário livre", async () =>
   }));
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(<QueryClientProvider client={client}><AgendaRegister onBack={vi.fn()} onSave={vi.fn()} /></QueryClientProvider>);
-  await userEvent.selectOptions(await screen.findByLabelText(/Profissional \*/), "7");
+  await screen.findByRole("option", { name: "Dra. Ana" });
+  await userEvent.selectOptions(screen.getByLabelText(/Profissional \*/), "7");
   expect(getProfessionalDaySchedule).not.toHaveBeenCalled();
   fireEvent.change(screen.getByLabelText("Data *"), { target: { value: "2026-09-28" } });
   expect(screen.getByLabelText("Hora *")).toHaveValue("");
@@ -51,7 +52,8 @@ test("mantém os campos e mostra conflito recusado pelo servidor", async () => {
   }));
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(<QueryClientProvider client={client}><AgendaRegister onBack={vi.fn()} onSave={vi.fn()} /></QueryClientProvider>);
-  await userEvent.selectOptions(await screen.findByLabelText(/Paciente \*/), "3");
+  await screen.findByRole("option", { name: "Paciente" });
+  await userEvent.selectOptions(screen.getByLabelText(/Paciente \*/), "3");
   await userEvent.selectOptions(screen.getByLabelText(/Profissional \*/), "7");
   fireEvent.change(screen.getByLabelText("Data *"), { target: { value: "2026-09-28" } });
   await screen.findByText("Nenhuma consulta agendada neste dia.");
@@ -73,7 +75,8 @@ test("avisa sobre horário ocupado antes de enviar o agendamento", async () => {
     slots: [] });
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(<QueryClientProvider client={client}><AgendaRegister onBack={vi.fn()} onSave={vi.fn()} /></QueryClientProvider>);
-  await userEvent.selectOptions(await screen.findByLabelText(/Profissional \*/), "7");
+  await screen.findByRole("option", { name: "Dra. Ana" });
+  await userEvent.selectOptions(screen.getByLabelText(/Profissional \*/), "7");
   fireEvent.change(screen.getByLabelText("Data *"), { target: { value: "2026-09-28" } });
   await screen.findByText("Paciente ocupado");
   fireEvent.change(screen.getByLabelText("Hora *"), { target: { value: "10:30" } });

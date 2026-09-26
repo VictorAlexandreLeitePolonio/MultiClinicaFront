@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -10,8 +9,7 @@ import { FormSection } from "@/components/ui/FormSection";
 import { Button } from "@/components/ui/Button";
 import { AgendaCreateSchema, AgendaCreateFormData } from "../schemas/agenda.schema";
 import { useAgendaInsert } from "../hooks/insert";
-import { Patient } from "@/types";
-import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
+import { AppointmentPatientSelect } from "./AppointmentPatientSelect";
 import { useTutorial } from "@/hooks/tutorial/useTutorial";
 import { getAppointmentProfessionals, getProfessionalDaySchedule } from "../services/appointments.service";
 import { ProfessionalDaySchedule } from "./ProfessionalDaySchedule";
@@ -29,8 +27,6 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
   const { insertAgenda, isPending } = useAgendaInsert();
   const { completeTaskTutorial } = useTutorial();
   const professionals = useQuery({ queryKey: queryKeys.appointments.professionals, queryFn: getAppointmentProfessionals });
-  const [patients, setPatients] = useState<Patient[]>([]);
-  const [loadingPatients, setLoadingPatients] = useState(false);
 
   const {
     handleSubmit,
@@ -74,21 +70,6 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
     }
   })();
 
-  useEffect(() => {
-    const fetchPatients = async () => {
-      setLoadingPatients(true);
-      try {
-        const result = await getPatients();
-        setPatients(result.data);
-      } catch {
-        // erro silencioso
-      } finally {
-        setLoadingPatients(false);
-      }
-    };
-    fetchPatients();
-  }, []);
-
   const onSubmit = async (data: AgendaCreateFormData) => {
     try {
       if (!daySchedule.data?.timeZoneId || daySchedule.data.date !== data.appointmentDay)
@@ -112,32 +93,8 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,380px)] lg:items-start">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <FormSection title="Dados do Agendamento">
-          {/* Select de Paciente */}
-          <div data-tutorial="agenda-form-patient" className="flex flex-col gap-2">
-            <label
-              htmlFor="appointment-patient"
-              className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
-            >
-              Paciente *
-            </label>
-            <select
-              id="appointment-patient"
-              value={patientId || 0}
-              onChange={(e) => setValue("patientId", Number(e.target.value), { shouldValidate: true })}
-              className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
-                focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
-            >
-              <option value={0}>{loadingPatients ? "Carregando..." : "Selecione um paciente"}</option>
-              {patients.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-            {errors.patientId && (
-              <span className="text-xs text-red-600">{errors.patientId.message}</span>
-            )}
-          </div>
+          <AppointmentPatientSelect value={patientId} error={errors.patientId?.message}
+            onChange={(id) => setValue("patientId", id, { shouldValidate: true })} />
 
           <div className="flex flex-col gap-2">
             <label htmlFor="appointment-professional" className="text-sm font-semibold uppercase tracking-wider text-secondary dark:text-white">Profissional *</label>

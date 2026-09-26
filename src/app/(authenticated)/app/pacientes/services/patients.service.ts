@@ -3,6 +3,7 @@ import { normalizePagedResult } from "@/lib/pagination";
 import { PagedResult, Patient, PatientCreatedResponse, PatientProfile } from "@/types";
 
 export interface GetPatientsParams {
+  isActive?: boolean;
   name?: string;
   appointmentStatus?: string;
   paymentStatus?: string;

@@ -1,68 +1,43 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Building2 } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { Pagination } from "@/components/ui/Pagination";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { useDebounce } from "@/app/hooks/useDebounce";
 import { MarketplaceClinicCard } from "./components/MarketplaceClinicCard";
 import { MarketplaceFilters } from "./components/MarketplaceFilters";
 import { ClinicDetailModal } from "@/components/clinic/ClinicDetailModal";
 import { useMarketplaceCategories, useMarketplaceClinics } from "./hooks/useMarketplace";
 import { MarketplaceClinicFilters } from "./types/marketplace.types";
 
-function numberParam(value: string | null, fallback: number) {
-  const parsed = Number(value);
-  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
-}
-
 export function MarketplacePageContent() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const urlSearch = searchParams.get("search") ?? "";
-  const [search, setSearch] = useState(urlSearch);
+  const [search, setSearch] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const debouncedSearch = useDebounce(search, 400);
+  const [filters, setFilters] = useState<MarketplaceClinicFilters>({
+    sort: "MostLiked",
+    page: 1,
+    pageSize: 12,
+  });
 
-  const filters = useMemo<MarketplaceClinicFilters>(() => ({
-    search: urlSearch || undefined,
-    categoryIds: searchParams.getAll("categoryIds").map(Number).filter(Number.isInteger),
-    city: searchParams.get("city") || undefined,
-    state: searchParams.get("state") || undefined,
-    acceptsAppointmentRequests: searchParams.get("acceptsAppointmentRequests") === "true" || undefined,
-    likedOnly: searchParams.get("likedOnly") === "true" || undefined,
-    sort: (searchParams.get("sort") as MarketplaceClinicFilters["sort"]) ?? "MostLiked",
-    page: numberParam(searchParams.get("page"), 1),
-    pageSize: numberParam(searchParams.get("pageSize"), 12),
-  }), [searchParams, urlSearch]);
-
-  const replaceFilters = (patch: Partial<MarketplaceClinicFilters>) => {
-    const params = new URLSearchParams(searchParams.toString());
-    const next = { ...filters, ...patch, page: patch.page ?? ("page" in patch ? patch.page : 1) };
-    params.delete("categoryIds");
-    Object.entries(next).forEach(([key, value]) => {
-      if (key === "categoryIds") {
-        (value as number[] | undefined)?.forEach((id) => params.append(key, String(id)));
-      } else if (value === undefined || value === "" || value === false) {
-        params.delete(key);
-      } else {
-        params.set(key, String(value));
-      }
-    });
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  const updateFilters = (patch: Partial<MarketplaceClinicFilters>) => {
+    setFilters((current) => ({ ...current, ...patch, page: patch.page ?? 1 }));
   };
 
   useEffect(() => {
-    if (debouncedSearch !== urlSearch) replaceFilters({ search: debouncedSearch || undefined });
-    // replaceFilters is intentionally derived from the current URL snapshot.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch, urlSearch]);
-
-  useEffect(() => setSearch(urlSearch), [urlSearch]);
+    const timeout = setTimeout(() => {
+      setFilters((current) => {
+        if ((current.search ?? "") === search && (current.city ?? "") === city && (current.state ?? "") === state) {
+          return current;
+        }
+        return { ...current, search: search || undefined, city: city || undefined, state: state || undefined, page: 1 };
+      });
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [search, city, state]);
 
   const categoriesQuery = useMarketplaceCategories();
   const clinicsQuery = useMarketplaceClinics(filters);
@@ -84,9 +59,13 @@ export function MarketplacePageContent() {
       <MarketplaceFilters
         filters={filters}
         search={search}
+        city={city}
+        state={state}
+        onCityChange={setCity}
+        onStateChange={setState}
         categories={categoriesQuery.data ?? []}
         onSearchChange={setSearch}
-        onChange={replaceFilters}
+        onChange={updateFilters}
       />
 
       {clinicsQuery.isLoading && (
@@ -126,8 +105,8 @@ export function MarketplacePageContent() {
             totalPages={totalPages}
             pageSize={filters.pageSize ?? 12}
             pageSizeOptions={[12, 24, 48]}
-            onPageChange={(page) => replaceFilters({ page })}
-            onPageSizeChange={(pageSize) => replaceFilters({ pageSize, page: 1 })}
+            onPageChange={(page) => updateFilters({ page })}
+            onPageSizeChange={(pageSize) => updateFilters({ pageSize, page: 1 })}
           />
         </>
       )}

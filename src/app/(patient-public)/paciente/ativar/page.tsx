@@ -11,10 +11,12 @@ import { Button } from "@/components/ui/Button";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { activate } from "../services/patient-auth.service";
 import { activateAccountSchema, ActivateAccountFormData } from "../schemas/patient-auth.schema";
+import { usePatientAuth } from "@/contexts/PatientAuthContext";
 import { PatientAuthShell } from "../components/PatientAuthShell";
 
 function ActivateForm() {
   const router = useRouter();
+  const { setPatient } = usePatientAuth();
   const token = useSearchParams().get("token") ?? "";
   const [loading, setLoading] = useState(false);
 
@@ -44,9 +46,10 @@ function ActivateForm() {
   const onSubmit = async (data: ActivateAccountFormData) => {
     setLoading(true);
     try {
-      await activate({ token, password: data.password });
-      toast.success("Conta ativada com sucesso! Faça login para continuar.");
-      router.replace("/paciente/login");
+      const session = await activate({ token, password: data.password });
+      setPatient(session);
+      toast.success("Conta ativada com sucesso!");
+      router.replace("/paciente");
     } catch (err) {
       toast.error(getApiErrorMessage(err, "Não foi possível ativar a conta. O link pode ter expirado."));
     } finally {

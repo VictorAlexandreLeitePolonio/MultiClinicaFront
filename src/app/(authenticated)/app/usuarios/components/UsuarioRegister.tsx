@@ -6,9 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { FormSection } from "@/components/ui/FormSection";
 import { FormField } from "@/components/ui/FormField";
-import { PasswordField } from "@/components/ui/PasswordField";
 import { Button } from "@/components/ui/Button";
-import { UsuarioCreateSchema, UsuarioCreateFormData } from "../schemas/usuario.schema";
+import { UsuarioInviteSchema, UsuarioInviteFormData } from "../schemas/usuario.schema";
 import { useUsuarioInsert } from "../hooks/insert";
 
 interface Props {
@@ -17,7 +16,6 @@ interface Props {
 }
 
 const roleOptions = [
-  { value: "Administrador", label: "Administrador" },
   { value: "Profissional", label: "Profissional" },
   { value: "Recepcao", label: "Recepção" },
 ];
@@ -30,34 +28,35 @@ export default function UsuarioRegister({ onBack, onSave }: Props) {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<UsuarioCreateFormData>({
-    resolver: zodResolver(UsuarioCreateSchema),
+  } = useForm<UsuarioInviteFormData>({
+    resolver: zodResolver(UsuarioInviteSchema),
     defaultValues: {
       name: "",
       email: "",
-      password: "",
       role: "Profissional",
     },
   });
 
   const name = watch("name");
   const email = watch("email");
-  const password = watch("password");
   const role = watch("role");
 
-  const onSubmit = async (data: UsuarioCreateFormData) => {
+  const onSubmit = async (data: UsuarioInviteFormData) => {
     try {
-      await insertUsuario(data);
-      toast.success("Usuário cadastrado com sucesso!");
+      const result = await insertUsuario(data);
+      if (result.emailSent) toast.success("Convite enviado! A pessoa receberá um link para definir a senha.");
+      else toast.warning("Usuário criado, mas o e-mail não foi enviado. Use “Reenviar convite” na lista.");
       onSave();
     } catch {
-      // erro já tratado no hook
+      return; // O hook mantém o formulário aberto e apresenta o erro.
     }
   };
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <PageHeader title="Novo Usuário" onBack={onBack} />
+      <PageHeader title="Convidar para a equipe" onBack={onBack} />
+
+      <p className="text-sm text-slate-600 dark:text-slate-300">Informe nome, e-mail e perfil. O convite vale por 72 horas; a pessoa define a própria senha.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <FormSection title="Dados do Usuário" columns={1}>
@@ -78,25 +77,16 @@ export default function UsuarioRegister({ onBack, onSave }: Props) {
             onChange={(e) => setValue("email", e.target.value, { shouldValidate: true })}
           />
 
-          <PasswordField
-            label="Senha *"
-            id="password"
-            placeholder="Mínimo 6 caracteres"
-            error={errors.password?.message}
-            value={password || ""}
-            onChange={(e) => setValue("password", e.target.value, { shouldValidate: true })}
-          />
-
           {/* Select de Perfil */}
           <div className="flex flex-col gap-2">
-            <label
+            <label htmlFor="invite-role"
               className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider"
             >
               Perfil *
             </label>
-            <select
+            <select id="invite-role"
               value={role}
-              onChange={(e) => setValue("role", e.target.value as UsuarioCreateFormData["role"], { shouldValidate: true })}
+              onChange={(e) => setValue("role", e.target.value as UsuarioInviteFormData["role"], { shouldValidate: true })}
               className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
                 focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
             >
@@ -110,7 +100,7 @@ export default function UsuarioRegister({ onBack, onSave }: Props) {
         </FormSection>
 
         <Button type="submit" loading={isPending}>
-          Cadastrar
+          Enviar convite
         </Button>
       </form>
     </div>

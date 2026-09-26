@@ -11,6 +11,7 @@ interface PasswordFieldProps {
   id?: string;
   name?: string;
   placeholder?: string;
+  autoComplete?: React.InputHTMLAttributes<HTMLInputElement>["autoComplete"];
   required?: boolean;
   disabled?: boolean;
   light?: boolean;
@@ -49,6 +50,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             ref={ref}
             id={id}
             name={rest.name}
+            autoComplete={rest.autoComplete}
             type={showPassword ? "text" : "password"}
             disabled={disabled}
             {...(value !== undefined ? { value } : {})}
@@ -66,7 +68,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 transition-colors
               ${disabled ? "cursor-not-allowed text-slate-300" : light ? "text-[#64748b] hover:bg-[#ecfdf5] hover:text-[#0f766e]" : "text-[#64748b] hover:bg-[#ecfdf5] hover:text-[#0f766e] dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}
             `}
-            tabIndex={-1}
+            aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
           >
             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>

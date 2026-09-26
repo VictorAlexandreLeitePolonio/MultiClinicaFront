@@ -27,7 +27,7 @@ describe("ClinicCreateWizard", () => {
     await user.click(screen.getByRole("button", { name: "Próximo" }));
     await user.type(screen.getByLabelText(/^Nome/i), "Admin Centro");
     await user.type(screen.getByLabelText(/E-mail/i), "admin@clinica.test");
-    await user.type(screen.getByLabelText(/Senha/i), "123456");
+    await user.type(screen.getByLabelText(/Senha/i, { selector: "input" }), "123456");
 
     await user.click(screen.getByRole("button", { name: "Próximo" }));
     await user.click(screen.getByRole("button", { name: "Criar clínica" }));

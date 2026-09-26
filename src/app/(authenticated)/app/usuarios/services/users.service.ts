@@ -3,6 +3,7 @@ import { normalizePagedResult } from "@/lib/pagination";
 import { PagedResult, User } from "@/types";
 import {
   UsuarioCreateFormData,
+  UsuarioInviteFormData,
   UsuarioFormData,
 } from "@/app/(authenticated)/app/usuarios/schemas/usuario.schema";
 
@@ -40,4 +41,24 @@ export async function updateUser(id: number, payload: Partial<UsuarioFormData>):
 
 export async function deleteUser(id: number): Promise<void> {
   await api.delete(`/api/users/${id}`);
+}
+
+
+export interface UserInvitationResponse {
+  userId: number;
+  emailSent: boolean;
+}
+
+export async function inviteUser(payload: UsuarioInviteFormData): Promise<UserInvitationResponse> {
+  const response = await api.post<UserInvitationResponse>("/api/user-invitations", payload);
+  return response.data;
+}
+
+export async function resendUserInvitation(id: number): Promise<UserInvitationResponse> {
+  const response = await api.post<UserInvitationResponse>(`/api/user-invitations/${id}/resend`);
+  return response.data;
+}
+
+export async function acceptUserInvitation(payload: { token: string; password: string }): Promise<void> {
+  await api.post("/api/user-invitations/accept", payload);
 }

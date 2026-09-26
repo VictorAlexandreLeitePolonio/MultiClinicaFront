@@ -145,7 +145,7 @@ export function AvailabilitySettingsSection({ canEdit }: Props) {
           </select>
         </label>
       </div>
-      {canEdit && <div className="flex justify-end"><Button fullWidth={false} disabled={!settingsDirty} loading={updateSettings.isPending} onClick={() => void saveSettings()}>Salvar configuração</Button></div>}
+      {canEdit && <div className="flex justify-end"><Button fullWidth={false} disabled={!settingsDirty} loading={updateSettings.isPending} onClick={() => void saveSettings()}>Salvar duração e fuso</Button></div>}
 
       <div className="border-t border-[#eef7f3] pt-6 dark:border-slate-800">
         <label className="flex max-w-md flex-col gap-2 text-sm font-semibold text-[#0f172a] dark:text-white">
@@ -182,7 +182,7 @@ export function AvailabilitySettingsSection({ canEdit }: Props) {
                 </div>
               );
             })}
-            {canEdit && <div className="flex justify-end"><Button fullWidth={false} disabled={!scheduleDirty} loading={replaceSchedule.isPending} onClick={() => void saveSchedule()}>Salvar agenda</Button></div>}
+            {canEdit && <div className="flex justify-end"><Button fullWidth={false} disabled={!scheduleDirty} loading={replaceSchedule.isPending} onClick={() => void saveSchedule()}>Salvar jornada do profissional</Button></div>}
           </div>
         )}
     </section>

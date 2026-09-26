@@ -84,13 +84,17 @@ export function SettingsPage() {
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-8">
       <PageHeader title="Configurações" />
+      <p className="text-sm text-slate-600 dark:text-slate-300">
+        Comece pela disponibilidade para receber solicitações. Cada seção tem seu próprio salvamento;
+        alterações em horários públicos e mídia são salvas ao adicionar ou remover um item.
+      </p>
+      <AvailabilitySettingsSection canEdit={canEdit} />
       <ClinicSettingsForm
         settings={settingsQuery.data}
         canEdit={canEdit}
         loading={updateMutation.isPending}
         onSubmit={handleSubmit}
       />
-      <AvailabilitySettingsSection canEdit={canEdit} />
       <ClinicCategoriesSection canEdit={canEdit} />
       <ClinicBusinessHoursSection canEdit={canEdit} />
       <ClinicMediaSection canEdit={canEdit} />

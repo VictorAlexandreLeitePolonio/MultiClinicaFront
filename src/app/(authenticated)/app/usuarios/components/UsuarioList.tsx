@@ -7,12 +7,15 @@ import { DataTable, Column } from "@/components/ui/DataTable";
 import { DeleteConfirmDialog } from "@/components/ui/DeleteConfirmDialog";
 import { Button } from "@/components/ui/Button";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
-import { Eye, Trash2 } from "lucide-react";
+import { Eye, Trash2, Mail } from "lucide-react";
 import { useUsuariosPaginated } from "../hooks/pagined";
 import { useUsuarioDelete } from "../hooks/delete";
 import { toast } from "sonner";
 import { User } from "@/types";
 import { formatDate } from "@/utils/formatters";
+import { useMutation } from "@tanstack/react-query";
+import { resendUserInvitation } from "../services/users.service";
+import { getApiErrorMessage } from "@/utils/apiError";
 import { getRoleLabel } from "@/lib/auth/routes";
 
 interface Props {
@@ -23,6 +26,16 @@ interface Props {
 export default function UsuarioList({ onCreate, onViewDetails }: Props) {
   const { data, loading, error, search, setSearch, refetch } = useUsuariosPaginated();
   const { deleteUsuario, isPending: deleting } = useUsuarioDelete();
+
+  const resend = useMutation({
+    mutationFn: resendUserInvitation,
+    onSuccess: (result) => {
+      if (result.emailSent) toast.success("Convite reenviado.");
+      else toast.error("Não foi possível enviar o e-mail. Tente reenviar o convite.");
+      void refetch();
+    },
+    onError: (error) => toast.error(getApiErrorMessage(error, "Não foi possível reenviar o convite.")),
+  });
 
   const [toDelete, setToDelete] = useState<User | null>(null);
 
@@ -41,6 +54,7 @@ export default function UsuarioList({ onCreate, onViewDetails }: Props) {
   const columns: Column<User>[] = [
     { key: "name", label: "Nome" },
     { key: "email", label: "E-mail" },
+    { key: "invitationPending", label: "Convite", render: (user) => user.invitationPending ? "Aguardando ativação" : "—" },
     {
       key: "role",
       label: "Perfil",
@@ -70,6 +84,12 @@ export default function UsuarioList({ onCreate, onViewDetails }: Props) {
         <span data-tutorial="users-actions">
           <ActionsDropdown
             actions={[
+              ...(u.invitationPending ? [{
+                label: "Reenviar convite",
+                onClick: () => resend.mutate(u.id),
+                disabled: resend.isPending,
+                icon: <Mail size={14} />,
+              }] : []),
               {
                 label: "Detalhes",
                 onClick: () => onViewDetails(u.id),
@@ -96,7 +116,7 @@ export default function UsuarioList({ onCreate, onViewDetails }: Props) {
         title="Usuários"
         actions={
           <div data-tutorial="users-new">
-            <Button onClick={onCreate}>Novo Usuário</Button>
+            <Button onClick={onCreate}>Convidar pessoa</Button>
           </div>
         }
       />
