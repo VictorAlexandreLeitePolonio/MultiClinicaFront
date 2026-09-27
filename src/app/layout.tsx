@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Toaster } from "sonner";
 import { ClientProviders } from "@/providers/ClientProviders";
 import { siteConfig } from "@/lib/site";
@@ -40,6 +41,18 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="h-full" suppressHydrationWarning>
       <body className="min-h-full antialiased">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-B6H4JM0G6B"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-B6H4JM0G6B');
+          `}
+        </Script>
         <ClientProviders>{children}</ClientProviders>
         <Toaster
           position="top-right"
