@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { trackModuleClick } from "@/lib/analytics";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { ChevronDown } from "lucide-react";
@@ -64,6 +65,7 @@ export function SidebarGroup({ label, icon, items, can, collapsed }: SidebarGrou
               <Link
                 key={child.href}
                 href={child.href}
+                onClick={() => trackModuleClick(child.href, child.label)}
                 className={`rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                   isActive
                     ? "bg-[#ecfdf5] text-[#0f766e] dark:bg-slate-900 dark:text-[#67e8f9]"

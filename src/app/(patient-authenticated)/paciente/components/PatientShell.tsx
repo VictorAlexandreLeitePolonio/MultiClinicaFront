@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import Link from "next/link";
+import { trackModuleClick } from "@/lib/analytics";
 import { usePathname, useRouter } from "next/navigation";
 import { Home, Calendar, ClipboardList, Building2, Store, User, LogOut, LucideIcon } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
@@ -71,6 +72,7 @@ export function PatientShell({ children }: { children: ReactNode }) {
             <Link
               key={href}
               href={href}
+              onClick={() => trackModuleClick(href, label, "bottom_navigation")}
               className={`flex min-w-16 flex-1 flex-col items-center gap-1 py-2 text-[10px] font-medium ${
                 active ? "text-[#0f766e] dark:text-[#67e8f9]" : "text-[#94a3b8] dark:text-slate-400"
               }`}
