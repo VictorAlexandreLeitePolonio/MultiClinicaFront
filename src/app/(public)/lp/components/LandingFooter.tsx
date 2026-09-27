@@ -1,3 +1,4 @@
+import { siteConfig } from "@/lib/site";
 import Link from "next/link";
 import { Mail } from "lucide-react";
 import { BrandLogo } from "@/components/ui/BrandLogo";
@@ -13,17 +14,21 @@ export function LandingFooter() {
           <span className="text-sm font-bold text-slate-950">Cliniq</span>
         </Link>
         <div className="flex flex-col items-center gap-2 text-xs text-slate-500 sm:items-end">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 sm:justify-end">
             <Link href="/paciente/login" className="font-semibold transition-colors hover:text-teal-700">
               Portal do paciente
             </Link>
             <Link href="/login" className="font-semibold transition-colors hover:text-teal-700">
               Acesso da clínica
             </Link>
-            <a href="mailto:victorpolonio123@gmail.com" className="inline-flex items-center gap-2 transition-colors hover:text-teal-700">
+            <a href={`mailto:${siteConfig.contactEmail}`} className="inline-flex items-center gap-2 transition-colors hover:text-teal-700">
               <Mail size={13} />
               Fale com a gente
             </a>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link href="/privacidade" className="hover:text-teal-700 hover:underline">Política de privacidade</Link>
+            <Link href="/termos" className="hover:text-teal-700 hover:underline">Termos de uso</Link>
           </div>
           <p>© {year} Cliniq. Todos os direitos reservados.</p>
         </div>

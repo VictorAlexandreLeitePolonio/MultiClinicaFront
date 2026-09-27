@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   ArrowUpRight,
   Check,
@@ -25,7 +26,11 @@ interface LandingProductPreviewProps {
   compact?: boolean;
 }
 
-function ModuleWorkspace({ moduleId }: { moduleId: LandingModuleId }) {
+interface ModuleWorkspaceProps {
+  moduleId: LandingModuleId;
+}
+
+export function ModuleWorkspace({ moduleId }: ModuleWorkspaceProps) {
   if (moduleId === "agenda") {
     return (
       <div className="landing-workspace landing-workspace--calendar" aria-hidden="true">
@@ -156,11 +161,12 @@ export function LandingProductPreview({
   onModuleChange,
   compact = false,
 }: LandingProductPreviewProps) {
+  const [keyboardInput, setKeyboardInput] = useState(false);
   const activeModule = landingModules.find((module) => module.id === activeModuleId) ?? landingModules[0];
   const ActiveIcon = activeModule.icon;
 
   return (
-    <div className={`landing-preview ${compact ? "landing-preview--compact" : ""}`}>
+    <div className={`landing-preview ${compact ? "landing-preview--compact" : ""}`} data-keyboard={keyboardInput}>
       <div className="landing-preview__topbar">
         <div className="flex items-center gap-3">
           <BrandLogo variant="mark" size={30} className="rounded-lg" />
@@ -189,7 +195,10 @@ export function LandingProductPreview({
                   className="landing-preview__module-button"
                   data-active={isActive}
                   aria-pressed={isActive}
-                  onClick={() => onModuleChange(module.id)}
+                  onClick={(event) => {
+                    setKeyboardInput(event.detail === 0);
+                    onModuleChange(module.id);
+                  }}
                 >
                   <Icon size={14} strokeWidth={2.2} />
                   <span>{module.label}</span>

@@ -1,77 +1,61 @@
 "use client";
 
-import { ArrowRight, Sparkles } from "lucide-react";
-import { LandingProductPreview } from "./LandingProductPreview";
-import { RobotAvatar } from "@/components/mascot/RobotAvatar";
+import { useRef, useState } from "react";
+import { useInView, useReducedMotion } from "motion/react";
+import { ArrowDown, ArrowRight, CalendarCheck, Check, FileText, Pause, Play } from "lucide-react";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { LandingSmoothLink } from "./LandingSmoothLink";
-import type { LandingModuleId } from "./landingModules";
 
-interface LandingHeroProps {
-  activeModuleId: LandingModuleId;
-  onModuleChange: (moduleId: LandingModuleId) => void;
-}
+export function LandingHero() {
+  const section = useRef<HTMLElement>(null);
+  const visible = useInView(section, { amount: 0.15 });
+  const reducedMotion = useReducedMotion();
+  const [paused, setPaused] = useState(false);
 
-export function LandingHero({ activeModuleId, onModuleChange }: LandingHeroProps) {
   return (
-    <section
-      data-mascot-anchor="hero"
-      className="landing-hero relative overflow-hidden"
-    >
-      <div className="landing-hero__glow landing-hero__glow--top" />
-      <div className="landing-hero__glow landing-hero__glow--bottom" />
-      <div className="landing-hero__inner relative mx-auto grid min-h-[min(760px,calc(100vh-76px))] max-w-[88rem] items-center gap-14 px-6 py-20 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16 lg:px-8">
-        <div className="relative z-10 max-w-2xl">
-          <div className="landing-hero__signal">
-            <span className="landing-hero__signal-dot" />
-            Gestão clínica com visão de ponta a ponta
-          </div>
-          <h1 className="mt-7 max-w-xl text-5xl font-bold leading-[0.98] tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-[4.7rem]">
-            A clínica inteira, em uma visão só.
-          </h1>
-          <p className="mt-7 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
-            Agenda, pacientes, prontuários, evolução e operação administrativa
-            conectados em um sistema feito para o ritmo real da sua clínica.
-          </p>
-
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <LandingSmoothLink
-              href="#modulos"
-              className="landing-button landing-button--primary"
-            >
-              Explorar o sistema
-              <ArrowRight size={17} />
-            </LandingSmoothLink>
-            <LandingSmoothLink
-              href="#contato"
-              className="landing-button landing-button--secondary"
-            >
-              Solicitar acesso
-            </LandingSmoothLink>
-          </div>
-
-          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-slate-500">
-            <span className="inline-flex items-center gap-2">
-              <Sparkles size={14} className="text-teal-600" />
-              Demo sem login
-            </span>
-            <span>Dados ilustrativos</span>
-            <span>Acesso por indicação</span>
-          </div>
+    <section ref={section} data-mascot-anchor="hero" className="landing-hero landing-hero--immersive"
+      data-running={visible && !paused && !reducedMotion}>
+      <div className="landing-hero__opening">
+        <h1><span>A clínica inteira.</span><span>Em uma visão só.</span></h1>
+        <p>Da primeira consulta ao próximo passo.<br className="hidden sm:block" /> Agenda, cuidado e gestão no mesmo lugar.</p>
+        <div className="landing-hero__actions">
+          <LandingSmoothLink href="#modulos" className="landing-button landing-button--primary">
+            Explorar o sistema <ArrowRight size={17} />
+          </LandingSmoothLink>
+          <LandingSmoothLink href="#contato" className="landing-button landing-button--secondary">Solicitar acesso</LandingSmoothLink>
         </div>
+      </div>
 
-        <div className="landing-hero__preview-wrap relative z-10">
-          <div className="landing-hero__preview-note">
-            <span>Toque nos módulos</span>
-            <ArrowRight size={14} />
-          </div>
-          <div className="landing-hero__robot-sticker">
-            <RobotAvatar />
-          </div>
-          <LandingProductPreview
-            activeModuleId={activeModuleId}
-            onModuleChange={onModuleChange}
-          />
+      <div className="landing-hero__flow" aria-label="Exemplo ilustrativo de uma rotina conectada">
+        <svg className="landing-hero__connections" viewBox="0 0 1000 220" fill="none" aria-hidden="true">
+          <path className="hero-connection" d="M180 110H380Q410 110 430 110H570Q600 110 630 110H820" />
+          <path className="hero-packet" d="M180 110H820" pathLength="100" />
+          <circle cx="390" cy="110" r="4" /><circle cx="610" cy="110" r="4" />
+        </svg>
+        <div className="hero-flow-card hero-flow-card--appointment">
+          <div className="hero-flow-card__heading"><CalendarCheck size={17} /><span>Agenda organizada</span><span className="hero-flow-card__check"><Check size={13} /></span></div>
+          <div className="hero-flow-card__appointment"><time>09:00</time><div><strong>Marina Alves</strong><span>Fisioterapia</span></div></div>
+          <div className="hero-flow-card__status"><span /> Atendimento confirmado</div>
         </div>
+        <div className="hero-flow-hub" aria-hidden="true">
+          <span className="hero-flow-hub__ring" /><span className="hero-flow-hub__ring hero-flow-hub__ring--outer" />
+          <BrandLogo size={66} />
+          <span className="hero-flow-hub__caption">Tudo se conecta.</span>
+        </div>
+        <div className="hero-flow-card hero-flow-card--record">
+          <div className="hero-flow-card__heading"><FileText size={17} /><span>Cuidado contínuo</span></div>
+          <div className="hero-flow-card__record"><span className="hero-flow-card__avatar">MA</span><div><strong>Marina Alves</strong><span>Histórico e evolução</span></div></div>
+          <div className="hero-flow-card__timeline" aria-hidden="true"><i /><span /><i /><span /><i /></div>
+          <p className="hero-flow-card__footnote">Cada atendimento, uma nova etapa.</p>
+        </div>
+      </div>
+
+      <div className="landing-hero__bottom">
+        <span>Demo sem login · Dados ilustrativos</span>
+        <LandingSmoothLink href="#modulos" className="landing-hero__scroll">Conheça o Cliniq <ArrowDown size={15} /></LandingSmoothLink>
+        {!reducedMotion && <button type="button" onClick={() => setPaused(!paused)} aria-pressed={paused}>
+          {paused ? <Play size={13} /> : <Pause size={13} />}{paused ? "Reproduzir animação" : "Pausar animação"}
+        </button>}
       </div>
     </section>
   );

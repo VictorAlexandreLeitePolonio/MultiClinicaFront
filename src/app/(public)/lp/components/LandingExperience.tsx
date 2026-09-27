@@ -12,10 +12,7 @@ export function LandingExperience() {
 
   return (
     <>
-      <LandingHero
-        activeModuleId={activeModuleId}
-        onModuleChange={setActiveModuleId}
-      />
+      <LandingHero />
       <LandingFeatures
         activeModuleId={activeModuleId}
         onModuleChange={setActiveModuleId}

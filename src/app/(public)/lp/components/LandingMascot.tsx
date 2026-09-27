@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  AnimatePresence,
+  easeInOut,
   motion,
   useMotionValueEvent,
   useReducedMotion,
@@ -11,67 +13,58 @@ import {
 import { useEffect, useState } from "react";
 import { RobotAvatar } from "@/components/mascot/RobotAvatar";
 
-type MascotAnchor = "hero" | "modulos" | "rotina" | "faq" | "contato";
-
-const mascotMessages: Record<MascotAnchor, string> = {
-  hero: "Eu vou te mostrar o caminho.",
-  modulos: "Clique em um card para explorar.",
-  rotina: "Olha esse passo da rotina.",
-  faq: "Tem alguma dúvida? Eu te acompanho.",
-  contato: "Pronto para conhecer por dentro?",
-};
-
 const mascotRoute = [
-  { progress: 0, anchor: "hero" as const, x: "-42vw", y: "-40vh", rotation: -8 },
-  { progress: 0.14, anchor: "hero" as const, x: "-10vw", y: "14vh", rotation: 7 },
-  { progress: 0.28, anchor: "modulos" as const, x: "34vw", y: "-12vh", rotation: -5 },
-  { progress: 0.42, anchor: "rotina" as const, x: "-30vw", y: "16vh", rotation: 8 },
-  { progress: 0.58, anchor: "rotina" as const, x: "30vw", y: "-13vh", rotation: -7 },
-  { progress: 0.75, anchor: "faq" as const, x: "-34vw", y: "10vh", rotation: 6 },
-  { progress: 0.9, anchor: "faq" as const, x: "8vw", y: "-15vh", rotation: -4 },
-  { progress: 1, anchor: "contato" as const, x: "38vw", y: "13vh", rotation: -9 },
+  { progress: 0, x: "-36vw", y: "-38vh", rotation: -8 },
+  { progress: 0.14, x: "-10vw", y: "14vh", rotation: 7 },
+  { progress: 0.28, x: "34vw", y: "-12vh", rotation: -5 },
+  { progress: 0.42, x: "-30vw", y: "16vh", rotation: 8 },
+  { progress: 0.58, x: "30vw", y: "-13vh", rotation: -7 },
+  { progress: 0.75, x: "-34vw", y: "10vh", rotation: 6 },
+  { progress: 0.9, x: "8vw", y: "-15vh", rotation: -4 },
+  { progress: 1, x: "32vw", y: "13vh", rotation: -9 },
 ];
 
-function getMascotAnchor(progress: number): MascotAnchor {
-  let currentAnchor: MascotAnchor = mascotRoute[0].anchor;
-
-  mascotRoute.forEach((stop) => {
-    if (progress >= stop.progress) {
-      currentAnchor = stop.anchor;
-    }
-  });
-
-  return currentAnchor;
-}
+const mascotSpeech = [
+  { progress: 0, text: "Oi! Eu sou o lado robô dessa clínica." },
+  { progress: 0.2, text: "Tudo conectado. Até meus circuitos gostaram!" },
+  { progress: 0.42, text: "Por aqui, a rotina ganha outro ritmo." },
+  { progress: 0.62, text: "Mais tempo para cuidar. Essa é a ideia." },
+  { progress: 0.8, text: "Bip! Clareza também faz parte do cuidado." },
+  { progress: 0.94, text: "Tecnologia com um toque humano. E um aceno meu!" },
+];
 
 export function LandingMascot() {
-  const [anchor, setAnchor] = useState<MascotAnchor>("hero");
+  const [speech, setSpeech] = useState(mascotSpeech[0].text);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const smoothedProgress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 30,
+    stiffness: 65,
+    damping: 22,
+    mass: 0.8,
     restDelta: 0.001,
   });
   const x = useTransform(
     smoothedProgress,
     mascotRoute.map((stop) => stop.progress),
     mascotRoute.map((stop) => stop.x),
+    { ease: easeInOut },
   );
   const y = useTransform(
     smoothedProgress,
     mascotRoute.map((stop) => stop.progress),
     mascotRoute.map((stop) => stop.y),
+    { ease: easeInOut },
   );
   const rotate = useTransform(
     smoothedProgress,
     mascotRoute.map((stop) => stop.progress),
     mascotRoute.map((stop) => stop.rotation),
+    { ease: easeInOut },
   );
 
-  useMotionValueEvent(scrollYProgress, "change", (progress) => {
-    const nextAnchor = getMascotAnchor(progress);
-    setAnchor((currentAnchor) => currentAnchor === nextAnchor ? currentAnchor : nextAnchor);
+  useMotionValueEvent(smoothedProgress, "change", (progress) => {
+    const line = [...mascotSpeech].reverse().find((item) => progress >= item.progress);
+    setSpeech(line?.text ?? mascotSpeech[0].text);
   });
 
   useEffect(() => {
@@ -105,12 +98,29 @@ export function LandingMascot() {
   return (
     <motion.div
       className="landing-mascot"
-      data-anchor={anchor}
-      style={reduceMotion ? { x: 0, y: 0, rotate: 0 } : { x, y, rotate }}
+      data-intro={speech === mascotSpeech[0].text}
+      style={reduceMotion ? { x: 0, y: 0 } : { x, y }}
       aria-hidden="true"
     >
-      <div className="landing-mascot__bubble">{mascotMessages[anchor]}</div>
-      <RobotAvatar className="landing-mascot__robot" />
+      <div className="landing-mascot__float">
+        <div className="landing-mascot__speech">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.p
+              key={speech}
+              className="landing-mascot__bubble"
+              initial={{ opacity: 0, y: 6, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -4, scale: 0.98 }}
+              transition={{ duration: reduceMotion ? 0 : 0.28, ease: "easeOut" }}
+            >
+              {speech}
+            </motion.p>
+          </AnimatePresence>
+        </div>
+        <motion.div style={reduceMotion ? undefined : { rotate }}>
+          <RobotAvatar className="landing-mascot__robot" />
+        </motion.div>
+      </div>
       <span className="landing-mascot__shadow" />
     </motion.div>
   );

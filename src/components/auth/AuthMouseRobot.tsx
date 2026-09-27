@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, type MotionValue } from "motion/react";
+import { motion, useReducedMotion, type MotionValue } from "motion/react";
+import { RobotAvatar } from "@/components/mascot/RobotAvatar";
 
 export type AuthRobotState = "idle" | "focus" | "loading" | "error" | "success";
 
@@ -27,6 +28,7 @@ const stateMotion: Record<AuthRobotState, { rotate: number; scale: number; y: nu
 };
 
 export function AuthMouseRobot({ state, x, y }: AuthMouseRobotProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       className="auth-login__robot-position"
@@ -35,24 +37,11 @@ export function AuthMouseRobot({ state, x, y }: AuthMouseRobotProps) {
     >
       <motion.div
         className="auth-login__robot-companion"
-        animate={stateMotion[state]}
+        animate={reduceMotion ? { rotate: 0, scale: 1, y: 0 } : stateMotion[state]}
         transition={{ type: "spring", stiffness: 260, damping: 18 }}
       >
         <div className="auth-login__robot-bubble">{stateCopy[state]}</div>
-        <div className="auth-login__robot-figure">
-          <span className="auth-login__robot-antenna" />
-          <span className="auth-login__robot-signal" />
-          <span className="auth-login__robot-face">
-            <span className="auth-login__robot-eye" />
-            <span className="auth-login__robot-eye" />
-            <span className="auth-login__robot-mouth" />
-          </span>
-          <span className="auth-login__robot-body">
-            <span className="auth-login__robot-chest" />
-          </span>
-          <span className="auth-login__robot-arm auth-login__robot-arm--left" />
-          <span className="auth-login__robot-arm auth-login__robot-arm--right" />
-        </div>
+        <RobotAvatar className="auth-login__robot-figure" />
         <span className="auth-login__robot-shadow" />
       </motion.div>
     </motion.div>

@@ -16,11 +16,11 @@ export function LandingClinicsShowcase() {
       <div className="mx-auto max-w-[88rem] px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-            Clínicas que já estão aqui
+            Clínicas reais. Histórias próprias.
           </h2>
           <p className="mt-3 text-sm text-slate-500 sm:text-base">
-            Conheça as clínicas com perfil público no Cliniq — e, se você é paciente,
-            solicite sua consulta pelo portal.
+            Conheça quem já tem um perfil público no Cliniq. Abra uma clínica para
+            ver suas especialidades, localização e informações de atendimento.
           </p>
         </div>
 
@@ -41,15 +41,16 @@ export function LandingClinicsShowcase() {
         )}
 
         {!isLoading && !isError && clinics && clinics.length > 0 && (
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="landing-clinics__profiles mt-12">
             {clinics.map((clinic) => {
               const location = [clinic.city, clinic.state].filter(Boolean).join(" - ");
               return (
                 <button
                   key={clinic.id}
                   type="button"
+                  disabled={!clinic.slug}
                   onClick={() => clinic.slug && setSelected({ mode: "public", slug: clinic.slug })}
-                  className="group flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-100"
+                  className="landing-clinics__profile group disabled:cursor-default focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-100"
                 >
                   <div className="flex items-center gap-3">
                     {clinic.logoUrl ? (
@@ -57,7 +58,7 @@ export function LandingClinicsShowcase() {
                       <img
                         src={clinic.logoUrl}
                         alt=""
-                        className="h-11 w-11 rounded-xl border border-slate-100 object-cover"
+                        className="h-16 w-16 rounded-xl border border-slate-100 bg-white object-contain p-1"
                       />
                     ) : (
                       <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
@@ -90,7 +91,7 @@ export function LandingClinicsShowcase() {
                     </div>
                   )}
 
-                  <div className="mt-auto flex items-center gap-4 text-xs font-semibold text-slate-500">
+                  <div className="mt-auto flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500">
                     {clinic.likeCount > 0 && (
                       <span className="inline-flex items-center gap-1">
                         <Heart size={12} className="text-rose-500" />
@@ -104,6 +105,7 @@ export function LandingClinicsShowcase() {
                       </span>
                     )}
                   </div>
+                  {clinic.slug && <span className="landing-clinics__view">Conhecer a clínica <span aria-hidden="true">↗</span></span>}
                 </button>
               );
             })}

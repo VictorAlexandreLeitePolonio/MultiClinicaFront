@@ -68,8 +68,8 @@ export function LandingFaq() {
                   <span>{item.question}</span>
                   <ChevronDown size={18} aria-hidden="true" />
                 </button>
-                <div id={answerId} className="landing-faq__answer" hidden={!isOpen}>
-                  <p>{item.answer}</p>
+                <div id={answerId} className="landing-faq__answer" aria-hidden={!isOpen} inert={!isOpen}>
+                  <div><p>{item.answer}</p></div>
                 </div>
               </div>
             );

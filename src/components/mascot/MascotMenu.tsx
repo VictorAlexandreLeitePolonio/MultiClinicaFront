@@ -43,8 +43,13 @@ export function MascotMenu({
         exit="exit"
         role="menu"
         aria-label="Menu do assistente"
+        onKeyDown={(event) => { if (event.key === "Escape") onClose(); }}
         className="absolute bottom-full right-0 z-50 mb-3 w-64 origin-bottom-right overflow-hidden rounded-2xl border border-[#d7f3ea] bg-white py-1.5 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900"
       >
+        <div className="border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+          <p className="text-sm font-bold text-teal-700 dark:text-teal-300">Seu guia Cliniq</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Te ajudo a usar o sistema, passo a passo.</p>
+        </div>
         {contextualLabel && (
           <button type="button" role="menuitem" onClick={onContextual} className={menuItemClassName}>
             {contextualLabel}

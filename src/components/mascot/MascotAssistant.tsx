@@ -19,8 +19,6 @@ import {
 } from "@/lib/tutorials/tutorial.storage";
 import type { ModuleTutorial, TaskTutorial } from "@/lib/tutorials/tutorial.types";
 
-const FLIP_DURATION_MS = 600;
-
 export function MascotAssistant() {
   const pathname = usePathname();
   const reducedMotion = useReducedMotion();
@@ -43,7 +41,6 @@ export function MascotAssistant() {
   }
 
   const [inviteTutorial, setInviteTutorial] = useState<ModuleTutorial | null>(null);
-  const [isFlipping, setIsFlipping] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [catalogOpen, setCatalogOpen] = useState(false);
 
@@ -73,15 +70,7 @@ export function MascotAssistant() {
 
   const handleAvatarClick = () => {
     setInviteTutorial(null);
-    if (reducedMotion) {
-      setMenuOpen((open) => !open);
-      return;
-    }
-    setIsFlipping(true);
-    window.setTimeout(() => {
-      setIsFlipping(false);
-      setMenuOpen((open) => !open);
-    }, FLIP_DURATION_MS);
+    setMenuOpen((open) => !open);
   };
 
   const handleSelectTutorial = (tutorial: ModuleTutorial | TaskTutorial) => {
@@ -101,13 +90,9 @@ export function MascotAssistant() {
   if (isRunning) {
     return (
       <motion.div
-        className="fixed z-[80]"
-        animate={
-          reducedMotion
-            ? { opacity: 1 }
-            : { left: displayAnchor?.x ?? 0, top: displayAnchor?.y ?? 0, opacity: displayAnchor ? 1 : 0 }
-        }
-        transition={{ type: "spring", stiffness: 260, damping: 26 }}
+        className="pointer-events-none fixed z-[80]"
+        animate={{ left: displayAnchor?.x ?? 0, top: displayAnchor?.y ?? 0, opacity: displayAnchor ? 1 : 0 }}
+        transition={reducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 26 }}
       >
         <RobotAvatar />
       </motion.div>
@@ -116,17 +101,13 @@ export function MascotAssistant() {
 
   const avatarAnimate = reducedMotion
     ? { opacity: 1 }
-    : isFlipping
-      ? { y: [0, -18, 0], rotate: [0, 360], scale: [1, 1.05, 1] }
-      : inviteTutorial
+    : inviteTutorial
         ? { y: [0, -10, 0], rotate: [0, -8, 8, 0] }
         : { y: [0, -8, 0] };
 
   const avatarTransition = reducedMotion
     ? { duration: 0.2 }
-    : isFlipping
-      ? { duration: FLIP_DURATION_MS / 1000, ease: "easeInOut" as const }
-      : inviteTutorial
+    : inviteTutorial
         ? { duration: 0.7, ease: "easeOut" as const }
         : { duration: 2.6, repeat: Infinity, ease: "easeInOut" as const };
 
@@ -171,11 +152,16 @@ export function MascotAssistant() {
         <motion.button
           type="button"
           aria-label="Assistente virtual"
+          aria-expanded={menuOpen}
+          aria-haspopup="menu"
+          className="mascot-assistant__button"
+          onKeyDown={(event) => { if (event.key === "Escape") setMenuOpen(false); }}
           onClick={handleAvatarClick}
           animate={avatarAnimate}
           transition={avatarTransition}
         >
           <RobotAvatar />
+          <span className="mascot-assistant__label">Precisa de ajuda?</span>
         </motion.button>
       </div>
 

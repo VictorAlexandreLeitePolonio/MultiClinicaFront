@@ -1,0 +1,98 @@
+/* Uma narrativa de scroll substitui as duas apresentações da rotina. */
+.landing-day__scroll-note { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 12px; color: #527166; }
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  .landing-day--scroll { height: 240svh; overflow: clip; padding-block: 0; }
+  .landing-day--scroll .landing-day__layout { position: sticky; top: 100px; min-height: calc(100svh - 100px); }
+}
+.landing-preview__content .landing-workspace { overflow: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  .landing-preview__content .landing-calendar__appointment,
+  .landing-preview__content .landing-patient-row,
+  .landing-preview__content .landing-payment-row,
+  .landing-preview__content .landing-timeline,
+  .landing-preview__content .landing-role-list > div { animation: module-row-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .landing-preview__content .landing-patient-row:nth-child(2),
+  .landing-preview__content .landing-payment-row:nth-child(2),
+  .landing-preview__content .landing-calendar__appointment--two,
+  .landing-preview__content .landing-timeline:nth-child(3) { animation-delay: 100ms; }
+  .landing-preview__content .landing-patient-row:nth-child(3),
+  .landing-preview__content .landing-payment-row:nth-child(3),
+  .landing-preview__content .landing-timeline:nth-child(4) { animation-delay: 200ms; }
+  .landing-preview__content .landing-finance-graph i { transform-origin: bottom; animation: landing-bar-grow 650ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .landing-preview__content .landing-record-section i,
+  .landing-preview__content .landing-stock-bar { transform-origin: left; animation: module-line-enter 600ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .landing-preview__content .landing-record-section i:nth-child(3) { animation-delay: 100ms; }
+  .landing-preview__content .landing-record-section i:nth-child(4) { animation-delay: 200ms; }
+}
+@keyframes module-row-enter { from { opacity: 0.4; transform: translateX(18px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes module-line-enter { from { transform: scaleX(0.15); } to { transform: scaleX(1); } }
+.landing-modules[data-keyboard="true"] .landing-preview__content,
+.landing-modules[data-keyboard="true"] .landing-preview__content *,
+.landing-preview[data-keyboard="true"] .landing-preview__content * { animation: none; }
+
+.landing-patient { padding: 112px 24px; background: white; }
+.landing-patient__layout { display: grid; grid-template-columns: 1.05fr 0.95fr; align-items: center; gap: 100px; max-width: 1120px; margin: auto; }
+.landing-patient__copy h2 { font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; color: #0f172a; }
+.landing-patient__copy h2 span { color: #0f766e; }
+.landing-patient__copy > p { margin-top: 24px; max-width: 480px; color: #64748b; line-height: 1.75; }
+.landing-patient__steps { display: grid; margin-top: 32px; }
+.landing-patient__steps button { display: flex; align-items: center; gap: 24px; border-bottom: 1px solid #e3ede7; padding: 20px 0; cursor: pointer; text-align: left; }
+.landing-patient__steps button strong { display: block; color: #334155; font-size: 15px; }
+.landing-patient__steps button span > span { display: block; color: #64748b; font-size: 13px; line-height: 1.7; margin-top: 7px; }
+.landing-patient__steps button svg { margin-left: auto; flex-shrink: 0; color: #94a3b8; transition: transform 180ms ease-out; }
+.landing-patient__steps button[data-active="true"] strong, .landing-patient__steps button[data-active="true"] svg { color: #0f766e; }
+.landing-patient__steps button[data-active="true"] svg { transform: translateX(5px); }
+.landing-patient__link { display: inline-flex; align-items: center; gap: 12px; margin-top: 28px; color: #0f766e; font-size: 14px; font-weight: 650; }
+.landing-patient__visual { position: relative; display: grid; justify-items: center; padding: 36px 0; border-radius: 50% 50% 12px 12px; background: #edf6f1; }
+.landing-patient__phone { position: relative; width: 286px; min-height: 490px; border: 6px solid #203d35; border-radius: 38px; background: #fff; padding: 14px 18px 24px; box-shadow: 18px 28px 45px -28px #254d3f66; }
+.landing-patient__phone-top { display: flex; justify-content: space-between; align-items: center; color: #334155; font-size: 10px; font-weight: 650; }
+.landing-patient__phone-top > span:last-child { width: 65px; height: 16px; border-radius: 20px; background: #203d35; margin-right: 70px; }
+.landing-patient__phone-brand { display: flex; align-items: center; gap: 8px; margin-block: 26px; color: #0f766e; font-size: 11px; font-weight: 650; }
+.landing-patient__screen { min-height: 326px; }
+.landing-patient__screen h3 { color: #203d35; font-size: 22px; font-weight: 650; letter-spacing: -0.035em; line-height: 1.3; }
+.landing-patient__search { display: flex; align-items: center; gap: 7px; margin-top: 20px; padding: 12px 8px; background: #f4f7f5; border-radius: 8px; color: #64748b; font-size: 9px; }
+.landing-patient__clinic { padding-block: 20px; }
+.landing-patient__clinic-icon { display: grid; place-items: center; height: 64px; background: #e4f2ea; color: #0f766e; border-radius: 8px; }
+.landing-patient__clinic h4 { margin-top: 14px; color: #203d35; font-size: 14px; font-weight: 650; }
+.landing-patient__clinic p { margin-top: 5px; font-size: 11px; color: #64748b; }
+.landing-patient__demo-action { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; color: #0f766e; font-size: 11px; }
+.landing-patient__calendar { display: flex; align-items: center; flex-direction: column; margin-top: 24px; padding: 24px 12px; border-radius: 12px; background: #edf6f1; color: #0f766e; text-align: center; }
+.landing-patient__calendar strong { margin-top: 14px; font-size: 14px; }
+.landing-patient__calendar p { margin-top: 8px; font-size: 11px; color: #527166; }
+.landing-patient__notice { display: flex; align-items: center; gap: 10px; margin-top: 20px; color: #0f766e; font-size: 12px; line-height: 1.7; }
+.landing-patient__notice svg { flex-shrink: 0; }
+.landing-patient__notice small { color: #64748b; font-size: 10px; }
+.landing-patient__screen-note { color: #64748b; font-size: 10px; line-height: 1.7; margin-top: 15px; }
+.landing-patient__phone-bottom { width: 84px; height: 4px; border-radius: 8px; background: #203d35; margin: 24px auto 0; }
+.landing-patient__disclaimer { margin-top: 24px; color: #527166; font-size: 11px; }
+@media (prefers-reduced-motion: no-preference) {
+  .landing-patient__screen { animation: module-row-enter 350ms ease-out; }
+  .landing-patient__notice { animation: landing-preview-swap 450ms 150ms ease-out both; }
+}
+.landing-patient[data-keyboard="true"] .landing-patient__screen,
+.landing-patient[data-keyboard="true"] .landing-patient__notice { animation: none; }
+.landing-patient button:focus-visible, .landing-patient a:focus-visible { outline: 2px solid #0f766e; outline-offset: 5px; }
+.landing-clinics__profiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+.landing-clinics__profile { display: flex; flex-direction: column; gap: 20px; flex: 1 1 280px; max-width: 410px; padding: 28px; border: 1px solid #dce8e2; border-radius: 16px; background: #f9fcfa; text-align: left; cursor: pointer; transition: border-color 180ms ease-out, transform 180ms ease-out; }
+.landing-clinics__profile:hover:not(:disabled) { border-color: #7fc4af; transform: translateY(-4px); }
+.landing-clinics__view { display: flex; justify-content: space-between; padding-top: 16px; border-top: 1px solid #dce8e2; font-size: 13px; font-weight: 650; color: #0f766e; }
+.landing-contact { display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center; gap: 80px; }
+.landing-contact__next { padding-left: 36px; border-left: 1px solid #ffffff35; }
+.landing-contact__next h3 { font-size: 18px; font-weight: 650; color: white; }
+.landing-contact__next ol { display: grid; gap: 24px; margin-top: 28px; }
+.landing-contact__next li { display: flex; gap: 15px; }
+.landing-contact__next li > span { display: grid; place-items: center; flex-shrink: 0; width: 26px; height: 26px; border: 1px solid #ffffff60; border-radius: 50%; color: #ecfdf5; font-size: 12px; }
+.landing-contact__next strong { color: white; font-size: 14px; }
+.landing-contact__next p { margin-top: 6px; color: #d6f1e8; font-size: 12px; line-height: 1.7; }
+.landing-contact__next > a { display: block; margin-top: 28px; color: #ecfdf5; font-size: 12px; overflow-wrap: anywhere; text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 1023px) {
+  .landing-patient__layout, .landing-contact { grid-template-columns: 1fr; gap: 48px; }
+  .landing-patient__visual { width: 100%; max-width: 430px; justify-self: center; }
+  .landing-contact__next { padding: 28px 0 0; border-left: 0; border-top: 1px solid #ffffff35; }
+  .landing-day__scroll-note { display: none; }
+}
+@media (max-width: 767px) { .landing-patient { padding: 64px 24px; } .landing-contact .landing-button { width: 100%; font-size: 12px; } }
+@media (prefers-reduced-motion: reduce) {
+  .landing-patient *, .landing-clinics__profile { animation: none; transition: none; }
+  .landing-day__scroll-note { display: none; }
+}

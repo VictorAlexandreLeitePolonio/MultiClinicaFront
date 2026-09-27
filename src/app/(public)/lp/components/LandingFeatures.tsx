@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { LandingProductPreview } from "./LandingProductPreview";
 import { landingModules, type LandingModuleId } from "./landingModules";
 
@@ -9,8 +10,9 @@ interface LandingFeaturesProps {
 }
 
 export function LandingFeatures({ activeModuleId, onModuleChange }: LandingFeaturesProps) {
+  const [keyboardInput, setKeyboardInput] = useState(false);
   return (
-    <section id="modulos" data-mascot-anchor="modulos" data-landing-reveal className="landing-modules py-24 sm:py-32">
+    <section id="modulos" data-mascot-anchor="modulos" data-landing-reveal className="landing-modules py-24 sm:py-32" data-keyboard={keyboardInput}>
       <div className="mx-auto max-w-[88rem] px-6 lg:px-8">
         <div className="max-w-3xl">
           <h2 className="text-4xl font-bold leading-tight tracking-[-0.045em] text-slate-950 sm:text-5xl">
@@ -35,7 +37,7 @@ export function LandingFeatures({ activeModuleId, onModuleChange }: LandingFeatu
                   className="landing-module-row"
                   data-active={isActive}
                   aria-pressed={isActive}
-                  onClick={() => onModuleChange(module.id)}
+                  onClick={(event) => { setKeyboardInput(event.detail === 0); onModuleChange(module.id); }}
                 >
                   <span className="landing-module-row__icon">
                     <Icon size={18} />

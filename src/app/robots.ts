@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/site";
 
-// Só a landing pública é indexável; áreas autenticadas/de auth ficam fora.
+// A landing e as páginas legais são públicas; áreas de acesso ficam fora.
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
@@ -13,6 +13,8 @@ export default function robots(): MetadataRoute.Robots {
         "/paciente",
         "/login",
         "/access-denied",
+        "/convite",
+        "/backend",
       ],
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
