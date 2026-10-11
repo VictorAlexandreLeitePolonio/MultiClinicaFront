@@ -116,3 +116,7 @@ export const superAdminClinicSettingsKeys = {
   all: ["superadmin-clinic-settings"] as const,
   detail: (clinicId: number) => ["superadmin-clinic-settings", clinicId] as const,
 };
+
+export const telegramLinkKeys = {
+  status: ["telegram-link", "status"] as const,
+};

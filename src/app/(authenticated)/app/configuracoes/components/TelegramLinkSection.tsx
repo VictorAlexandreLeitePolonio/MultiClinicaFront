@@ -1,0 +1,85 @@
+"use client";
+
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { telegramLinkKeys } from "@/lib/queryKeys";
+import { getApiErrorMessage } from "@/utils/apiError";
+import { useCreateTelegramLink, useDeleteTelegramLink, useTelegramLinkStatus } from "../hooks/useTelegramLink";
+
+export function TelegramLinkSection() {
+  const queryClient = useQueryClient();
+  const status = useTelegramLinkStatus();
+  const create = useCreateTelegramLink();
+  const remove = useDeleteTelegramLink();
+  const connected = status.data?.connected ?? false;
+
+  const handleConnect = async () => {
+    // Abre a aba antes do await para não ser bloqueada como pop-up.
+    const tab = window.open("", "_blank");
+    try {
+      const { url } = await create.mutateAsync();
+      if (tab) tab.location.href = url;
+      else window.location.href = url;
+      toast.info("Toque em Iniciar no Telegram para concluir a conexão.");
+    } catch (error) {
+      tab?.close();
+      toast.error(getApiErrorMessage(error, "Não foi possível gerar o link do Telegram."));
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      await remove.mutateAsync();
+      toast.success("Telegram desconectado.");
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Não foi possível desconectar o Telegram."));
+    }
+  };
+
+  return (
+    <section className="space-y-4 rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div>
+        <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Assistente no Telegram</h2>
+        <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">
+          Peça por mensagem: &quot;agenda a Cida terça às 9h&quot;, &quot;o que tenho amanhã?&quot;. O assistente opera a agenda por você.
+        </p>
+      </div>
+
+      {status.isLoading ? (
+        <p className="text-sm text-[#64748b] dark:text-slate-400">Carregando…</p>
+      ) : connected ? (
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+            Conectado
+          </span>
+          <button
+            type="button"
+            onClick={() => void handleDisconnect()}
+            disabled={remove.isPending}
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+          >
+            Desconectar
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => void handleConnect()}
+            disabled={create.isPending}
+            className="rounded-lg bg-[#0f766e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#115e59] disabled:opacity-50"
+          >
+            Conectar Telegram
+          </button>
+          <button
+            type="button"
+            onClick={() => void queryClient.invalidateQueries({ queryKey: telegramLinkKeys.status })}
+            className="text-sm font-medium text-[#0f766e] hover:underline"
+          >
+            Já conectei, atualizar
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
