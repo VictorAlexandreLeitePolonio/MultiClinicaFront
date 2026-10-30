@@ -9,8 +9,8 @@ const api = axios.create({
 // Flag para evitar múltiplos redirects quando várias requisições retornam 401
 let isRedirectingToLogin = false
 
-// Mesmo valor de PLAN_REQUIRED_EVENT em ./plans; literal para evitar import circular.
-const PLAN_REQUIRED_EVENT = "cliniq:plan-required";
+// Disparado em window pelo interceptor de 402; detail: BillingLimitError.
+export const PLAN_REQUIRED_EVENT = "cliniq:plan-required";
 
 export function handleResponseError(error: AxiosError) {
   const requestUrl = String(error.config?.url ?? '')

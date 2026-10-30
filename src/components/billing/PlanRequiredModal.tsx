@@ -3,12 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import * as Dialog from "@radix-ui/react-dialog";
-import {
-  BillingLimitError,
-  FEATURE_LABELS,
-  PLAN_LABELS,
-  PLAN_REQUIRED_EVENT,
-} from "@/lib/plans";
+import { PLAN_REQUIRED_EVENT } from "@/lib/api";
+import type { BillingLimitError } from "@/types/plans";
+import { FEATURE_LABELS, PLAN_LABELS } from "@/utils/plans";
 
 const PLAN_PAGE = "/app/configuracoes/plano";
 

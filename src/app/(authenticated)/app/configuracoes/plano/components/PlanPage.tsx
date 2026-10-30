@@ -9,14 +9,9 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { getApiErrorMessage } from "@/utils/apiError";
-import {
-  BillingCycle,
-  ClinicPlan,
-  METRIC_LABELS,
-  PLAN_LABELS,
-  PurchaseItem,
-  formatBRL,
-} from "@/lib/plans";
+import { formatCurrency } from "@/utils/formatters";
+import { METRIC_LABELS, PLAN_LABELS } from "@/utils/plans";
+import type { BillingCycle, ClinicPlan, PurchaseItem } from "@/types/plans";
 import {
   useBillingStatus,
   useCancelSubscription,
@@ -274,7 +269,7 @@ export function PlanPage() {
                 onClick={() => void handlePurchase("extra-professional")}
                 className="rounded-lg bg-[#0f766e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#115e59] disabled:opacity-60"
               >
-                Comprar vaga de profissional ({formatBRL(plansQuery.data?.extraProfessionalPrice ?? 0)}, pagamento único)
+                Comprar vaga de profissional ({formatCurrency(plansQuery.data?.extraProfessionalPrice ?? 0)}, pagamento único)
               </button>
             </div>
           )}
@@ -291,7 +286,7 @@ export function PlanPage() {
                     +{pack.amount} {METRIC_LABELS[pack.metric].toLowerCase()}
                   </h3>
                   <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">
-                    {formatBRL(pack.price)} · Válido até o fim deste mês
+                    {formatCurrency(pack.price)} · Válido até o fim deste mês
                   </p>
                 </div>
                 <button

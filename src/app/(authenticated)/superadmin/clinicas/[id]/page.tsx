@@ -21,7 +21,7 @@ import {
 } from "@/types";
 import { formatDateTime } from "@/utils/formatters";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { PLAN_LABELS } from "@/lib/plans";
+import { PLAN_LABELS } from "@/utils/plans";
 import {
   createSuperAdminClinicUser,
   registerClinicPayment,

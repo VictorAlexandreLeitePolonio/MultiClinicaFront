@@ -5,18 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Check, Minus } from "lucide-react";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/Skeleton";
-import {
-  FEATURE_LABELS,
-  METRIC_LABELS,
-  PLAN_LABELS,
-  fetchPublicPlans,
-  formatBRL,
-  planQueryKeys,
-  type BillingCycle,
-  type ClinicPlan,
-  type PlanFeature,
-  type PublicPlan,
-} from "@/lib/plans";
+import { queryKeys } from "@/lib/queryKeys";
+import type { BillingCycle, ClinicPlan, PlanFeature, PublicPlan } from "@/types/plans";
+import { formatCurrency } from "@/utils/formatters";
+import { FEATURE_LABELS, METRIC_LABELS, PLAN_LABELS } from "@/utils/plans";
+import { fetchPublicPlans } from "../services/plans.service";
 
 const planOrder: ClinicPlan[] = ["Free", "Pro", "Premium"];
 const features = Object.keys(FEATURE_LABELS) as PlanFeature[];
@@ -64,13 +57,13 @@ function PlanCard({
           <strong className="text-4xl font-bold tracking-tight text-slate-950">Grátis</strong>
         ) : (
           <p>
-            <strong className="text-4xl font-bold tracking-tight text-slate-950">{formatBRL(price)}</strong>
+            <strong className="text-4xl font-bold tracking-tight text-slate-950">{formatCurrency(price)}</strong>
             <span className="text-sm font-medium text-slate-500">{isAnnual ? "/ano" : "/mês"}</span>
           </p>
         )}
         {isAnnual && price > 0 && (
           <p className="mt-2 text-xs leading-5 text-slate-500">
-            Equivale a {formatBRL(price / 12)}/mês ·{" "}
+            Equivale a {formatCurrency(price / 12)}/mês ·{" "}
             <span className="font-semibold text-teal-700">2 meses grátis</span>
           </p>
         )}
@@ -148,7 +141,7 @@ function FallbackCard({ plan }: { plan: ClinicPlan }) {
 export function LandingPricing() {
   const [cycle, setCycle] = useState<BillingCycle>("Monthly");
   const { data, isLoading, isError } = useQuery({
-    queryKey: planQueryKeys.publicPlans,
+    queryKey: queryKeys.plans.public,
     queryFn: fetchPublicPlans,
   });
 
@@ -224,7 +217,7 @@ export function LandingPricing() {
         )}
 
         <p className="mt-8 text-center text-sm text-slate-500">
-          Profissional extra: {formatBRL(data?.extraProfessionalPrice ?? 59)} (pagamento único)
+          Profissional extra: {formatCurrency(data?.extraProfessionalPrice ?? 59)} (pagamento único)
         </p>
       </div>
     </section>

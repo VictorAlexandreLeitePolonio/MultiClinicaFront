@@ -36,6 +36,11 @@ export const queryKeys = {
     all: ["plans"] as const,
     list: (params: unknown) => ["plans", "list", params] as const,
     detail: (planId: number) => ["plans", "detail", planId] as const,
+    public: ["plans", "public"] as const,
+  },
+  billing: {
+    status: ["billing", "status"] as const,
+    usage: ["billing", "usage"] as const,
   },
   users: {
     all: ["users"] as const,
@@ -67,6 +72,7 @@ export const queryKeys = {
     billing: (clinicId: number, params: unknown) => ["superadmin", "billing", clinicId, params] as const,
     history: (clinicId: number, params: unknown) => ["superadmin", "history", clinicId, params] as const,
     clinicUsers: (clinicId: number, params: unknown) => ["superadmin", "users", clinicId, params] as const,
+    hubApprovals: ["superadmin", "hub-approvals"] as const,
   },
 };
 

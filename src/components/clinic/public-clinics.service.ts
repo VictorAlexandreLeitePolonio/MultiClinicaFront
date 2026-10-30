@@ -1,4 +1,4 @@
-import type { HubBadge } from "@/lib/plans";
+import type { HubBadge } from "@/types/plans";
 import publicApi from "@/lib/publicApi";
 import { ClinicCategory } from "@/types";
 

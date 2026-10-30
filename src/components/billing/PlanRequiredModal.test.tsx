@@ -1,11 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
-import {
-  BillingLimitError,
-  FEATURE_LABELS,
-  PLAN_REQUIRED_EVENT,
-} from "@/lib/plans";
+import { PLAN_REQUIRED_EVENT } from "@/lib/api";
+import type { BillingLimitError } from "@/types/plans";
+import { FEATURE_LABELS } from "@/utils/plans";
 import { PlanRequiredModal } from "./PlanRequiredModal";
 
 function dispatchPlanError(detail: BillingLimitError) {

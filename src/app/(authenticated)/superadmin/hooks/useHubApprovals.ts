@@ -1,7 +1,8 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { decideHubApproval, fetchHubApprovals, planQueryKeys } from "@/lib/plans";
+import { queryKeys } from "@/lib/queryKeys";
+import { decideHubApproval, fetchHubApprovals } from "../services/hub-approvals.service";
 
 interface DecideHubApprovalInput {
   clinicaId: number;
@@ -11,7 +12,7 @@ interface DecideHubApprovalInput {
 
 export function useHubApprovals() {
   return useQuery({
-    queryKey: planQueryKeys.hubApprovals,
+    queryKey: queryKeys.superAdmin.hubApprovals,
     queryFn: fetchHubApprovals,
   });
 }
@@ -25,7 +26,7 @@ export function useDecideHubApproval() {
         ? decideHubApproval(clinicaId, approved, reason)
         : decideHubApproval(clinicaId, approved),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: planQueryKeys.hubApprovals });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.superAdmin.hubApprovals });
     },
   });
 }

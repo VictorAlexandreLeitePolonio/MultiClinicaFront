@@ -2,21 +2,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  BillingStatus,
-  UsageResponse,
   fetchBillingStatus,
   fetchUsage,
-} from "@/lib/plans";
+} from "@/app/(authenticated)/app/configuracoes/plano/services/billing.service";
+import type { BillingStatus, UsageResponse } from "@/types/plans";
 import { PlanUsageCard } from "./PlanUsageCard";
 
-vi.mock("@/lib/plans", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/lib/plans")>();
-  return {
-    ...actual,
-    fetchBillingStatus: vi.fn(),
-    fetchUsage: vi.fn(),
-  };
-});
+vi.mock("@/app/(authenticated)/app/configuracoes/plano/services/billing.service", () => ({
+  fetchBillingStatus: vi.fn(),
+  fetchUsage: vi.fn(),
+}));
 
 const proStatus: BillingStatus = {
   plan: "Pro",

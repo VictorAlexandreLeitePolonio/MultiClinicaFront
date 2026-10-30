@@ -8,6 +8,7 @@ import {
   SuperAdminClinicUser,
   UserRole,
 } from '@/types'
+import type { ClinicPlan } from '@/types/plans'
 
 export interface GetSuperAdminClinicsParams {
   page: number
@@ -147,4 +148,12 @@ export async function createSuperAdminClinicUser(
   )
 
   return response.data
+}
+
+export async function setClinicPlan(
+  clinicaId: number,
+  plan: ClinicPlan,
+  isFounder: boolean,
+): Promise<void> {
+  await api.put(`/api/superadmin/clinicas/${clinicaId}/plan`, { plan, isFounder })
 }

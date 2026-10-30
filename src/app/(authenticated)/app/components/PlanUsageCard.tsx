@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Gauge } from "lucide-react";
-import { PLAN_LABELS } from "@/lib/plans";
+import { PLAN_LABELS } from "@/utils/plans";
 import { UsageBars } from "../configuracoes/plano/components/UsageBars";
 import { useBillingStatus, useUsage } from "../configuracoes/plano/hooks/useBilling";
 

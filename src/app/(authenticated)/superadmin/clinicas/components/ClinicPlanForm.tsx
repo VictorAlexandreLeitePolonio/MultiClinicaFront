@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { PLAN_LABELS, type ClinicPlan } from "@/lib/plans";
+import { PLAN_LABELS } from "@/utils/plans";
+import type { ClinicPlan } from "@/types/plans";
 import { useSetClinicPlan } from "../../hooks/useSuperAdminClinicPlan";
 
 interface ClinicPlanFormProps {

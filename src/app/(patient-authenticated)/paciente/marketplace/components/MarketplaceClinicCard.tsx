@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Building2, MapPin } from "lucide-react";
-import type { HubBadge } from "@/lib/plans";
+import type { HubBadge } from "@/types/plans";
 import { ClinicLikeButton } from "@/components/ClinicLikeButton";
 import { MarketplaceClinicCard as MarketplaceClinicCardType } from "../types/marketplace.types";
 

@@ -1,4 +1,4 @@
-import type { BillingCycle, ClinicPlan } from "@/lib/plans";
+import type { BillingCycle, ClinicPlan } from "@/types/plans";
 
 export interface SignupPlanSelection {
   plan: Exclude<ClinicPlan, "Free">;

@@ -1,4 +1,4 @@
-import type { ClinicPlan } from "@/lib/plans";
+import type { ClinicPlan } from "./plans";
 
 export interface PagedResult<T> {
   data: T[];
@@ -511,6 +511,25 @@ export interface PatientProfile {
 }
 
 export * from "./evolution";
+// BillingStatus de planos fica só em "./plans": o nome já é usado pelo status legado acima.
+export type {
+  BillingCycle,
+  BillingLimitError,
+  ClinicPlan,
+  HubApprovalItem,
+  HubBadge,
+  PlanFeature,
+  PlanRequiredError,
+  ProfessionalLimitError,
+  PublicPlan,
+  PublicPlansResponse,
+  PurchaseItem,
+  SignupRequest,
+  UsageMetric,
+  UsageMetricStatus,
+  UsagePack,
+  UsageResponse,
+} from "./plans";
 
 export interface BalancePeriod {
   startDate: string;

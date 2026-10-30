@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { resendSignupEmail, signup } from "@/lib/plans";
+import { resendSignupEmail, signup } from "@/app/(public)/cadastro/services/signup.service";
 import { SignupForm } from "./SignupForm";
 
 const { searchParamsMock } = vi.hoisted(() => ({ searchParamsMock: vi.fn() }));
@@ -11,10 +11,10 @@ vi.mock("next/navigation", () => ({ useSearchParams: searchParamsMock }));
 vi.mock("@/components/auth/AuthLayout", () => ({
   AuthLayout: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
-vi.mock("@/lib/plans", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/lib/plans")>();
-  return { ...actual, signup: vi.fn(), resendSignupEmail: vi.fn() };
-});
+vi.mock("@/app/(public)/cadastro/services/signup.service", () => ({
+  signup: vi.fn(),
+  resendSignupEmail: vi.fn(),
+}));
 
 async function fillForm(confirmation = "secret123") {
   const user = userEvent.setup();

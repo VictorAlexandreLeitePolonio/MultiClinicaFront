@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import {
+import { formatCurrency } from "@/utils/formatters";
+import { FEATURE_LABELS, PLAN_LABELS } from "@/utils/plans";
+import type {
   BillingCycle,
   BillingStatus,
   ClinicPlan,
-  FEATURE_LABELS,
-  PLAN_LABELS,
   PlanFeature,
   PublicPlan,
-  formatBRL,
-} from "@/lib/plans";
+} from "@/types/plans";
 
 type PaidPlan = Exclude<ClinicPlan, "Free">;
 
@@ -86,7 +85,7 @@ export function PlanComparison({ plans, status, onCheckout, onChange, pending }:
                 )}
               </div>
 
-              <p className="mt-3 text-2xl font-bold text-[#0f172a] dark:text-white">{formatBRL(price)}</p>
+              <p className="mt-3 text-2xl font-bold text-[#0f172a] dark:text-white">{formatCurrency(price)}</p>
               <p className="text-xs text-[#64748b] dark:text-slate-400">
                 {cycle === "Monthly" ? "por mês" : "por ano"}
               </p>

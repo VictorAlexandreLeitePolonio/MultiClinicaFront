@@ -2,13 +2,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fetchPublicPlans, type PublicPlansResponse } from "@/lib/plans";
+import { fetchPublicPlans } from "@/app/(public)/lp/services/plans.service";
+import type { PublicPlansResponse } from "@/types/plans";
 import { LandingPricing } from "./LandingPricing";
 
-vi.mock("@/lib/plans", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/lib/plans")>();
-  return { ...actual, fetchPublicPlans: vi.fn() };
-});
+vi.mock("@/app/(public)/lp/services/plans.service", () => ({
+  fetchPublicPlans: vi.fn(),
+}));
 
 const plans: PublicPlansResponse = {
   plans: [

@@ -3,15 +3,13 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  BillingStatus,
-  METRIC_LABELS,
-  PublicPlansResponse,
-  UsageResponse,
   fetchBillingStatus,
-  fetchPublicPlans,
   fetchUsage,
   startCheckout,
-} from "@/lib/plans";
+} from "@/app/(authenticated)/app/configuracoes/plano/services/billing.service";
+import { fetchPublicPlans } from "@/app/(public)/lp/services/plans.service";
+import type { BillingStatus, PublicPlansResponse, UsageResponse } from "@/types/plans";
+import { METRIC_LABELS } from "@/utils/plans";
 import { PlanPage } from "./PlanPage";
 import { UsageBars } from "./UsageBars";
 
@@ -21,19 +19,18 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => mockSearchParams.current,
 }));
 
-vi.mock("@/lib/plans", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/lib/plans")>();
-  return {
-    ...actual,
-    fetchPublicPlans: vi.fn(),
-    fetchBillingStatus: vi.fn(),
-    fetchUsage: vi.fn(),
-    startCheckout: vi.fn(),
-    changeSubscription: vi.fn(),
-    cancelSubscription: vi.fn(),
-    purchase: vi.fn(),
-  };
-});
+vi.mock("@/app/(authenticated)/app/configuracoes/plano/services/billing.service", () => ({
+  fetchBillingStatus: vi.fn(),
+  fetchUsage: vi.fn(),
+  startCheckout: vi.fn(),
+  changeSubscription: vi.fn(),
+  cancelSubscription: vi.fn(),
+  purchase: vi.fn(),
+}));
+
+vi.mock("@/app/(public)/lp/services/plans.service", () => ({
+  fetchPublicPlans: vi.fn(),
+}));
 
 const plans: PublicPlansResponse = {
   plans: [

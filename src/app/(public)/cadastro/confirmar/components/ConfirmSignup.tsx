@@ -9,7 +9,7 @@ import { Logo } from "@/components/ui/Logo";
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { confirmSignup, resendSignupEmail } from "@/lib/plans";
+import { confirmSignup, resendSignupEmail } from "../../services/signup.service";
 import { readSignupPlan } from "../../signupPlan";
 
 type Status = "loading" | "success" | "error";

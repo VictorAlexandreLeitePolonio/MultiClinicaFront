@@ -6,7 +6,7 @@ import { Building2, CalendarCheck2, Heart, MapPin } from "lucide-react";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { usePublicClinics } from "@/components/clinic/usePublicClinics";
 import { ClinicDetailModal, ClinicDetailSource } from "@/components/clinic/ClinicDetailModal";
-import type { HubBadge } from "@/lib/plans";
+import type { HubBadge } from "@/types/plans";
 
 const badgeStyles: Record<Exclude<HubBadge, null>, { label: string; className: string }> = {
   Featured: {

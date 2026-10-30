@@ -2,13 +2,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { decideHubApproval, fetchHubApprovals } from "@/lib/plans";
+import {
+  decideHubApproval,
+  fetchHubApprovals,
+} from "@/app/(authenticated)/superadmin/services/hub-approvals.service";
 import { HubApprovals } from "./HubApprovals";
 
-vi.mock("@/lib/plans", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/lib/plans")>();
-  return { ...actual, fetchHubApprovals: vi.fn(), decideHubApproval: vi.fn() };
-});
+vi.mock("@/app/(authenticated)/superadmin/services/hub-approvals.service", () => ({
+  fetchHubApprovals: vi.fn(),
+  decideHubApproval: vi.fn(),
+}));
 
 vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn() },

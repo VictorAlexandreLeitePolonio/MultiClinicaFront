@@ -1,6 +1,7 @@
 "use client";
 
-import { METRIC_LABELS, UsageResponse } from "@/lib/plans";
+import { METRIC_LABELS } from "@/utils/plans";
+import type { UsageResponse } from "@/types/plans";
 
 interface UsageBarsProps {
   usage: UsageResponse;

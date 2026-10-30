@@ -2,19 +2,17 @@
 
 import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { fetchPublicPlans } from "@/app/(public)/lp/services/plans.service";
+import { queryKeys } from "@/lib/queryKeys";
+import type { BillingCycle, ClinicPlan, PurchaseItem } from "@/types/plans";
 import {
-  BillingCycle,
-  ClinicPlan,
-  PurchaseItem,
   cancelSubscription,
   changeSubscription,
   fetchBillingStatus,
-  fetchPublicPlans,
   fetchUsage,
-  planQueryKeys,
   purchase,
   startCheckout,
-} from "@/lib/plans";
+} from "../services/billing.service";
 
 type PaidPlan = Exclude<ClinicPlan, "Free">;
 
@@ -25,21 +23,21 @@ interface PlanCycle {
 
 function invalidateBilling(queryClient: QueryClient) {
   return Promise.all([
-    queryClient.invalidateQueries({ queryKey: planQueryKeys.status }),
-    queryClient.invalidateQueries({ queryKey: planQueryKeys.usage }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.billing.status }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.billing.usage }),
   ]);
 }
 
 export function usePublicPlans() {
-  return useQuery({ queryKey: planQueryKeys.publicPlans, queryFn: fetchPublicPlans });
+  return useQuery({ queryKey: queryKeys.plans.public, queryFn: fetchPublicPlans });
 }
 
 export function useBillingStatus() {
-  return useQuery({ queryKey: planQueryKeys.status, queryFn: fetchBillingStatus });
+  return useQuery({ queryKey: queryKeys.billing.status, queryFn: fetchBillingStatus });
 }
 
 export function useUsage() {
-  return useQuery({ queryKey: planQueryKeys.usage, queryFn: fetchUsage });
+  return useQuery({ queryKey: queryKeys.billing.usage, queryFn: fetchUsage });
 }
 
 export function useCheckout() {

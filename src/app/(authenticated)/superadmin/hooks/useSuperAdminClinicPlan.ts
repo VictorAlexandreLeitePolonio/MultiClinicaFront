@@ -1,7 +1,8 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { setClinicPlan, type ClinicPlan } from "@/lib/plans";
+import { setClinicPlan } from "../services/clinics.service";
+import type { ClinicPlan } from "@/types/plans";
 import { queryKeys } from "@/lib/queryKeys";
 
 interface SetClinicPlanInput {

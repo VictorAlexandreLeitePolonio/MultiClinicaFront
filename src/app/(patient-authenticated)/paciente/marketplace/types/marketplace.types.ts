@@ -1,4 +1,4 @@
-import type { HubBadge } from "@/lib/plans";
+import type { HubBadge } from "@/types/plans";
 import { BusinessHour, ClinicAddress, ClinicalModelStatus, ClinicCategoryKind } from "@/types";
 
 export interface MarketplaceCategory {

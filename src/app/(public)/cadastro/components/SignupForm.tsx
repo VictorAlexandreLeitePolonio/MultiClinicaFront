@@ -13,7 +13,8 @@ import { FormField } from "@/components/ui/FormField";
 import { PasswordField } from "@/components/ui/PasswordField";
 import { Button } from "@/components/ui/Button";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { PLAN_LABELS, resendSignupEmail, signup } from "@/lib/plans";
+import { PLAN_LABELS } from "@/utils/plans";
+import { resendSignupEmail, signup } from "../services/signup.service";
 import { parseSignupPlan, saveSignupPlan } from "../signupPlan";
 
 const signupSchema = z
