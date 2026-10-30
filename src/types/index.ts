@@ -252,6 +252,12 @@ export interface Payment {
   paidAt: string | null;
   paymentDate: string | null;
   createdAt: string;
+  // Pagamento online (Mercado Pago)
+  paidOnline: boolean;
+  mpStatus: string | null;
+  // "Estornado", "Contestado" ou "PagamentoDuplicado:<mpPaymentId>"
+  onlineAlert: string | null;
+  hasPaymentLink: boolean;
 }
 
 export interface CreatePaymentDto {

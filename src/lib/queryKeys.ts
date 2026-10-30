@@ -126,3 +126,15 @@ export const superAdminClinicSettingsKeys = {
 export const whatsAppLinkKeys = {
   status: ["whatsapp-link", "status"] as const,
 };
+
+export const mercadoPagoKeys = {
+  status: ["mercadopago", "status"] as const,
+};
+
+export const publicPaymentKeys = {
+  detail: (token: string) => ["public-payment", token] as const,
+};
+
+export const patientChargeKeys = {
+  all: ["patient-charges"] as const,
+};
