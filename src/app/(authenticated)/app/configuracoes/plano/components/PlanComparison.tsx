@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { formatCurrency } from "@/utils/formatters";
-import { FEATURE_LABELS, PLAN_LABELS } from "@/utils/plans";
+import { FEATURE_LABELS, PLAN_LABELS, annualSavings } from "@/utils/plans";
 import type {
   BillingCycle,
   BillingStatus,
@@ -25,6 +25,7 @@ const FEATURES = Object.entries(FEATURE_LABELS) as [PlanFeature, string][];
 
 export function PlanComparison({ plans, status, onCheckout, onChange, pending }: PlanComparisonProps) {
   const [cycle, setCycle] = useState<BillingCycle>(status.billingCycle ?? "Monthly");
+  const maxSavings = plans.reduce((max, plan) => Math.max(max, annualSavings(plan)), 0);
 
   return (
     <div className="space-y-4">
@@ -50,8 +51,10 @@ export function PlanComparison({ plans, status, onCheckout, onChange, pending }:
             </button>
           ))}
         </div>
-        {cycle === "Annual" && (
-          <span className="text-sm font-medium text-[#0f766e] dark:text-[#67e8f9]">2 meses grátis</span>
+        {cycle === "Annual" && maxSavings > 0 && (
+          <span className="text-sm font-medium text-[#0f766e] dark:text-[#67e8f9]">
+            Economize até {formatCurrency(maxSavings)}
+          </span>
         )}
       </div>
 

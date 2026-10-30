@@ -47,7 +47,7 @@ const plans: PublicPlansResponse = {
     {
       plan: "Pro",
       monthlyPrice: 49.9,
-      annualPrice: 499,
+      annualPrice: 499.9,
       includedProfessionals: 3,
       maxExtraProfessionals: 2,
       features: ["OwnerCopilot", "OnlinePayments"],
@@ -57,7 +57,7 @@ const plans: PublicPlansResponse = {
     {
       plan: "Premium",
       monthlyPrice: 79.9,
-      annualPrice: 799,
+      annualPrice: 799.9,
       includedProfessionals: null,
       maxExtraProfessionals: 0,
       features: [
@@ -149,15 +149,15 @@ describe("PlanPage", () => {
     expect(within(premiumCard).getByText("R$ 79,90")).toBeInTheDocument();
   });
 
-  it("alternar para Anual mostra o preço anual e os dois meses grátis", async () => {
+  it("alternar para Anual mostra o preço anual e a economia real", async () => {
     mockQueries();
     renderPage();
 
     await userEvent.click(await screen.findByRole("button", { name: "Anual" }));
 
     const proCard = screen.getByRole("article", { name: "Pro" });
-    expect(within(proCard).getByText("R$ 499,00")).toBeInTheDocument();
-    expect(screen.getByText("2 meses grátis")).toBeInTheDocument();
+    expect(within(proCard).getByText("R$ 499,90")).toBeInTheDocument();
+    expect(screen.getByText("Economize até R$ 158,90")).toBeInTheDocument();
   });
 
   it("clicar em Assinar no Pro inicia o checkout mensal", async () => {

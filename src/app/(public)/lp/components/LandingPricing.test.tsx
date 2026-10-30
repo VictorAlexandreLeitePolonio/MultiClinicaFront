@@ -25,7 +25,7 @@ const plans: PublicPlansResponse = {
     {
       plan: "Pro",
       monthlyPrice: 49.9,
-      annualPrice: 499,
+      annualPrice: 499.9,
       includedProfessionals: 3,
       maxExtraProfessionals: 2,
       features: ["OwnerCopilot", "OnlinePayments"],
@@ -35,7 +35,7 @@ const plans: PublicPlansResponse = {
     {
       plan: "Premium",
       monthlyPrice: 79.9,
-      annualPrice: 799,
+      annualPrice: 799.9,
       includedProfessionals: null,
       maxExtraProfessionals: 0,
       features: [
@@ -67,7 +67,7 @@ describe("LandingPricing", () => {
     vi.mocked(fetchPublicPlans).mockReset();
   });
 
-  it("mostra os preços mensais e alterna para o anual", async () => {
+  it("mostra os preços mensais e alterna para o anual com a economia real", async () => {
     vi.mocked(fetchPublicPlans).mockResolvedValue(plans);
     renderPricing();
 
@@ -76,7 +76,9 @@ describe("LandingPricing", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Anual" }));
 
-    expect(screen.getByText(/499,00/)).toBeInTheDocument();
+    expect(screen.getByText(/499,90/)).toBeInTheDocument();
+    expect(screen.getByText("Economize R$ 98,90")).toBeInTheDocument();
+    expect(screen.getByText("No anual, você economiza até R$ 158,90.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Assinar Premium" })).toHaveAttribute(
       "href",
       "/cadastro?plano=Premium&ciclo=Annual",
@@ -88,5 +90,6 @@ describe("LandingPricing", () => {
     renderPricing();
 
     expect(await screen.findAllByRole("link", { name: "Começar grátis" })).toHaveLength(3);
+    expect(screen.getByText("Pague anual e economize.")).toBeInTheDocument();
   });
 });

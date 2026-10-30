@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { queryKeys } from "@/lib/queryKeys";
 import type { BillingCycle, ClinicPlan, PlanFeature, PublicPlan } from "@/types/plans";
 import { formatCurrency } from "@/utils/formatters";
-import { FEATURE_LABELS, METRIC_LABELS, PLAN_LABELS } from "@/utils/plans";
+import { FEATURE_LABELS, METRIC_LABELS, PLAN_LABELS, annualSavings } from "@/utils/plans";
 import { fetchPublicPlans } from "../services/plans.service";
 
 const planOrder: ClinicPlan[] = ["Free", "Pro", "Premium"];
@@ -35,6 +35,7 @@ function PlanCard({
     .filter((entry) => entry.value > 0);
   const href =
     plan.plan === "Free" ? "/cadastro" : `/cadastro?plano=${plan.plan}&ciclo=${cycle}`;
+  const savings = annualSavings(plan);
 
   return (
     <article
@@ -63,8 +64,15 @@ function PlanCard({
         )}
         {isAnnual && price > 0 && (
           <p className="mt-2 text-xs leading-5 text-slate-500">
-            Equivale a {formatCurrency(price / 12)}/mês ·{" "}
-            <span className="font-semibold text-teal-700">2 meses grátis</span>
+            Equivale a {formatCurrency(price / 12)}/mês
+            {savings > 0 && (
+              <>
+                {" · "}
+                <span className="font-semibold text-teal-700">
+                  Economize {formatCurrency(savings)}
+                </span>
+              </>
+            )}
           </p>
         )}
       </div>
@@ -146,6 +154,9 @@ export function LandingPricing() {
   });
 
   const showFallback = isError || (!isLoading && !data);
+  const maxSavings = data
+    ? data.plans.reduce((max, plan) => Math.max(max, annualSavings(plan)), 0)
+    : 0;
 
   return (
     <section
@@ -194,7 +205,9 @@ export function LandingPricing() {
           </div>
         </div>
         <p className="mt-2 text-center text-xs font-medium text-teal-700">
-          No anual, você ganha 2 meses grátis.
+          {maxSavings > 0
+            ? `No anual, você economiza até ${formatCurrency(maxSavings)}.`
+            : "Pague anual e economize."}
         </p>
 
         {isLoading && (
