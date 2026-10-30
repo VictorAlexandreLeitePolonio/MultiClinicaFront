@@ -268,6 +268,8 @@ export interface CreatePaymentDto {
   status: PaymentStatus;
   paidAt?: string;
   paymentDate?: string | null;
+  /** Envia a cobrança online por e-mail logo após criar. Ignorado em formas manuais. */
+  sendOnline: boolean;
 }
 
 /** Estado de ativação da identidade global (PatientAccount) do paciente. */

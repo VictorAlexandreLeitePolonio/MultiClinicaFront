@@ -1,6 +1,6 @@
 import api from '@/lib/api'
 import { normalizePagedResult } from '@/lib/pagination'
-import { PagedResult, Payment } from '@/types'
+import { CreatePaymentDto, PagedResult, Payment } from '@/types'
 import { PagamentoFormData } from '@/app/(authenticated)/app/pagamentos/schemas/pagamento.schema'
 
 export interface GetPaymentsParams {
@@ -12,7 +12,7 @@ export interface GetPaymentsParams {
   pageSize?: number
 }
 
-export type CreatePaymentPayload = PagamentoFormData & { responsavelId: number }
+export type CreatePaymentPayload = CreatePaymentDto & { responsavelId: number }
 
 const normalizePaymentDates = (payload: PagamentoFormData): PagamentoFormData => ({
   ...payload,
@@ -42,10 +42,11 @@ export async function getPaymentById(id: number): Promise<Payment> {
 export async function createPayment(
   payload: CreatePaymentPayload,
 ): Promise<Payment> {
-  const { responsavelId, ...formData } = payload
+  const { responsavelId, sendOnline, ...formData } = payload
   const response = await api.post<Payment>('/api/payments', {
     ...normalizePaymentDates(formData),
     responsavelId,
+    sendOnline,
   })
 
   return response.data

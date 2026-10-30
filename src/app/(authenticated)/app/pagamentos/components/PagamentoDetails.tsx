@@ -17,6 +17,10 @@ import { Patient } from "@/types";
 import { formatCurrency } from "@/utils/formatters";
 import { toast } from "sonner";
 import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
+import {
+  ONLINE_PAYMENT_METHOD,
+  paymentMethodChoices,
+} from "../paymentMethods";
 
 interface Props {
   id: number;
@@ -28,16 +32,6 @@ const paymentStatusOptions = [
   { value: "Pending", label: "Pendente" },
   { value: "Paid", label: "Pago" },
   { value: "Cancelled", label: "Cancelado" },
-];
-
-const paymentMethodOptions = [
-  "Dinheiro",
-  "Cartão",
-  "Cartão de Crédito",
-  "Cartão de Débito",
-  "Pix",
-  "Boleto",
-  "Transferência",
 ];
 
 const dateInputValue = (value: string | null) => value?.slice(0, 10) ?? "";
@@ -76,6 +70,12 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
   const paymentDate = watch("paymentDate");
 
   const selectedPlan = planos.find((p) => p.id === planId);
+  const mpStatus = data?.mpStatus?.toLowerCase() ?? "";
+  const isOnlinePending =
+    paymentMethod === ONLINE_PAYMENT_METHOD &&
+    (data?.status === "Pending" || mpStatus === "pending" || mpStatus === "in_process");
+  const methodDisabled = !isEditing || isOnlinePending;
+  const methodChoices = paymentMethodChoices(paymentMethod);
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -291,32 +291,43 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
             }
           />
 
-          {/* Select de Método */}
+          {/* Select de Forma de Pagamento */}
           <div className="flex flex-col gap-2">
             <label
+              htmlFor="paymentMethod"
               className={`text-sm font-semibold uppercase tracking-wider ${
-                !isEditing ? "text-gray-400" : "text-secondary dark:text-white"
+                methodDisabled ? "text-gray-400" : "text-secondary dark:text-white"
               }`}
             >
-              Método de Pagamento *
+              Forma de Pagamento *
             </label>
             <select
-              disabled={!isEditing}
+              id="paymentMethod"
+              disabled={methodDisabled}
               value={paymentMethod || ""}
               onChange={(e) => setValue("paymentMethod", e.target.value, { shouldValidate: true })}
               className={`w-full px-4 py-3 border rounded-xl transition-all
-                ${!isEditing
+                ${methodDisabled
                   ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
                   : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
                 }`}
             >
-              <option value="">Selecione um método</option>
-              {paymentMethodOptions.map((method) => (
-                <option key={method} value={method}>
+              <option value="">Selecione uma forma</option>
+              {methodChoices.map((method) => (
+                <option
+                  key={method}
+                  value={method}
+                  disabled={method === ONLINE_PAYMENT_METHOD}
+                >
                   {method}
                 </option>
               ))}
             </select>
+            {isEditing && isOnlinePending && (
+              <span className="text-xs text-gray-600 dark:text-slate-400">
+                A forma de pagamento de uma cobrança online pendente não pode ser alterada.
+              </span>
+            )}
             {errors.paymentMethod && isEditing && (
               <span className="text-xs text-red-600">{errors.paymentMethod.message}</span>
             )}
