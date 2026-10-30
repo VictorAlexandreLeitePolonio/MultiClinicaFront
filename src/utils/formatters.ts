@@ -216,10 +216,11 @@ export function unformatDate(dateString: string): string {
 
 /**
  * Formata mês de referência: 2024-03 → 03/2024
+ * Também aceita DateOnly serializado pela API: 2024-03-01 → 03/2024
  */
 export function formatReferenceMonth(monthString: string): string {
   if (!monthString) return ''
-  const parts = monthString.split('-')
+  const parts = monthString.slice(0, 7).split('-')
   if (parts.length !== 2) return monthString
   return `${parts[1]}/${parts[0]}`
 }
