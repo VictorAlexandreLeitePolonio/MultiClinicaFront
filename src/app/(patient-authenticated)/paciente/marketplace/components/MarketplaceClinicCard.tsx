@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Building2, MapPin } from "lucide-react";
+import type { HubBadge } from "@/lib/plans";
 import { ClinicLikeButton } from "@/components/ClinicLikeButton";
 import { MarketplaceClinicCard as MarketplaceClinicCardType } from "../types/marketplace.types";
 
@@ -9,6 +10,17 @@ interface Props {
   clinic: MarketplaceClinicCardType;
   onSelect: (id: number) => void;
 }
+
+const badgeStyles: Record<Exclude<HubBadge, null>, { label: string; className: string }> = {
+  Featured: {
+    label: "Destaque",
+    className: "border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200",
+  },
+  Founder: {
+    label: "Fundadora",
+    className: "border-teal-200 bg-teal-50 text-teal-900 dark:border-teal-900/60 dark:bg-teal-950/40 dark:text-teal-200",
+  },
+};
 
 export function MarketplaceClinicCard({ clinic, onSelect }: Props) {
   const location = [clinic.city, clinic.state].filter(Boolean).join(" / ");
@@ -32,9 +44,18 @@ export function MarketplaceClinicCard({ clinic, onSelect }: Props) {
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex items-start justify-between gap-3">
-          <h2 className="font-bold text-[#0f172a] group-hover:text-[#0f766e] dark:text-white">
-            {clinic.displayName}
-          </h2>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="font-bold text-[#0f172a] group-hover:text-[#0f766e] dark:text-white">
+              {clinic.displayName}
+            </h2>
+            {clinic.badge && (
+              <span
+                className={`rounded-full border px-2 py-0.5 text-[11px] font-semibold ${badgeStyles[clinic.badge].className}`}
+              >
+                {badgeStyles[clinic.badge].label}
+              </span>
+            )}
+          </div>
           <div className="relative z-20">
             <ClinicLikeButton
               clinicId={clinic.id}

@@ -1,3 +1,4 @@
+import type { HubBadge } from "@/lib/plans";
 import { BusinessHour, ClinicAddress, ClinicalModelStatus, ClinicCategoryKind } from "@/types";
 
 export interface MarketplaceCategory {
@@ -36,6 +37,7 @@ export interface MarketplaceClinicCard {
   likeCount: number;
   likedByMe: boolean;
   acceptsAppointmentRequests: boolean;
+  badge: HubBadge;
 }
 
 export interface MarketplaceClinicPage {
