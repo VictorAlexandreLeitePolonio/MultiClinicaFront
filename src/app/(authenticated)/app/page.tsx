@@ -8,6 +8,7 @@ import { AppointmentCard } from "./components/AppointmentCard";
 import { AppointmentSkeleton } from "./components/AppointmentSkeleton";
 import { ClinicDashboardActions } from "./components/ClinicDashboardActions";
 import { EvolutionSummaryCard } from "./components/EvolutionSummaryCard";
+import { PlanUsageCard } from "./components/PlanUsageCard";
 import { useTodayAppointments } from "./hooks/useTodayAppointments";
 import { useAuth } from "@/contexts/AuthContext";
 import { MetricCard } from "@/components/ui/MetricCard";
@@ -50,6 +51,8 @@ export default function BemVindoPage() {
       )}
 
       {user?.role && <ClinicDashboardActions role={user.role} />}
+
+      {user?.role && user.role !== "SuperAdmin" && <PlanUsageCard />}
 
       {user?.role && user.role !== "SuperAdmin" && <EvolutionSummaryCard />}
 
