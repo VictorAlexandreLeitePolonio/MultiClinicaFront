@@ -12,7 +12,7 @@ const questions = [
   {
     id: "modules",
     question: "Quais módulos estão disponíveis?",
-    answer: "A plataforma reúne agenda, pacientes, prontuários, evolução, pagamentos, balanço, estoque e permissões.",
+    answer: "A plataforma reúne agenda, pacientes, prontuários, evolução, pagamentos, balanço e permissões.",
   },
   {
     id: "access",

@@ -8,11 +8,6 @@ export type TutorialModuleId =
   | "evolution-templates"
   | "payments"
   | "financial"
-  | "stock-products"
-  | "stock-categories"
-  | "stock-movements"
-  | "suppliers"
-  | "purchases"
   | "users"
   | "plans"
   | "settings";

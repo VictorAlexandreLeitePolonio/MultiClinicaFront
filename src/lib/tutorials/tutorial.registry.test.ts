@@ -55,13 +55,13 @@ describe("canAccessTutorial", () => {
   });
 
   it("bloqueia quando can(permission) retorna false", () => {
-    expect(canAccessTutorial({ permission: "estoque.produtos.visualizar" }, "Recepcao", () => false)).toBe(
+    expect(canAccessTutorial({ permission: "clinic.settings.update" }, "Recepcao", () => false)).toBe(
       false,
     );
   });
 
   it("permite quando can(permission) retorna true", () => {
-    expect(canAccessTutorial({ permission: "estoque.produtos.visualizar" }, "Recepcao", () => true)).toBe(
+    expect(canAccessTutorial({ permission: "clinic.settings.update" }, "Recepcao", () => true)).toBe(
       true,
     );
   });
@@ -92,9 +92,9 @@ describe("filterAccessibleSteps", () => {
 });
 
 describe("getTasksForModule", () => {
-  it("retorna a ação guiada de produtos só para o módulo stock-products", () => {
-    const result = getTasksForModule("stock-products", "Administrador", () => true);
-    expect(result.map((t) => t.id)).toEqual(["create-product"]);
+  it("retorna a ação guiada de configurações só para o módulo settings", () => {
+    const result = getTasksForModule("settings", "Administrador", () => true);
+    expect(result.map((t) => t.id)).toEqual(["update-settings"]);
   });
 
   it("retorna vazio para um módulo sem ações guiadas", () => {
@@ -104,10 +104,10 @@ describe("getTasksForModule", () => {
   });
 
   it("respeita a permission das ações guiadas", () => {
-    // create-product exige a permission "estoque.produtos.criar".
-    expect(getTasksForModule("stock-products", "Recepcao", () => false)).toEqual([]);
+    // update-settings exige a permission "clinic.settings.update".
+    expect(getTasksForModule("settings", "Recepcao", () => false)).toEqual([]);
     expect(
-      getTasksForModule("stock-products", "Recepcao", () => true).map((t) => t.id),
-    ).toEqual(["create-product"]);
+      getTasksForModule("settings", "Recepcao", () => true).map((t) => t.id),
+    ).toEqual(["update-settings"]);
   });
 });

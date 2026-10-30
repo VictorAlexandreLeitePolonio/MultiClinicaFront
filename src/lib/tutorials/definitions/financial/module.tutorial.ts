@@ -30,8 +30,8 @@ export const financialTutorial: ModuleTutorial = {
     {
       id: "charts",
       target: '[data-tutorial="financial-charts"]',
-      title: "Consultas e estoque",
-      description: "Distribuição das consultas por status e das movimentações de estoque.",
+      title: "Consultas por status",
+      description: "Distribuição das consultas no período.",
       placement: "top",
     },
     {

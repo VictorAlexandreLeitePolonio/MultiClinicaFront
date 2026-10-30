@@ -6,20 +6,6 @@ export interface PagedResult<T> {
   totalPages: number;
 }
 
-export interface AuditoriaRegistro {
-  id: number;
-  usuarioId: number;
-  usuarioNome: string;
-  modulo: string;
-  acao: string;
-  entidade: string;
-  entidadeId: number;
-  dadosAntes: string | null;
-  dadosDepois: string | null;
-  motivo: string | null;
-  dataAcao: string;
-}
-
 export type UserRole = "SuperAdmin" | "Administrador" | "Profissional" | "Recepcao";
 
 export interface User {
@@ -532,18 +518,11 @@ export interface BalancePeriod {
 
 export interface BalanceMoneySummary {
   appointmentIncome: number;
-  productSalesIncome: number;
   totalIncome: number;
-  productPurchaseCost: number;
-  productOutputCost: number;
-  productLossCost: number;
-  productInternalUseCost: number;
   manualExpenseCost: number;
   totalOutcome: number;
   estimatedProfit: number;
   paidAppointmentCount: number;
-  productSaleCount: number;
-  stockCostMovementCount: number;
   manualExpenseCount: number;
 }
 
@@ -561,41 +540,15 @@ export interface BalancePatientsSummary {
   total: number;
 }
 
-export interface BalanceLowStockProduct {
-  productId: number;
-  name: string;
-  currentQuantity: number;
-  minimumQuantity: number;
-}
-
-export interface BalanceStockSummary {
-  totalProducts: number;
-  productsBelowMinimum: number;
-  stockEntriesInPeriod: number;
-  stockOutputsInPeriod: number;
-  productSalesInPeriod: number;
-  productPurchasesInPeriod: number;
-  productLossesInPeriod: number;
-  productInternalUseInPeriod: number;
-  lowStockProducts: BalanceLowStockProduct[];
-}
-
 export interface BalanceEvolutionSummary {
   evolutionsInPeriod: number;
   treatmentsInProgress: number;
   completedTreatments: number;
 }
 
-export type BalanceRecentMovementSource = "Payment" | "Stock" | "ManualExpense";
+export type BalanceRecentMovementSource = "Payment" | "ManualExpense";
 
-export type BalanceRecentMovementType =
-  | "AppointmentPayment"
-  | "ProductSale"
-  | "ProductPurchase"
-  | "ProductOutput"
-  | "ProductLoss"
-  | "InternalUse"
-  | "ClinicExpense";
+export type BalanceRecentMovementType = "AppointmentPayment" | "ClinicExpense";
 
 export interface BalanceRecentMovement {
   id: number;
@@ -603,7 +556,6 @@ export interface BalanceRecentMovement {
   type: BalanceRecentMovementType;
   description: string;
   amount: number | null;
-  quantity: number | null;
   date: string;
 }
 
@@ -621,7 +573,6 @@ export interface FinancialBalance {
   money: BalanceMoneySummary;
   appointments: BalanceAppointmentsSummary;
   patients: BalancePatientsSummary;
-  stock: BalanceStockSummary;
   evolutions: BalanceEvolutionSummary;
   recentMovements: BalanceRecentMovement[];
 }
