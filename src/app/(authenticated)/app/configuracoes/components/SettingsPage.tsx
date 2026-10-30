@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ import { ClinicMediaSection } from "./ClinicMediaSection";
 import { useClinicSettings, useUpdateClinicSettings } from "../hooks/useClinicSettings";
 import { AvailabilitySettingsSection } from "./AvailabilitySettingsSection";
 import { WhatsAppLinkSection } from "./WhatsAppLinkSection";
+import { MercadoPagoSection } from "./MercadoPagoSection";
 
 export function SettingsPage() {
   const router = useRouter();
@@ -104,6 +105,11 @@ export function SettingsPage() {
       </p>
       <AvailabilitySettingsSection canEdit={canEdit} />
       {user?.role === "Administrador" && <WhatsAppLinkSection />}
+      {user?.role === "Administrador" && (
+        <Suspense fallback={null}>
+          <MercadoPagoSection />
+        </Suspense>
+      )}
       <ClinicSettingsForm
         settings={settingsQuery.data}
         canEdit={canEdit}
