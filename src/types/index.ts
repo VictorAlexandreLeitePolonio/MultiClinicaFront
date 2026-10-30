@@ -159,8 +159,6 @@ export interface PublicClinic {
   acceptsAppointmentRequests: boolean;
 }
 
-export type BillingStatus = "Enabled" | "Blocked" | "Disabled";
-
 export interface SuperAdminDashboardMetrics {
   totalClinics: number;
   activeClinics: number;
@@ -511,9 +509,9 @@ export interface PatientProfile {
 }
 
 export * from "./evolution";
-// BillingStatus de planos fica só em "./plans": o nome já é usado pelo status legado acima.
 export type {
   BillingCycle,
+  BillingStatus,
   BillingLimitError,
   ClinicPlan,
   HubApprovalItem,
