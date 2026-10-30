@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   BillingCycle,
@@ -23,6 +23,13 @@ interface PlanCycle {
   cycle: BillingCycle;
 }
 
+function invalidateBilling(queryClient: QueryClient) {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: planQueryKeys.status }),
+    queryClient.invalidateQueries({ queryKey: planQueryKeys.usage }),
+  ]);
+}
+
 export function usePublicPlans() {
   return useQuery({ queryKey: planQueryKeys.publicPlans, queryFn: fetchPublicPlans });
 }
@@ -36,10 +43,12 @@ export function useUsage() {
 }
 
 export function useCheckout() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ plan, cycle }: PlanCycle) => startCheckout(plan, cycle),
-    onSuccess: ({ url }) => {
-      window.location.href = url;
+    onSuccess: (result) => {
+      void invalidateBilling(queryClient);
+      if (result?.url) window.location.href = result.url;
     },
   });
 }
@@ -50,7 +59,7 @@ export function useChangeSubscription() {
     mutationFn: ({ plan, cycle }: PlanCycle) => changeSubscription(plan, cycle),
     onSuccess: async () => {
       toast.success("A troca vale a partir do próximo ciclo.");
-      await queryClient.invalidateQueries({ queryKey: planQueryKeys.status });
+      await invalidateBilling(queryClient);
     },
   });
 }
@@ -61,19 +70,18 @@ export function useCancelSubscription() {
     mutationFn: cancelSubscription,
     onSuccess: async () => {
       toast.success("Assinatura cancelada. Sua clínica voltou para o Free.");
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: planQueryKeys.status }),
-        queryClient.invalidateQueries({ queryKey: planQueryKeys.usage }),
-      ]);
+      await invalidateBilling(queryClient);
     },
   });
 }
 
 export function usePurchase() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (item: PurchaseItem) => purchase(item),
-    onSuccess: ({ url }) => {
-      window.location.href = url;
+    onSuccess: (result) => {
+      void invalidateBilling(queryClient);
+      if (result?.url) window.location.href = result.url;
     },
   });
 }

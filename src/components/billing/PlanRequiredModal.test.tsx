@@ -29,6 +29,7 @@ describe("PlanRequiredModal", () => {
 
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
     expect(screen.getByText("Recurso do plano Pro")).toBeInTheDocument();
+    expect(screen.getByText("Recurso do plano Pro")).toHaveFocus();
     expect(screen.getByText(new RegExp(FEATURE_LABELS.OwnerCopilot))).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Ver planos" })).toHaveAttribute(
       "href",

@@ -14,8 +14,9 @@ export function UsageBars({ usage }: UsageBarsProps) {
   return (
     <div className="space-y-5">
       {metrics.map((metric) => {
-        const percent = Math.min(100, Math.round((metric.used / metric.total) * 100));
-        const alert = percent >= 80;
+        const ratio = metric.used / metric.total;
+        const percent = Math.min(100, Math.round(ratio * 100));
+        const alert = ratio >= 0.8;
 
         return (
           <div key={metric.metric}>

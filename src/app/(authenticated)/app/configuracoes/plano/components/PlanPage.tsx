@@ -87,7 +87,7 @@ export function PlanPage() {
     let attempts = 0;
     const interval = window.setInterval(() => {
       attempts += 1;
-      if (statusRef.current?.plan !== initialPlan || attempts > 10) {
+      if (statusRef.current?.plan !== initialPlan || attempts >= 10) {
         window.clearInterval(interval);
         return;
       }
@@ -254,7 +254,7 @@ export function PlanPage() {
         )}
       </section>
 
-      {currentPlan && (
+      {currentPlan && !status.isFounder && (
         <section aria-labelledby="compras-avulsas" className="space-y-4">
           <h2 id="compras-avulsas" className="text-lg font-bold text-[#0f172a] dark:text-white">
             Compras avulsas
