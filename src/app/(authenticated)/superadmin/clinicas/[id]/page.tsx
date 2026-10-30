@@ -19,15 +19,14 @@ import {
   SuperAdminClinicUser,
   SuperAdminCommercialHistoryItem,
 } from "@/types";
-import { formatCurrency, formatDate, formatDateTime } from "@/utils/formatters";
+import { formatDateTime } from "@/utils/formatters";
 import { getApiErrorMessage } from "@/utils/apiError";
+import { PLAN_LABELS } from "@/lib/plans";
 import {
-  configureClinicBilling,
   createSuperAdminClinicUser,
   registerClinicPayment,
   unblockClinicBilling,
 } from "@/app/(authenticated)/superadmin/services/clinics.service";
-import { BillingConfigDialog, BillingConfigFormData } from "../components/BillingConfigDialog";
 import { CreateClinicUserDialog, CreateClinicUserFormData } from "../components/CreateClinicUserDialog";
 import { RegisterPaymentDialog, RegisterPaymentFormData } from "../components/RegisterPaymentDialog";
 import { UnblockBillingDialog, UnblockBillingFormData } from "../components/UnblockBillingDialog";
@@ -36,11 +35,12 @@ import { useSuperAdminBilling } from "../../hooks/useSuperAdminBilling";
 import { useSuperAdminClinicUsers } from "../../hooks/useSuperAdminClinicUsers";
 import { useSuperAdminHistory } from "../../hooks/useSuperAdminHistory";
 import { SuperAdminClinicSettingsPanel } from "../components/SuperAdminClinicSettingsPanel";
+import { ClinicPlanForm } from "../components/ClinicPlanForm";
 
 const tabs = [
   { value: "overview", label: "Visão geral" },
   { value: "data", label: "Dados cadastrais" },
-  { value: "billing", label: "Cobrança" },
+  { value: "billing", label: "Plano" },
   { value: "users", label: "Usuários" },
   { value: "settings", label: "Configurações" },
   { value: "history", label: "Histórico" },
@@ -71,11 +71,6 @@ const historyColumns: Column<SuperAdminCommercialHistoryItem>[] = [
   { key: "createdAt", label: "Data", render: (item) => formatDateTime(item.createdAt) },
 ];
 
-function getBillingStatus(data: { isBlockedByBilling: boolean; cobrancaAtiva: boolean }) {
-  if (data.isBlockedByBilling) return "Blocked";
-  return data.cobrancaAtiva ? "Enabled" : "Disabled";
-}
-
 function InfoRow({ label, value }: { label: string; value: string | number | null | undefined }) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
@@ -102,7 +97,6 @@ export default function SuperAdminClinicDetailPage() {
       ? queryTab
       : "overview";
   const [activeTab, setActiveTab] = useState(initialTab);
-  const [billingDialogOpen, setBillingDialogOpen] = useState(queryAction === "billing");
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(queryAction === "payment");
   const [unblockDialogOpen, setUnblockDialogOpen] = useState(queryAction === "unblock");
   const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
@@ -124,19 +118,6 @@ export default function SuperAdminClinicDetailPage() {
   const chargesQuery = useSuperAdminBilling(clinicId, {
     page: chargesPage,
     pageSize: chargesPageSize,
-  });
-
-  const billingMutation = useMutation({
-    mutationFn: (payload: BillingConfigFormData) => configureClinicBilling(clinicId, payload),
-    onSuccess: () => {
-      toast.success("Cobrança atualizada com sucesso.");
-      setBillingDialogOpen(false);
-      void refetch();
-      void chargesQuery.refetch();
-    },
-    onError: (mutationError) => {
-      toast.error(getApiErrorMessage(mutationError, "Erro ao atualizar cobrança."));
-    },
   });
 
   const paymentMutation = useMutation({
@@ -226,11 +207,6 @@ export default function SuperAdminClinicDetailPage() {
         actions={
           <div className="flex flex-wrap gap-2">
             <div className="w-44">
-              <Button type="button" variant="outline" onClick={() => setBillingDialogOpen(true)}>
-                Configurar cobrança
-              </Button>
-            </div>
-            <div className="w-44">
               <Button type="button" onClick={() => setPaymentDialogOpen(true)}>
                 Registrar pagamento
               </Button>
@@ -257,14 +233,10 @@ export default function SuperAdminClinicDetailPage() {
             />
             <MetricCard
               label="Cobrança"
-              value={data.isBlockedByBilling ? "Bloqueada" : data.cobrancaAtiva ? "Ativa" : "Desativada"}
+              value={data.isBlockedByBilling ? "Bloqueada" : "Em dia"}
               icon={CreditCard}
             />
-            <MetricCard
-              label="Mensalidade"
-              value={formatCurrency(data.valorMensalidade)}
-              icon={FileText}
-            />
+            <MetricCard label="Plano" value={PLAN_LABELS[data.plan]} icon={FileText} />
           </section>
         )}
 
@@ -286,12 +258,13 @@ export default function SuperAdminClinicDetailPage() {
         )}
 
         {activeTab === "billing" && (
-          <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <InfoRow label="Cobrança ativa" value={data.cobrancaAtiva ? "Sim" : "Não"} />
-            <InfoRow label="Status comercial" value={getBillingStatus(data)} />
-            <InfoRow label="Mensalidade" value={formatCurrency(data.valorMensalidade)} />
-            <InfoRow label="Dia de vencimento" value={data.diaVencimento} />
-            <InfoRow label="Início da cobrança" value={formatDate(data.dataInicioCobranca)} />
+          <section className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <InfoRow label="Plano atual" value={PLAN_LABELS[data.plan]} />
+              <InfoRow label="Fundadora" value={data.isFounder ? "Sim" : "Não"} />
+              <InfoRow label="Aprovada no hub" value={data.isHubApproved ? "Sim" : "Pendente"} />
+            </div>
+            <ClinicPlanForm clinicId={clinicId} plan={data.plan} isFounder={data.isFounder} />
           </section>
         )}
 
@@ -351,19 +324,6 @@ export default function SuperAdminClinicDetailPage() {
           </section>
         )}
       </Tabs>
-
-      <BillingConfigDialog
-        open={billingDialogOpen}
-        defaultValues={{
-          cobrancaAtiva: data.cobrancaAtiva,
-          valorMensalidade: data.valorMensalidade,
-          diaVencimento: data.diaVencimento,
-          dataInicioCobranca: data.dataInicioCobranca ?? "",
-        }}
-        loading={billingMutation.isPending}
-        onClose={() => setBillingDialogOpen(false)}
-        onSubmit={(payload) => billingMutation.mutate(payload)}
-      />
 
       <RegisterPaymentDialog
         open={paymentDialogOpen}

@@ -34,20 +34,15 @@ function buildLoginHref(email: string) {
 export function ConfirmSignup() {
   const token = useSearchParams().get("token") ?? "";
   const started = useRef(false);
-  const [status, setStatus] = useState<Status>("loading");
+  const [status, setStatus] = useState<Status>(token ? "loading" : "error");
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("Link inválido ou expirado");
   const [resendEmail, setResendEmail] = useState("");
   const [resendSent, setResendSent] = useState(false);
 
   useEffect(() => {
-    if (started.current) return;
+    if (started.current || !token) return;
     started.current = true;
-
-    if (!token) {
-      setStatus("error");
-      return;
-    }
 
     confirmSignup(token)
       .then((result) => {

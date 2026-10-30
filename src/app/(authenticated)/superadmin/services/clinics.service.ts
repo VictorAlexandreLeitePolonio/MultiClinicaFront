@@ -13,7 +13,6 @@ export interface GetSuperAdminClinicsParams {
   page: number
   pageSize: number
   isActive?: boolean
-  cobrancaAtiva?: boolean
   isBlockedByBilling?: boolean
   overdue?: boolean
 }
@@ -90,25 +89,6 @@ export async function getSuperAdminClinicUsers(
     response.data,
     params.pageSize,
   )
-}
-
-export interface ConfigureClinicBillingPayload {
-  valorMensalidade: number
-  diaVencimento: number
-  cobrancaAtiva: boolean
-  dataInicioCobranca?: string | null
-}
-
-export async function configureClinicBilling(
-  clinicId: number,
-  payload: ConfigureClinicBillingPayload,
-): Promise<SuperAdminClinicDetail> {
-  const response = await api.put<SuperAdminClinicDetail>(
-    `/api/superadmin/clinicas/${clinicId}/billing`,
-    payload,
-  )
-
-  return response.data
 }
 
 export interface RegisterClinicPaymentPayload {

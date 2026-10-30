@@ -1,3 +1,5 @@
+import type { ClinicPlan } from "@/lib/plans";
+
 export interface PagedResult<T> {
   data: T[];
   page: number;
@@ -164,7 +166,7 @@ export interface SuperAdminDashboardMetrics {
   activeClinics: number;
   inactiveClinics: number;
   billingBlocked: number;
-  billingEnabled: number;
+  planCounts: { free: number; pro: number; premium: number };
   overdueCharges: number;
   monthlyReceived: number;
   monthlyPending: number;
@@ -187,10 +189,9 @@ export interface SuperAdminClinic {
   cep: string;
   isActive: boolean;
   isBlockedByBilling: boolean;
-  valorMensalidade: number;
-  diaVencimento: number;
-  cobrancaAtiva: boolean;
-  dataInicioCobranca: string | null;
+  plan: ClinicPlan;
+  isFounder: boolean;
+  isHubApproved: boolean;
   createdAt: string;
 }
 

@@ -23,6 +23,7 @@ import {
   ChevronLeft,
   ChevronRight,
   BarChart2,
+  BadgeCheck,
   Building2,
   Settings,
   Store,
@@ -103,6 +104,11 @@ const superAdminModules = [
     href: '/superadmin/clinicas',
     label: 'Clínicas',
     icon: <Building2 size={18} />,
+  },
+  {
+    href: '/superadmin/aprovacoes',
+    label: 'Aprovações do hub',
+    icon: <BadgeCheck size={18} />,
   },
   {
     href: '/superadmin/cobrancas',

@@ -10,31 +10,24 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Pagination } from "@/components/ui/Pagination";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { SuperAdminClinic } from "@/types";
-import { formatCurrency } from "@/utils/formatters";
 import { useSuperAdminClinics } from "../hooks/useSuperAdminClinics";
 
 const columns = (onOpenBilling: (clinicId: number) => void): Column<SuperAdminClinic>[] => [
   { key: "nome", label: "Clínica" },
+  { key: "plan", label: "Plano", render: (clinic) => clinic.plan },
   {
-    key: "cobrancaAtiva",
+    key: "isBlockedByBilling",
     label: "Cobrança",
     render: (clinic) => (
       <StatusBadge
-        status={clinic.isBlockedByBilling ? "Blocked" : clinic.cobrancaAtiva ? "Enabled" : "Disabled"}
+        status={clinic.isBlockedByBilling ? "Blocked" : "Enabled"}
         mapping={{
-          Enabled: { label: "Ativa", className: "bg-blue-100 text-blue-700 border-blue-200" },
+          Enabled: { label: "Em dia", className: "bg-blue-100 text-blue-700 border-blue-200" },
           Blocked: { label: "Bloqueada", className: "bg-red-100 text-red-700 border-red-200" },
-          Disabled: { label: "Desativada", className: "bg-gray-100 text-gray-700 border-gray-200" },
         }}
       />
     ),
   },
-  {
-    key: "valorMensalidade",
-    label: "Mensalidade",
-    render: (clinic) => formatCurrency(clinic.valorMensalidade),
-  },
-  { key: "diaVencimento", label: "Vencimento", render: (clinic) => `Dia ${clinic.diaVencimento}` },
   {
     key: "actions",
     label: "",
@@ -56,7 +49,6 @@ export default function SuperAdminBillingPage() {
   const { data, isLoading, error, refetch } = useSuperAdminClinics({
     page,
     pageSize,
-    cobrancaAtiva: true,
   });
 
   return (
@@ -66,15 +58,15 @@ export default function SuperAdminBillingPage() {
       {!isLoading && !error && data?.data?.length === 0 ? (
         <EmptyState
           icon={CreditCard}
-          title="Nenhuma clínica com cobrança ativa"
-          description="As cobranças são consultadas pelo detalhe de cada clínica, conforme a rota atual da API."
+          title="Nenhuma clínica cadastrada"
+          description="As cobranças são consultadas pelo detalhe de cada clínica."
         />
       ) : (
         <DataTable
-          columns={columns((clinicId) => router.push(`/superadmin/clinicas/${clinicId}?tab=billing`))}
+          columns={columns((clinicId) => router.push(`/superadmin/clinicas/${clinicId}?action=payment`))}
           data={data?.data ?? []}
           loading={isLoading}
-          error={error ? "Erro ao carregar clínicas com cobrança." : null}
+          error={error ? "Erro ao carregar clínicas." : null}
           keyExtractor={(clinic) => clinic.id}
           onRetry={() => void refetch()}
         />
