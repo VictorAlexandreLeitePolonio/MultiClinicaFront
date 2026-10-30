@@ -28,6 +28,7 @@ import {
   Settings,
   Store,
   User,
+  Receipt,
 } from 'lucide-react'
 import { getTenantTheme } from '@/utils/tenant'
 
@@ -125,6 +126,7 @@ const superAdminModules = [
 const patientModules = [
   { href: '/paciente', label: 'Início', icon: <Home size={18} /> },
   { href: '/paciente/consultas', label: 'Consultas', icon: <Calendar size={18} /> },
+  { href: '/paciente/cobrancas', label: 'Cobranças', icon: <Receipt size={18} /> },
   { href: '/paciente/solicitacoes', label: 'Solicitações', icon: <ClipboardList size={18} /> },
   { href: '/paciente/clinicas', label: 'Minhas clínicas', icon: <Building2 size={18} /> },
   { href: '/paciente/marketplace', label: 'Marketplace', icon: <Store size={18} /> },
