@@ -62,7 +62,7 @@ export function SignupForm() {
   }, [cooldown]);
 
   const submit = async (values: SignupFormData) => {
-    if (selectedPlan) saveSignupPlan(selectedPlan);
+    saveSignupPlan(selectedPlan);
     try {
       await signup({
         clinicName: values.clinicName,

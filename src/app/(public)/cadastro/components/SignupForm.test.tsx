@@ -30,7 +30,7 @@ async function fillForm(confirmation = "secret123") {
 describe("SignupForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    sessionStorage.clear();
+    localStorage.clear();
     searchParamsMock.mockReturnValue(new URLSearchParams());
   });
 
@@ -71,7 +71,7 @@ describe("SignupForm", () => {
     );
     expect(await screen.findByText("Confira seu e-mail")).toBeInTheDocument();
     expect(screen.getByText(/Você escolheu o Premium anual/)).toBeInTheDocument();
-    expect(JSON.parse(sessionStorage.getItem("cliniq:signup-plan") ?? "null")).toEqual({
+    expect(JSON.parse(localStorage.getItem("cliniq:signup-plan") ?? "null")).toEqual({
       plan: "Premium",
       cycle: "Annual",
     });

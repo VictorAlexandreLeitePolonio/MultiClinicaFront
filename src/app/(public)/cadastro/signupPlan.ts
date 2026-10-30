@@ -5,6 +5,7 @@ export interface SignupPlanSelection {
   cycle: BillingCycle;
 }
 
+// localStorage (não sessionStorage): o link de confirmação do e-mail abre numa aba nova.
 export const SIGNUP_PLAN_KEY = "cliniq:signup-plan";
 
 export function parseSignupPlan(plan: string | null, cycle: string | null): SignupPlanSelection | null {
@@ -13,17 +14,19 @@ export function parseSignupPlan(plan: string | null, cycle: string | null): Sign
   return { plan, cycle };
 }
 
-export function saveSignupPlan(selection: SignupPlanSelection) {
+// Sem plano (cadastro Free) limpa a chave, para um plano de cadastro anterior não ser reaproveitado.
+export function saveSignupPlan(selection: SignupPlanSelection | null) {
   try {
-    sessionStorage.setItem(SIGNUP_PLAN_KEY, JSON.stringify(selection));
+    if (selection) localStorage.setItem(SIGNUP_PLAN_KEY, JSON.stringify(selection));
+    else localStorage.removeItem(SIGNUP_PLAN_KEY);
   } catch {
-    // sessionStorage indisponível: o cadastro segue sem lembrar o plano escolhido.
+    // localStorage indisponível: o cadastro segue sem lembrar o plano escolhido.
   }
 }
 
 export function readSignupPlan(): SignupPlanSelection | null {
   try {
-    const raw = sessionStorage.getItem(SIGNUP_PLAN_KEY);
+    const raw = localStorage.getItem(SIGNUP_PLAN_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<SignupPlanSelection>;
     return parseSignupPlan(parsed.plan ?? null, parsed.cycle ?? null);

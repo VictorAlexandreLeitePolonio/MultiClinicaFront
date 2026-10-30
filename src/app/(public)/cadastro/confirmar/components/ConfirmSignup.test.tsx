@@ -23,13 +23,13 @@ vi.mock("@/app/(public)/cadastro/services/signup.service", () => ({
 describe("ConfirmSignup", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    sessionStorage.clear();
+    localStorage.clear();
     searchParamsMock.mockReturnValue(new URLSearchParams("token=one-use"));
   });
 
   it("confirma uma única vez e monta o login com o próximo destino do plano", async () => {
     vi.mocked(confirmSignup).mockResolvedValue({ email: "ana@clinica.test" });
-    sessionStorage.setItem(
+    localStorage.setItem(
       "cliniq:signup-plan",
       JSON.stringify({ plan: "Premium", cycle: "Annual" }),
     );
