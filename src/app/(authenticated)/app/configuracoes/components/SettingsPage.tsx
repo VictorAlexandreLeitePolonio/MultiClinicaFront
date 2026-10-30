@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -84,7 +85,19 @@ export function SettingsPage() {
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-8">
-      <PageHeader title="Configurações" />
+      <PageHeader
+        title="Configurações"
+        actions={
+          user?.role === "Administrador" ? (
+            <Link
+              href="/app/configuracoes/plano"
+              className="rounded-lg border border-[#99f6e4] bg-white px-4 py-2 text-sm font-semibold text-[#0f766e] shadow-sm transition-colors hover:border-[#14b8a6] hover:bg-[#ecfdf5] dark:border-slate-700 dark:bg-slate-900 dark:text-[#67e8f9] dark:hover:bg-slate-800"
+            >
+              Plano e assinatura
+            </Link>
+          ) : undefined
+        }
+      />
       <p className="text-sm text-slate-600 dark:text-slate-300">
         Comece pela disponibilidade para receber solicitações. Cada seção tem seu próprio salvamento;
         alterações em horários públicos e mídia são salvas ao adicionar ou remover um item.
