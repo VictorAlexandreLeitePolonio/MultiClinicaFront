@@ -13,6 +13,7 @@ import { usePagamentosPaginated, PagamentoFilters } from "../hooks/pagined";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Pagination } from "@/components/ui/Pagination";
 import { usePagamentoDelete } from "../hooks/delete";
+import { PagamentoOnlineCell } from "./PagamentoOnlineCell";
 import { Payment, Patient } from "@/types";
 import { formatCivilDate, formatCurrency, todayCivilDate } from "@/utils/formatters";
 import { toast } from "sonner";
@@ -181,6 +182,11 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
       key: "paidAt",
       label: "Data Pagamento",
       render: (p) => formatCivilDate(p.paidAt),
+    },
+    {
+      key: "online",
+      label: "Cobrança online",
+      render: (p) => <PagamentoOnlineCell payment={p} onChanged={() => void refetch()} />,
     },
     {
       key: "actions",
