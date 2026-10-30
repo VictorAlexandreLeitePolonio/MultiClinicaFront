@@ -16,7 +16,7 @@ import { ClinicBusinessHoursSection } from "./ClinicBusinessHoursSection";
 import { ClinicMediaSection } from "./ClinicMediaSection";
 import { useClinicSettings, useUpdateClinicSettings } from "../hooks/useClinicSettings";
 import { AvailabilitySettingsSection } from "./AvailabilitySettingsSection";
-import { TelegramLinkSection } from "./TelegramLinkSection";
+import { WhatsAppLinkSection } from "./WhatsAppLinkSection";
 
 export function SettingsPage() {
   const router = useRouter();
@@ -103,7 +103,7 @@ export function SettingsPage() {
         alterações em horários públicos e mídia são salvas ao adicionar ou remover um item.
       </p>
       <AvailabilitySettingsSection canEdit={canEdit} />
-      {user?.role === "Administrador" && <TelegramLinkSection />}
+      {user?.role === "Administrador" && <WhatsAppLinkSection />}
       <ClinicSettingsForm
         settings={settingsQuery.data}
         canEdit={canEdit}

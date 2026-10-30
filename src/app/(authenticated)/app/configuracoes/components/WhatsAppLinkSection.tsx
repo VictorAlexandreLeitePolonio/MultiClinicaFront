@@ -3,13 +3,13 @@
 import { useId } from "react";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/apiError";
-import { useCreateTelegramLink, useDeleteTelegramLink, useTelegramLinkStatus } from "../hooks/useTelegramLink";
+import { useCreateWhatsAppLink, useDeleteWhatsAppLink, useWhatsAppLinkStatus } from "../hooks/useWhatsAppLink";
 
-export function TelegramLinkSection() {
+export function WhatsAppLinkSection() {
   const titleId = useId();
-  const status = useTelegramLinkStatus();
-  const create = useCreateTelegramLink();
-  const remove = useDeleteTelegramLink();
+  const status = useWhatsAppLinkStatus();
+  const create = useCreateWhatsAppLink();
+  const remove = useDeleteWhatsAppLink();
   const connected = status.data?.connected ?? false;
 
   const handleConnect = async () => {
@@ -20,25 +20,25 @@ export function TelegramLinkSection() {
       if (tab && !tab.closed) {
         tab.opener = null;
         tab.location.href = url;
-        toast.info("Toque em Iniciar no Telegram para concluir a conexão.");
+        toast.info("Envie a mensagem que já vem escrita no WhatsApp para concluir a conexão.");
       } else {
         // Sem aba, não navega a página atual: o botão do toast abre o link com um clique do usuário.
         toast.info("Seu navegador bloqueou a nova aba.", {
-          action: { label: "Abrir Telegram", onClick: () => window.open(url, "_blank", "noopener,noreferrer") },
+          action: { label: "Abrir WhatsApp", onClick: () => window.open(url, "_blank", "noopener,noreferrer") },
         });
       }
     } catch (error) {
       tab?.close();
-      toast.error(getApiErrorMessage(error, "Não foi possível gerar o link do Telegram."));
+      toast.error(getApiErrorMessage(error, "Não foi possível gerar o link do WhatsApp."));
     }
   };
 
   const handleDisconnect = async () => {
     try {
       await remove.mutateAsync();
-      toast.success("Telegram desconectado.");
+      toast.success("WhatsApp desconectado.");
     } catch (error) {
-      toast.error(getApiErrorMessage(error, "Não foi possível desconectar o Telegram."));
+      toast.error(getApiErrorMessage(error, "Não foi possível desconectar o WhatsApp."));
     }
   };
 
@@ -49,7 +49,7 @@ export function TelegramLinkSection() {
     >
       <div>
         <h2 id={titleId} className="text-lg font-bold text-[#0f172a] dark:text-white">
-          Assistente no Telegram
+          Assistente no WhatsApp
         </h2>
         <p className="mt-1 text-sm text-[#64748b] dark:text-slate-400">
           Peça por mensagem: &quot;agenda a Cida terça às 9h&quot;, &quot;o que tenho amanhã?&quot;. O assistente opera a agenda por você.
@@ -62,7 +62,7 @@ export function TelegramLinkSection() {
         </p>
       ) : status.isError ? (
         <div className="flex flex-wrap items-center gap-3">
-          <p className="text-sm text-[#64748b] dark:text-slate-400">Não foi possível verificar a conexão com o Telegram.</p>
+          <p className="text-sm text-[#64748b] dark:text-slate-400">Não foi possível verificar a conexão com o WhatsApp.</p>
           <button
             type="button"
             onClick={() => void status.refetch()}
@@ -74,7 +74,7 @@ export function TelegramLinkSection() {
       ) : connected ? (
         <div className="flex flex-wrap items-center gap-3">
           <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-            Conectado
+            WhatsApp conectado
           </span>
           <button
             type="button"
@@ -93,7 +93,7 @@ export function TelegramLinkSection() {
             disabled={create.isPending}
             className="rounded-lg bg-[#0f766e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#115e59] disabled:opacity-50"
           >
-            Conectar Telegram
+            Conectar WhatsApp
           </button>
           <button
             type="button"

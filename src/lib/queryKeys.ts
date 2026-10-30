@@ -123,6 +123,6 @@ export const superAdminClinicSettingsKeys = {
   detail: (clinicId: number) => ["superadmin-clinic-settings", clinicId] as const,
 };
 
-export const telegramLinkKeys = {
-  status: ["telegram-link", "status"] as const,
+export const whatsAppLinkKeys = {
+  status: ["whatsapp-link", "status"] as const,
 };
