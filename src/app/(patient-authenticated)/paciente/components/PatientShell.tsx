@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import { trackModuleClick } from "@/lib/analytics";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, Calendar, ClipboardList, Building2, Store, User, LogOut, LucideIcon } from "lucide-react";
+import { Home, Calendar, ClipboardList, Building2, Store, User, LogOut, Receipt, LucideIcon } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { usePatientAuth } from "@/contexts/PatientAuthContext";
@@ -19,6 +19,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { href: "/paciente", label: "Início", icon: Home },
   { href: "/paciente/consultas", label: "Consultas", icon: Calendar },
+  { href: "/paciente/cobrancas", label: "Cobranças", icon: Receipt },
   { href: "/paciente/solicitacoes", label: "Solicitações", icon: ClipboardList },
   { href: "/paciente/clinicas", label: "Minhas clínicas", icon: Building2 },
   { href: "/paciente/marketplace", label: "Marketplace", icon: Store },
