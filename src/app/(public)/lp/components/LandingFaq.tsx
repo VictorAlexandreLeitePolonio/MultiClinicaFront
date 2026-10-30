@@ -15,6 +15,11 @@ const questions = [
     answer: "A plataforma reúne agenda, pacientes, prontuários, evolução, pagamentos, balanço e permissões.",
   },
   {
+    id: "free-plan",
+    question: "Posso começar grátis?",
+    answer: "Sim. O plano Free é gratuito para sempre e você assina um plano pago quando quiser.",
+  },
+  {
     id: "access",
     question: "Como funciona o acesso?",
     answer: "O acesso real é liberado por indicação ou contato direto. Você pode explorar a visão geral da demo sem login.",
