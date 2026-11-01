@@ -1,152 +1,163 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { motion } from "motion/react";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { DataTable, Column } from "@/components/ui/DataTable";
+import { useRouter, useSearchParams } from "next/navigation";
+import { motion, useReducedMotion } from "motion/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft, FilePlus2, Plus, User } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Column, DataTable } from "@/components/ui/DataTable";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { Tabs } from "@/components/ui/Tabs";
+import { EvolutionSheet } from "@/components/evolution/EvolutionSheet";
+import { useAuth } from "@/contexts/AuthContext";
+import { patientRecordKeys } from "@/lib/queryKeys";
+import {
+  formatCivilDate,
+  formatCurrency,
+  formatPhone,
+  todayCivilDate,
+} from "@/utils/formatters";
 import { useGetPatientProfile } from "../hooks/profile";
-import { formatCivilDate, formatDate, formatCurrency, formatCPF, formatPhone, todayCivilDate } from "@/utils/formatters";
-import { Activity, Calendar, FileText, FileAudio, CreditCard, User, Phone, MapPin } from "lucide-react";
-import { fadeSlideUp, staggerContainer } from "@/lib/motion";
-import { PatientEvolutionSection } from "./evolution/PatientEvolutionSection";
-import { PatientConsultationReports } from "./PatientConsultationReports";
 import { PatientPortalAccessSection } from "./PatientPortalAccessSection";
+import { PatientTimeline } from "./record/PatientTimeline";
+import { PatientAnamnesis } from "./record/PatientAnamnesis";
+import { PatientMeasurements } from "./record/PatientMeasurements";
+import { PatientDocuments } from "./record/PatientDocuments";
 
-type TabType = "appointments" | "medicalRecords" | "payments" | "evolution" | "reports";
-
-const TAB_KEYS: TabType[] = ["appointments", "medicalRecords", "payments", "evolution", "reports"];
-
-const parseTab = (value: string | null): TabType | null =>
-  value && TAB_KEYS.includes(value as TabType) ? (value as TabType) : null;
+type TabType = "linha-do-tempo" | "anamnese" | "medicoes" | "financeiro" | "documentos";
 
 interface Props {
   id: number;
   onBack: () => void;
 }
 
+const TAB_DEFINITIONS: { value: TabType; label: string }[] = [
+  { value: "linha-do-tempo", label: "Linha do tempo" },
+  { value: "anamnese", label: "Anamnese" },
+  { value: "medicoes", label: "Medições" },
+  { value: "financeiro", label: "Financeiro" },
+  { value: "documentos", label: "Documentos" },
+];
+
+const CLINICAL_TABS: TabType[] = ["anamnese", "medicoes", "documentos"];
+
+const isTabType = (value: string | null): value is TabType =>
+  TAB_DEFINITIONS.some((tab) => tab.value === value);
+
 const formatField = (value: string | null | undefined) => value?.trim() || "-";
 
-const formatAddress = (data: {
-  rua: string | null;
-  numero: string | null;
-  bairro: string | null;
-  cidade: string | null;
-  estado: string | null;
-}) => {
-  const line1 = [data.rua, data.numero].filter(Boolean).join(", ");
-  const line2 = [data.bairro, data.cidade].filter(Boolean).join(", ");
-  const state = data.estado ?? null;
-  const address = [line1, line2 && state ? `${line2}/${state}` : line2 || state].filter(Boolean).join(" - ");
-  return address || "-";
-};
+/** Idade em anos a partir da data civil de nascimento. */
+function ageLabel(birthDate: string | null): string | null {
+  if (!birthDate) return null;
+  const [year, month, day] = birthDate.slice(0, 10).split("-").map(Number);
+  if (!year || !month || !day) return null;
+  const today = new Date();
+  let age = today.getFullYear() - year;
+  const birthdayThisYear = today.getMonth() + 1 > month
+    || (today.getMonth() + 1 === month && today.getDate() >= day);
+  if (!birthdayThisYear) age -= 1;
+  return age >= 0 ? `${age} ${age === 1 ? "ano" : "anos"}` : null;
+}
 
 export default function PacienteProfile({ id, onBack }: Props) {
-  const { data, loading, refetch } = useGetPatientProfile(id);
+  const { data, loading, error, refetch } = useGetPatientProfile(id);
   const searchParams = useSearchParams();
-  const tabParam = parseTab(searchParams.get("tab"));
-  const [activeTab, setActiveTab] = useState<TabType>(tabParam ?? "appointments");
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const reducedMotion = useReducedMotion();
+  const { user } = useAuth();
+  const canClinical = user?.role === "Administrador" || user?.role === "Profissional";
+  const [newAnamnesisOpen, setNewAnamnesisOpen] = useState(false);
+  const [focusAnamnesisId, setFocusAnamnesisId] = useState<number | null>(null);
+  const [sheet, setSheet] = useState<{ open: boolean; evolutionId: number | null }>({
+    open: false,
+    evolutionId: null,
+  });
+  const tabParam = searchParams.get("aba");
+  const requestedTab = isTabType(tabParam) ? tabParam : "linha-do-tempo";
+  // Recepção nunca vê conteúdo clínico, mesmo com aba na URL.
+  const activeTab =
+    canClinical || !CLINICAL_TABS.includes(requestedTab) ? requestedTab : "linha-do-tempo";
+
+  const navigateTab = (value: TabType) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("mode", "profile");
+    params.set("id", String(id));
+    params.set("aba", value);
+    router.replace(`/app/pacientes?${params.toString()}`);
+  };
+
+  const handleTabChange = (value: string) => {
+    if (!isTabType(value)) return;
+    if (value !== "anamnese") setFocusAnamnesisId(null);
+    navigateTab(value);
+  };
+
+  const handleNewAnamnesis = () => {
+    setFocusAnamnesisId(null);
+    setNewAnamnesisOpen(true);
+    navigateTab("anamnese");
+  };
+
+  const handleOpenAnamnesis = (recordId: number) => {
+    setFocusAnamnesisId(recordId);
+    setNewAnamnesisOpen(false);
+    navigateTab("anamnese");
+  };
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Perfil do Paciente" onBack={onBack} />
-        <p className="text-gray-600 dark:text-slate-300 py-8 text-center">Carregando...</p>
+      <div className="space-y-4">
+        <Skeleton className="h-28" />
+        <Skeleton className="h-10" />
+        <Skeleton className="h-64" />
       </div>
     );
   }
 
-  if (!data) {
+  if (error || !data) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Perfil do Paciente" onBack={onBack} />
-        <p className="text-red-500 py-8 text-center">Erro ao carregar perfil do paciente.</p>
-      </div>
+      <ErrorState
+        message={error ?? "Não foi possível carregar o prontuário do paciente."}
+        onRetry={() => void refetch()}
+      />
     );
   }
-
-  const appointmentColumns: Column<typeof data.appointments[0]>[] = [
-    {
-      key: "appointmentDate",
-      label: "Data",
-      render: (a) => formatDate(a.appointmentDate),
-    },
-    {
-      key: "time",
-      label: "Horário",
-      render: (a) => {
-        const date = new Date(a.appointmentDate);
-        return date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-      },
-    },
-    {
-      key: "status",
-      label: "Status",
-      render: (a) => {
-        const styles = {
-          Scheduled: "bg-blue-100 text-blue-700 border-blue-200",
-          Completed: "bg-green-100 text-green-700 border-green-200",
-          Cancelled: "bg-red-100 text-red-700 border-red-200",
-        };
-        const labels = {
-          Scheduled: "Agendado",
-          Completed: "Completo",
-          Cancelled: "Cancelado",
-        };
-        return (
-          <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${styles[a.status]}`}>
-            {labels[a.status]}
-          </span>
-        );
-      },
-    },
-    { key: "userName", label: "Profissional" },
-  ];
-
-  const medicalRecordColumns: Column<typeof data.medicalRecords[0]>[] = [
-    { key: "titulo", label: "Título" },
-    { key: "sessao", label: "Sessão" },
-    { key: "patologia", label: "Patologia" },
-    {
-      key: "createdAt",
-      label: "Data",
-      render: (m) => formatDate(m.createdAt),
-    },
-    { key: "userName", label: "Profissional" },
-  ];
 
   const paymentColumns: Column<typeof data.payments[0]>[] = [
     {
       key: "referenceMonth",
       label: "Mês Ref.",
-      render: (p) => formatCivilDate(p.referenceMonth),
+      render: (payment) => formatCivilDate(payment.referenceMonth),
     },
     { key: "planName", label: "Plano" },
     {
       key: "amount",
       label: "Valor",
-      render: (p) => formatCurrency(p.amount),
+      render: (payment) => formatCurrency(payment.amount),
     },
     { key: "paymentMethod", label: "Método" },
     {
       key: "paymentDate",
       label: "Vencimento",
-      render: (p) => {
-        if (!p.paymentDate) return "-";
-        if (p.paymentDate < todayCivilDate() && p.status === "Pending") {
+      render: (payment) => {
+        if (!payment.paymentDate) return "-";
+        if (payment.paymentDate < todayCivilDate() && payment.status === "Pending") {
           return (
-            <span className="px-2 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-700 border-red-200">
+            <span className="rounded-full border border-red-200 bg-red-100 px-2 py-1 text-xs font-semibold text-red-700">
               Vencido
             </span>
           );
         }
-        return formatCivilDate(p.paymentDate);
+        return formatCivilDate(payment.paymentDate);
       },
     },
     {
       key: "status",
       label: "Status",
-      render: (p) => {
+      render: (payment) => {
         const styles = {
           Pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
           Paid: "bg-primary-dark text-white border-primary-dark",
@@ -158,8 +169,8 @@ export default function PacienteProfile({ id, onBack }: Props) {
           Cancelled: "Cancelado",
         };
         return (
-          <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${styles[p.status]}`}>
-            {labels[p.status]}
+          <span className={`rounded-full border px-2 py-1 text-xs font-semibold ${styles[payment.status]}`}>
+            {labels[payment.status]}
           </span>
         );
       },
@@ -167,160 +178,120 @@ export default function PacienteProfile({ id, onBack }: Props) {
     {
       key: "paidAt",
       label: "Pago em",
-      render: (p) => formatCivilDate(p.paidAt),
+      render: (payment) => formatCivilDate(payment.paidAt),
     },
   ];
 
-  const tabs = [
-    { key: "appointments" as TabType, label: "Consultas", icon: Calendar, count: data.appointments.length },
-    { key: "medicalRecords" as TabType, label: "Prontuários", icon: FileText, count: data.medicalRecords.length },
-    { key: "payments" as TabType, label: "Pagamentos", icon: CreditCard, count: data.payments.length },
-    { key: "evolution" as TabType, label: "Evolução", icon: Activity, count: null },
-    { key: "reports" as TabType, label: "Relatórios", icon: FileAudio, count: null },
-  ];
+  const visibleTabs = TAB_DEFINITIONS.filter(
+    (tab) => canClinical || !CLINICAL_TABS.includes(tab.value),
+  );
+  const age = ageLabel(data.birthDate);
+  const contact = data.phone ? formatPhone(data.phone) : data.email ?? "Sem contato";
 
   return (
-    <motion.div
-      variants={staggerContainer}
-      initial="hidden"
-      animate="show"
-      className="space-y-6"
-    >
-      <motion.div variants={fadeSlideUp}>
-        <PageHeader title={`Perfil: ${formatField(data.name)}`} onBack={onBack} />
-      </motion.div>
-
-      {/* Header Card */}
-      <motion.div
-        variants={fadeSlideUp}
-        className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)]"
-      >
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-primary-dark flex items-center justify-center text-white">
-              <User size={32} />
+    <div className="space-y-6">
+      <header className="rounded-2xl border border-[#d7f3ea] bg-white p-5 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 items-start gap-3">
+            <button
+              type="button"
+              onClick={onBack}
+              aria-label="Voltar"
+              className="mt-0.5 rounded-xl border border-transparent p-2 text-[#475569] transition-colors hover:border-[#d7f3ea] hover:bg-[#ecfdf5] hover:text-[#0f766e] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#99f6e4] dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#ecfdf5] text-[#0f766e] dark:bg-slate-800 dark:text-[#67e8f9]">
+              <User size={22} aria-hidden="true" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold text-secondary dark:text-white">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="truncate text-xl font-bold tracking-tight text-[#0f172a] dark:text-white">
                   {formatField(data.name)}
-                </h2>
+                </h1>
                 <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${
+                  className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${
                     data.isActive
-                      ? "bg-primary-dark text-white border-primary-dark"
-                      : "bg-red-100 text-red-700 border-red-200"
+                      ? "border-[#14b8a6] bg-[#14b8a6] text-white"
+                      : "border-red-200 bg-red-100 text-red-700"
                   }`}
                 >
                   {data.isActive ? "Ativo" : "Inativo"}
                 </span>
               </div>
-              <div className="flex items-center gap-4 mt-2 text-sm text-gray-600 dark:text-slate-300">
-                <span className="flex items-center gap-1">
-                  <Phone size={14} />
-                  {data.phone ? formatPhone(data.phone) : "-"}
-                </span>
-                <span>|</span>
-                <span>CPF: {data.cpf ? formatCPF(data.cpf) : "-"}</span>
-              </div>
-              <div className="flex items-center gap-1 mt-1 text-sm text-gray-600 dark:text-slate-300">
-                <MapPin size={14} />
-                {formatAddress(data)}
-              </div>
-              <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">
-                Data de nascimento: {formatCivilDate(data.birthDate, "Não informado")}
+              <p className="mt-1 text-sm text-[#475569] dark:text-slate-300">
+                {contact}
+                {age ? ` · ${age}` : ""}
               </p>
             </div>
           </div>
-          <div className="text-right text-sm text-gray-600 dark:text-slate-300">
-            <p>Cadastrado em: {formatDate(data.createdAt)}</p>
-            <p className="mt-1">{formatField(data.email)}</p>
-          </div>
-        </div>
-      </motion.div>
 
-      {/* Acesso ao portal */}
-      <motion.div variants={fadeSlideUp}>
-        <PatientPortalAccessSection
-          patientId={id}
-          status={data.portalAccessStatus}
-          onChanged={refetch}
-        />
-      </motion.div>
-
-      {/* Tabs */}
-      <motion.div variants={fadeSlideUp} className="border-b border-gray-200 dark:border-slate-800">
-        <div className="flex gap-1">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.key;
-            return (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold uppercase tracking-wider transition-all
-                  ${
-                    isActive
-                      ? "bg-primary-dark text-white border border-primary-dark"
-                      : "bg-white dark:bg-slate-900 text-gray-600 dark:text-slate-300 border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
-                  }`}
+          {canClinical && (
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button fullWidth={false} variant="outline" onClick={handleNewAnamnesis}>
+                <FilePlus2 size={16} />
+                Nova anamnese
+              </Button>
+              <Button
+                fullWidth={false}
+                onClick={() => setSheet({ open: true, evolutionId: null })}
               >
-                <Icon size={16} />
-                {tab.label}
-                {tab.count !== null && (
-                  <span
-                    className={`ml-1 px-1.5 py-0.5 rounded-full text-xs ${
-                      isActive ? "bg-white/20" : "bg-gray-50 dark:bg-slate-800"
-                    }`}
-                  >
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+                <Plus size={16} />
+                Nova evolução
+              </Button>
+            </div>
+          )}
         </div>
-      </motion.div>
+      </header>
 
-      {/* Tab Content */}
-      <motion.div
-        variants={fadeSlideUp}
-        key={activeTab}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
-      >
-        {activeTab === "appointments" && (
-          <DataTable
-            columns={appointmentColumns}
-            data={data.appointments}
-            keyExtractor={(a) => a.id}
-            emptyMessage="Nenhuma consulta encontrada."
-          />
-        )}
-        {activeTab === "medicalRecords" && (
-          <DataTable
-            columns={medicalRecordColumns}
-            data={data.medicalRecords}
-            keyExtractor={(m) => m.id}
-            emptyMessage="Nenhum prontuário encontrado."
-          />
-        )}
-        {activeTab === "payments" && (
-          <DataTable
-            columns={paymentColumns}
-            data={data.payments}
-            keyExtractor={(p) => p.id}
-            emptyMessage="Nenhum pagamento encontrado."
-          />
-        )}
-        {activeTab === "evolution" && (
-          <PatientEvolutionSection patientId={id} />
-        )}
-        {activeTab === "reports" && (
-          <PatientConsultationReports patientId={id} />
-        )}
-      </motion.div>
-    </motion.div>
+      <PatientPortalAccessSection patientId={id} status={data.portalAccessStatus} onChanged={refetch} />
+
+      <Tabs tabs={visibleTabs} value={activeTab} onChange={handleTabChange}>
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: reducedMotion ? 0 : 0.15, ease: [0.23, 1, 0.32, 1] }}
+        >
+          {activeTab === "linha-do-tempo" && (
+            <PatientTimeline
+              patientId={id}
+              onOpenEvolution={(evolutionId) => setSheet({ open: true, evolutionId })}
+              onOpenAnamnesis={handleOpenAnamnesis}
+            />
+          )}
+          {activeTab === "anamnese" && (
+            <PatientAnamnesis
+              key={`anamnese-${focusAnamnesisId ?? "latest"}`}
+              patientId={id}
+              creating={newAnamnesisOpen}
+              onCreatingChange={setNewAnamnesisOpen}
+              focusRecordId={focusAnamnesisId}
+            />
+          )}
+          {activeTab === "medicoes" && <PatientMeasurements patientId={id} />}
+          {activeTab === "financeiro" && (
+            <DataTable
+              columns={paymentColumns}
+              data={data.payments}
+              keyExtractor={(payment) => payment.id}
+              emptyMessage="Nenhum pagamento encontrado."
+            />
+          )}
+          {activeTab === "documentos" && <PatientDocuments patientId={id} />}
+        </motion.div>
+      </Tabs>
+
+      <EvolutionSheet
+        patientId={id}
+        evolutionId={sheet.evolutionId}
+        open={sheet.open}
+        onOpenChange={(open) => setSheet((current) => ({ ...current, open }))}
+        onSaved={() => {
+          void queryClient.invalidateQueries({ queryKey: patientRecordKeys.all(id) });
+          setSheet({ open: false, evolutionId: null });
+        }}
+      />
+    </div>
   );
 }

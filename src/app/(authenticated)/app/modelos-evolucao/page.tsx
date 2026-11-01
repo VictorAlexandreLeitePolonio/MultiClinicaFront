@@ -27,7 +27,7 @@ function EvolutionTemplatesPage() {
   const goTo = (nextMode: ViewMode, nextId?: number) => {
     const params = new URLSearchParams({ mode: nextMode });
     if (nextId) params.set("id", String(nextId));
-    router.push(`/app/modelos-evolucao?${params.toString()}`);
+    router.push(`/app/fichas?${params.toString()}`);
   };
 
   const handleCreate = async (data: EvolutionTemplateFormData) => {
@@ -38,10 +38,10 @@ function EvolutionTemplatesPage() {
         category: data.category || null,
         isDefault: data.isDefault,
       });
-      toast.success("Modelo criado com sucesso.");
+      toast.success("Ficha de medição criada com sucesso.");
       goTo("view", template.id);
     } catch (error) {
-      toast.error(getApiErrorMessage(error, "Erro ao criar modelo."));
+      toast.error(getApiErrorMessage(error, "Erro ao criar ficha de medição."));
     }
   };
 
@@ -56,16 +56,16 @@ function EvolutionTemplatesPage() {
 
         {mode === "create" && canEdit && (
           <motion.div key="create" className="max-w-2xl space-y-6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-            <PageHeader title="Novo modelo de evolução" onBack={() => goTo("list")} />
+            <PageHeader title="Nova ficha de medição" onBack={() => goTo("list")} />
             <EvolutionTemplateForm loading={createTemplate.isPending} onSubmit={handleCreate} />
           </motion.div>
         )}
 
         {mode === "create" && !canEdit && (
           <motion.div key="forbidden" className="space-y-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <PageHeader title="Novo modelo de evolução" onBack={() => goTo("list")} />
+            <PageHeader title="Nova ficha de medição" onBack={() => goTo("list")} />
             <p className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-              Seu perfil pode visualizar modelos ativos, mas não pode criar ou editar modelos.
+              Seu perfil pode visualizar fichas ativas, mas não pode criar ou editar fichas de medição.
             </p>
           </motion.div>
         )}

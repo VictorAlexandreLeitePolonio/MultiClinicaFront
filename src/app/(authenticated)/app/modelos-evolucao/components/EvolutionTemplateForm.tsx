@@ -62,7 +62,7 @@ export function EvolutionTemplateForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <FormSection title="Dados do modelo" columns={1}>
+      <FormSection title="Dados da ficha de medição" columns={1}>
         <FormField
           label="Nome"
           id="template-name"
@@ -100,13 +100,13 @@ export function EvolutionTemplateForm({
             onChange={(event) => setValue("isDefault", event.target.checked, { shouldValidate: true })}
             className="h-4 w-4 accent-[#14b8a6]"
           />
-          Modelo padrão
+          Ficha padrão
         </label>
       </FormSection>
 
       {!readOnly && (
         <Button type="submit" loading={loading}>
-          {template ? "Salvar modelo" : "Criar modelo"}
+          {template ? "Salvar ficha" : "Criar ficha"}
         </Button>
       )}
     </form>
