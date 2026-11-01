@@ -24,6 +24,7 @@ import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patien
 import { getAppointmentProfessionals } from "../services/appointments.service";
 import { StartConsultationButton } from "./consultation/StartConsultationButton";
 import { ConsultationTab } from "./consultation/ConsultationTab";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
   id: number;
@@ -62,6 +63,7 @@ const isoToDateTimeLocal = (isoDate?: string, timeZoneId = "America/Sao_Paulo"):
 };
 
 export default function AgendaDetails({ id, onBack, onSave }: Props) {
+  const { user } = useAuth();
   const { data, loading, error, refetch } = useAgendaById(id);
   const { updateAgenda, isPending } = useAgendaUpdate();
   const [isEditing, setIsEditing] = useState(false);
@@ -170,6 +172,9 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
     (professional) => professional.id === data?.professionalId,
   )?.name;
 
+  // Recepção não tem acesso ao relatório clínico.
+  const canSeeClinical = user?.role === "Administrador" || user?.role === "Profissional";
+
   if (loading) {
     return (
       <div className="space-y-6 max-w-6xl">
@@ -249,14 +254,15 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
                 </div>
               </FormSection>
             </form>
-          ) : data?.consultationStatus ? (
+          ) : data?.consultationStatus && canSeeClinical ? (
             <ConsultationTab appointment={data} onChanged={refetch} />
           ) : (
             <section className="rounded-2xl border border-dashed border-[#a7f3d0] bg-white/80 p-6 dark:border-slate-700 dark:bg-slate-900/80">
               <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Consulta</h2>
               <p className="mt-2 text-sm text-[#475569] dark:text-slate-300">
-                Nenhuma consulta gravada. Inicie a gravação para gerar o relatório e as
-                evoluções desta sessão.
+                {data?.consultationStatus
+                  ? "Consulta gravada. O relatório fica disponível para os profissionais."
+                  : "Nenhuma consulta gravada. Inicie a gravação para gerar o relatório e as evoluções desta sessão."}
               </p>
             </section>
           )}
@@ -316,39 +322,41 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
             </dl>
           </section>
 
-          <section className="space-y-3 rounded-2xl border border-[#d7f3ea] bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-            <h2 className="text-sm font-bold text-[#0f172a] dark:text-white">Ações</h2>
-            {isEditing ? (
-              <div className="flex flex-col items-start gap-2">
-                <Button fullWidth={false} variant="outline" onClick={handleCancelEdit}>
-                  <X size={16} />
-                  Cancelar
-                </Button>
-                <Button
-                  fullWidth={false}
-                  onClick={handleSubmit(onSubmit)}
-                  loading={isPending}
-                >
-                  <Save size={16} />
-                  Salvar Alterações
-                </Button>
-              </div>
-            ) : (
-              <div className="flex flex-col items-start gap-2">
-                {data && <StartConsultationButton appointment={data} onChanged={refetch} />}
-                {data && !data.consultationStatus && (
+          {(isEditing || (data && !data.consultationStatus)) && (
+            <section className="space-y-3 rounded-2xl border border-[#d7f3ea] bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+              <h2 className="text-sm font-bold text-[#0f172a] dark:text-white">Ações</h2>
+              {isEditing ? (
+                <div className="flex flex-col items-start gap-2">
+                  <Button fullWidth={false} variant="outline" onClick={handleCancelEdit}>
+                    <X size={16} />
+                    Cancelar
+                  </Button>
                   <Button
                     fullWidth={false}
-                    variant="outline"
-                    onClick={() => setIsEditing(true)}
+                    onClick={handleSubmit(onSubmit)}
+                    loading={isPending}
                   >
-                    <Edit3 size={16} />
-                    Editar
+                    <Save size={16} />
+                    Salvar Alterações
                   </Button>
-                )}
-              </div>
-            )}
-          </section>
+                </div>
+              ) : (
+                <div className="flex flex-col items-start gap-2">
+                  {data && <StartConsultationButton appointment={data} onChanged={refetch} />}
+                  {data && !data.consultationStatus && (
+                    <Button
+                      fullWidth={false}
+                      variant="outline"
+                      onClick={() => setIsEditing(true)}
+                    >
+                      <Edit3 size={16} />
+                      Editar
+                    </Button>
+                  )}
+                </div>
+              )}
+            </section>
+          )}
         </aside>
       </div>
     </div>

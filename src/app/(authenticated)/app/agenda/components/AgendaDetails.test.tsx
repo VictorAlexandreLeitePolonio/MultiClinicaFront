@@ -10,11 +10,17 @@ const patientsService = vi.hoisted(() => ({ getPatients: vi.fn() }));
 const appointmentsService = vi.hoisted(() => ({
   getAppointmentProfessionals: vi.fn(),
 }));
+const authState = vi.hoisted(() => ({
+  role: "Administrador" as "SuperAdmin" | "Administrador" | "Profissional" | "Recepcao",
+}));
 
 vi.mock("../hooks/getId", () => agendaHook);
 vi.mock("../hooks/update", () => updateHook);
 vi.mock("@/app/(authenticated)/app/pacientes/services/patients.service", () => patientsService);
 vi.mock("../services/appointments.service", () => appointmentsService);
+vi.mock("@/contexts/AuthContext", () => ({
+  useAuth: () => ({ user: { id: 1, role: authState.role } }),
+}));
 vi.mock("./consultation/ConsultationTab", () => ({
   ConsultationTab: () => <div>Consulta da sessão</div>,
 }));
@@ -53,6 +59,7 @@ function renderDetails(data: Appointment = appointment) {
 beforeEach(() => {
   agendaHook.useAgendaById.mockReset();
   updateHook.useAgendaUpdate.mockReset();
+  authState.role = "Administrador";
   patientsService.getPatients.mockReset().mockResolvedValue({
     data: [{ id: 3, name: "Ana Silva" }],
     page: 1,
@@ -81,6 +88,25 @@ test("não mostra Editar quando a consulta já foi gravada", () => {
   renderDetails({ ...appointment, consultationStatus: "Ready" });
 
   expect(screen.queryByRole("button", { name: "Editar" })).not.toBeInTheDocument();
+});
+
+test("não mostra a seção Ações quando a consulta já foi gravada", () => {
+  renderDetails({ ...appointment, consultationStatus: "Ready" });
+
+  expect(screen.queryByRole("heading", { name: "Ações" })).not.toBeInTheDocument();
+});
+
+test("Recepção vê o aviso no lugar da consulta gravada", () => {
+  authState.role = "Recepcao";
+  renderDetails({ ...appointment, consultationStatus: "Ready" });
+
+  expect(
+    screen.getByText(
+      "Consulta gravada. O relatório fica disponível para os profissionais.",
+    ),
+  ).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Consulta" })).toBeInTheDocument();
+  expect(screen.queryByText("Consulta da sessão")).not.toBeInTheDocument();
 });
 
 test("mostra Editar quando ainda não há consulta", () => {
