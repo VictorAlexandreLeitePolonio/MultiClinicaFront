@@ -8,7 +8,7 @@ import { DeleteConfirmDialog } from "@/components/ui/DeleteConfirmDialog";
 import { FilterPopover, FilterOption, FilterValues } from "@/components/ui/FilterPopover";
 import { Button } from "@/components/ui/Button";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
-import { Eye, CheckCircle, XCircle, Trash2, List, CalendarDays } from "lucide-react";
+import { Eye, CheckCircle, XCircle, Trash2, List, CalendarDays, Mic } from "lucide-react";
 import { useAgendaPaginated, AgendaFilters } from "../hooks/pagined";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Pagination } from "@/components/ui/Pagination";
@@ -16,6 +16,14 @@ import { useAgendaDelete } from "../hooks/delete";
 import { toast } from "sonner";
 import { useAgendaChangeStatus } from "../hooks/changeStatus";
 import { Appointment } from "@/types";
+import { useAuth } from "@/contexts/AuthContext";
+import { useConsultationRecorder } from "@/components/consultation/ConsultationRecorderProvider";
+import { ConsultationStatusIcon } from "@/components/consultation/ConsultationStatusIcon";
+import { ConsentDialog } from "@/components/consultation/ConsentDialog";
+import {
+  canStartConsultation,
+  useStartConsultation,
+} from "./consultation/StartConsultationButton";
 
 interface Props {
   onCreate: () => void;
@@ -46,6 +54,15 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
     clearFilters,
     refetch,
   } = useAgendaPaginated();
+  const { user } = useAuth();
+  const { active: activeConsultation } = useConsultationRecorder();
+  const {
+    target: startTarget,
+    starting: startingConsultation,
+    open: openStartConsultation,
+    close: closeStartConsultation,
+    confirm: confirmStartConsultation,
+  } = useStartConsultation(refetch);
   const { deleteAgenda, isPending: deleting } = useAgendaDelete();
   const { changeStatus, loading: changingStatus } = useAgendaChangeStatus();
 
@@ -136,14 +153,20 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
       key: "status",
       label: "Status",
       render: (a) => (
-        <StatusBadge
-          status={a.status}
-          mapping={{
-            Scheduled: { label: "Agendado", className: "bg-blue-100 text-blue-700 border-blue-200" },
-            Completed: { label: "Completo", className: "bg-green-100 text-green-700 border-green-200" },
-            Cancelled: { label: "Cancelado", className: "bg-red-100 text-red-700 border-red-200" },
-          }}
-        />
+        <div className="flex items-center gap-2">
+          <StatusBadge
+            status={a.status}
+            mapping={{
+              Scheduled: { label: "Agendado", className: "bg-blue-100 text-blue-700 border-blue-200" },
+              Completed: { label: "Completo", className: "bg-green-100 text-green-700 border-green-200" },
+              Cancelled: { label: "Cancelado", className: "bg-red-100 text-red-700 border-red-200" },
+            }}
+          />
+          <ConsultationStatusIcon
+            status={a.consultationStatus}
+            reviewed={a.consultationReviewed}
+          />
+        </div>
       ),
     },
     {
@@ -153,6 +176,16 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
       render: (a) => (
         <ActionsDropdown
           actions={[
+            ...(canStartConsultation(a, user?.role) &&
+            activeConsultation?.appointmentId !== a.id
+              ? [
+                  {
+                    label: "Iniciar consulta",
+                    onClick: () => openStartConsultation(a),
+                    icon: <Mic size={14} />,
+                  },
+                ]
+              : []),
             {
               label: "Detalhes",
               onClick: () => onViewDetails(a.id),
@@ -313,6 +346,13 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
               </div>
             </div>
           )}
+
+          <ConsentDialog
+            open={Boolean(startTarget)}
+            loading={startingConsultation}
+            onCancel={closeStartConsultation}
+            onConfirm={() => void confirmStartConsultation()}
+          />
         </>
       )}
     </div>
