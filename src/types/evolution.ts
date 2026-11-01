@@ -29,7 +29,6 @@ export type EvolutionFieldUnit =
   | "Score";
 
 export type EvolutionDirection = "Neutral" | "Increase" | "Decrease";
-export type TreatmentStatus = "Active" | "Paused" | "Completed" | "Canceled";
 export type EvolutionStatus = "Draft" | "Completed" | "Canceled";
 
 export interface EvolutionTemplate {
@@ -96,36 +95,6 @@ export interface EvolutionTemplateFieldUpdatePayload extends Partial<EvolutionTe
   isActive?: boolean;
 }
 
-export interface PatientTreatment {
-  id: number;
-  patientId: number;
-  professionalId: number | null;
-  templateId: number;
-  title: string;
-  description: string | null;
-  startedAt: string;
-  endedAt: string | null;
-  status: TreatmentStatus;
-  createdAt: string;
-}
-
-export interface PatientTreatmentPayload {
-  templateId: number;
-  professionalId?: number | null;
-  title: string;
-  description?: string | null;
-  startedAt?: string | null;
-}
-
-export interface PatientTreatmentUpdatePayload {
-  professionalId?: number | null;
-  title?: string;
-  description?: string | null;
-  startedAt?: string | null;
-  endedAt?: string | null;
-  status?: TreatmentStatus;
-}
-
 export interface PatientEvolutionValue {
   fieldId: number;
   valueNumber: number | null;
@@ -137,8 +106,6 @@ export interface PatientEvolutionValue {
 export interface PatientEvolution {
   id: number;
   patientId: number;
-  /** @deprecated some com as telas antigas de acompanhamento (Trilha F1). */
-  treatmentId?: number;
   /** Consulta de origem; uma consulta pode ter várias evoluções. */
   appointmentId: number | null;
   /** Fichas medidas nesta evolução. */
@@ -169,22 +136,6 @@ export interface PatientEvolutionPayload {
 
 export interface PatientEvolutionUpdatePayload extends Partial<Omit<PatientEvolutionPayload, "values">> {
   values?: PatientEvolutionValue[];
-}
-
-export interface TreatmentProgressResponse {
-  treatment: {
-    id: number;
-    title: string;
-  };
-  summary: {
-    totalEvolutions: number;
-    overallProgress: number | null;
-    improvingFields: number;
-    worseningFields: number;
-    stableFields: number;
-    lastEvolutionDate: string | null;
-  };
-  charts: TreatmentProgressChart[];
 }
 
 export interface TreatmentProgressChart {

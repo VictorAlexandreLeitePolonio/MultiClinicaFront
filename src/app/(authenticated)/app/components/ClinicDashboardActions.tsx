@@ -40,9 +40,9 @@ const dashboardActions: DashboardAction[] = [
     roles: ["Administrador", "Profissional", "Recepcao"],
   },
   {
-    href: "/app/prontuarios",
-    title: "Prontuários",
-    description: "Registrar evolução, exames e informações clínicas.",
+    href: "/app/fichas",
+    title: "Fichas de medição",
+    description: "Definir o que é medido nas evoluções (dor, amplitude, força).",
     icon: FileText,
     roles: ["Administrador", "Profissional"],
   },
