@@ -16,6 +16,8 @@ import { getApiErrorMessage } from "@/utils/apiError";
 import { clinicDateTimeToIso } from "../services/clinicDateTime";
 import { Eye, Edit3, Save, X } from "lucide-react";
 import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patients.service";
+import { StartConsultationButton } from "./consultation/StartConsultationButton";
+import { ConsultationTab } from "./consultation/ConsultationTab";
 
 interface Props {
   id: number;
@@ -40,7 +42,7 @@ const isoToDateTimeLocal = (isoDate?: string, timeZoneId = "America/Sao_Paulo"):
 };
 
 export default function AgendaDetails({ id, onBack, onSave }: Props) {
-  const { data, loading, error } = useAgendaById(id);
+  const { data, loading, error, refetch } = useAgendaById(id);
   const { updateAgenda, isPending } = useAgendaUpdate();
   const [isEditing, setIsEditing] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -166,10 +168,13 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
         onBack={onBack}
         actions={
           !isEditing ? (
-            <Button onClick={() => setIsEditing(true)}>
-              <Edit3 size={16} className="mr-2" />
-              Editar
-            </Button>
+            <div className="flex gap-2">
+              {data && <StartConsultationButton appointment={data} onChanged={refetch} />}
+              <Button onClick={() => setIsEditing(true)}>
+                <Edit3 size={16} className="mr-2" />
+                Editar
+              </Button>
+            </div>
           ) : (
             <div className="flex gap-2">
               <Button variant="outline" onClick={handleCancelEdit}>
@@ -304,6 +309,8 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
           )}
         </div>
       </form>
+
+      {data && <ConsultationTab appointment={data} onChanged={refetch} />}
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import type { ConsultationStatus } from "./consultation";
+
 import type { ClinicPlan } from "./plans";
 
 export interface PagedResult<T> {
@@ -420,6 +422,8 @@ export interface Appointment {
   status: "Scheduled" | "Completed" | "Cancelled";
   createdAt: string;
   timeZoneId?: string;
+  consultationStatus?: ConsultationStatus | null;
+  consultationReviewed?: boolean;
 }
 
 export interface MedicalRecord {

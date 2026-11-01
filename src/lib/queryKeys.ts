@@ -138,3 +138,9 @@ export const publicPaymentKeys = {
 export const patientChargeKeys = {
   all: ["patient-charges"] as const,
 };
+
+export const consultationKeys = {
+  detail: (appointmentId: number) => ["consultation", appointmentId] as const,
+  chargeSuggestion: (appointmentId: number) => ["consultation", appointmentId, "charge-suggestion"] as const,
+  byPatient: (patientId: number) => ["consultation", "patient", patientId] as const,
+};
