@@ -87,7 +87,7 @@ test("cria o rascunho no tratamento escolhido e abre a aba Evolução", async ()
   await userEvent.click(screen.getByRole("button", { name: "Criar rascunho" }));
 
   await waitFor(() =>
-    expect(service.createEvolutionFromConsultation).toHaveBeenCalledWith(10, 6)
+    expect(service.createEvolutionFromConsultation).toHaveBeenCalledWith(10)
   );
   expect(router.push).toHaveBeenCalledWith("/app/pacientes?mode=profile&id=3&tab=evolution");
   expect(onOpenChange).toHaveBeenCalledWith(false);

@@ -34,7 +34,7 @@ export function EvolutionFromConsultationDialog({
   const createEvolution = useMutation({
     mutationFn: () => {
       if (!treatmentId) throw new Error("Selecione um acompanhamento.");
-      return createEvolutionFromConsultation(appointmentId, treatmentId);
+      return createEvolutionFromConsultation(appointmentId);
     },
     onSuccess: async () => {
       toast.success("Rascunho de evolução criado.");

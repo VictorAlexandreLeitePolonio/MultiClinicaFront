@@ -53,6 +53,7 @@ const baseReport: ConsultationReport = {
   minutesCharged: 30,
   reviewedAt: null,
   reviewedByUserId: null,
+  evolutionIds: [],
 };
 
 function renderTab(data: Appointment = appointment) {

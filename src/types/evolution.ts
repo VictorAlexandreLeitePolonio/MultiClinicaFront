@@ -137,7 +137,12 @@ export interface PatientEvolutionValue {
 export interface PatientEvolution {
   id: number;
   patientId: number;
-  treatmentId: number;
+  /** @deprecated some com as telas antigas de acompanhamento (Trilha F1). */
+  treatmentId?: number;
+  /** Consulta de origem; uma consulta pode ter várias evoluções. */
+  appointmentId: number | null;
+  /** Fichas medidas nesta evolução. */
+  templateNames: string[];
   professionalId: number;
   serviceId: number | null;
   date: string;
@@ -151,6 +156,7 @@ export interface PatientEvolution {
 
 export interface PatientEvolutionPayload {
   professionalId?: number | null;
+  appointmentId?: number | null;
   serviceId?: number | null;
   date?: string | null;
   description?: string | null;
@@ -199,7 +205,8 @@ export interface TreatmentProgressPoint {
 }
 
 export interface EvolutionDashboardSummary {
-  activeTreatments: number;
+  /** Pacientes com evolução concluída com medição nos últimos 60 dias. */
+  patientsInFollowUp: number;
   completedEvolutionsThisMonth: number;
   patientsImproving: number;
   patientsStable: number;
@@ -216,3 +223,34 @@ export interface MostUsedEvolutionTemplate {
 
 export type EvolutionTemplatesResult = PagedResult<EvolutionTemplate>;
 export type PatientEvolutionsResult = PagedResult<PatientEvolution>;
+
+// GET /api/patients/{id}/measurements: uma série por ficha medida.
+export interface PatientMeasurementSeries {
+  templateId: number;
+  templateName: string;
+  lastDate: string;
+  evolutionCount: number;
+  fields: TreatmentProgressChart[];
+}
+
+export type PatientTimelineEventType = "appointment" | "evolution" | "anamnesis";
+
+// GET /api/patients/{id}/timeline?before=&take=
+export interface PatientTimelineEvent {
+  type: PatientTimelineEventType;
+  id: number;
+  date: string;
+  title: string;
+  professionalName: string | null;
+  status: string | null;
+  consultationStatus: string | null;
+  appointmentId: number | null;
+  evolutionCount: number;
+  templateNames: string[];
+}
+
+export interface PatientTimeline {
+  events: PatientTimelineEvent[];
+  /** Passe em ?before= para a próxima página; null quando acabou. */
+  nextBefore: string | null;
+}

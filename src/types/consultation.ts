@@ -24,6 +24,8 @@ export interface ConsultationReport {
   minutesCharged: number;
   reviewedAt: string | null;
   reviewedByUserId: number | null;
+  /** Evoluções criadas a partir desta consulta. */
+  evolutionIds: number[];
 }
 
 export interface UpdateConsultationReportPayload {

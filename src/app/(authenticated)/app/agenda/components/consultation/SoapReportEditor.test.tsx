@@ -53,6 +53,7 @@ const report: ConsultationReport = {
   minutesCharged: 30,
   reviewedAt: null,
   reviewedByUserId: null,
+  evolutionIds: [],
 };
 
 function renderEditor(data: ConsultationReport = report) {

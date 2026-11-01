@@ -52,11 +52,8 @@ export async function getChargeSuggestion(appointmentId: number): Promise<Charge
   return response.data;
 }
 
-export async function createEvolutionFromConsultation(
-  appointmentId: number,
-  treatmentId: number
-): Promise<{ evolutionId: number }> {
-  const response = await api.post<{ evolutionId: number }>(`${base(appointmentId)}/evolution`, { treatmentId });
+export async function createEvolutionFromConsultation(appointmentId: number): Promise<{ evolutionId: number }> {
+  const response = await api.post<{ evolutionId: number }>(`${base(appointmentId)}/evolution`, {});
   return response.data;
 }
 

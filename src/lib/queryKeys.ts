@@ -144,3 +144,12 @@ export const consultationKeys = {
   chargeSuggestion: (appointmentId: number) => ["consultation", appointmentId, "charge-suggestion"] as const,
   byPatient: (patientId: number) => ["consultation", "patient", patientId] as const,
 };
+
+// Prontuário do paciente: evoluções sem acompanhamento, medições e linha do tempo.
+export const patientRecordKeys = {
+  all: (patientId: number) => ["patient-record", patientId] as const,
+  evolutions: (patientId: number, params: unknown) => ["patient-record", patientId, "evolutions", params] as const,
+  evolution: (patientId: number, evolutionId: number) => ["patient-record", patientId, "evolution", evolutionId] as const,
+  measurements: (patientId: number) => ["patient-record", patientId, "measurements"] as const,
+  timeline: (patientId: number) => ["patient-record", patientId, "timeline"] as const,
+};

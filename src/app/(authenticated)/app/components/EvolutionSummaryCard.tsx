@@ -47,7 +47,7 @@ export function EvolutionSummaryCard() {
           <div className="space-y-5">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-6">
               {[
-                { label: "Tratamentos ativos", value: data.activeTreatments },
+                { label: "Em acompanhamento", value: data.patientsInFollowUp },
                 { label: "Concluídas no mês", value: data.completedEvolutionsThisMonth },
                 { label: "Melhorando", value: data.patientsImproving },
                 { label: "Estáveis", value: data.patientsStable },

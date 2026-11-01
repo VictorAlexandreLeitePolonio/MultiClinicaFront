@@ -572,8 +572,6 @@ export interface BalancePatientsSummary {
 
 export interface BalanceEvolutionSummary {
   evolutionsInPeriod: number;
-  treatmentsInProgress: number;
-  completedTreatments: number;
 }
 
 export type BalanceRecentMovementSource = "Payment" | "ManualExpense";
