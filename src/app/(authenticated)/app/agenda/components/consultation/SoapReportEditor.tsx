@@ -8,10 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { Appointment } from "@/types";
 import { ConsultationReport, UpdateConsultationReportPayload } from "@/types/consultation";
 import { consultationKeys } from "@/lib/queryKeys";
-import { formatDateTime } from "@/utils/formatters";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { updateConsultationReport, reviewConsultation } from "../../services/consultation.service";
-import { EvolutionFromConsultationDialog } from "./EvolutionFromConsultationDialog";
 
 interface Props {
   appointment: Appointment;
@@ -50,7 +48,6 @@ export function SoapReportEditor({ appointment, report, onChanged }: Props) {
   const [assessment, setAssessment] = useState(report.assessment ?? "");
   const [plan, setPlan] = useState(report.plan ?? "");
   const [reviewedAt, setReviewedAt] = useState(report.reviewedAt);
-  const [evolutionOpen, setEvolutionOpen] = useState(false);
 
   const save = useMutation({
     mutationFn: (payload: UpdateConsultationReportPayload) =>
@@ -167,7 +164,7 @@ export function SoapReportEditor({ appointment, report, onChanged }: Props) {
         </Button>
         {reviewedAt ? (
           <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
-            Revisado em {formatDateTime(reviewedAt)}
+            Revisado
           </p>
         ) : (
           <Button
@@ -196,19 +193,7 @@ export function SoapReportEditor({ appointment, report, onChanged }: Props) {
         <Button fullWidth={false} variant="outline" onClick={handleScheduleReturn}>
           Agendar retorno
         </Button>
-        <Button fullWidth={false} variant="outline" onClick={() => setEvolutionOpen(true)}>
-          Gerar evolução
-        </Button>
       </div>
-
-      {evolutionOpen && (
-        <EvolutionFromConsultationDialog
-          appointmentId={appointment.id}
-          patientId={appointment.patientId}
-          open={evolutionOpen}
-          onOpenChange={setEvolutionOpen}
-        />
-      )}
     </div>
   );
 }

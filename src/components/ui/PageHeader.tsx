@@ -20,13 +20,13 @@ export function PageHeader({ title, onBack, actions }: PageHeaderProps) {
         animate="show"
       >
         {onBack && (
-          <Button variant="outline" onClick={onBack}>
+          <Button variant="outline" fullWidth={false} onClick={onBack}>
             ← Voltar
           </Button>
         )}
         <div>
           <h1 
-            className="text-2xl font-bold tracking-tight text-[#0f172a] dark:text-white"
+            className="text-2xl font-bold tracking-tight text-[#0f172a] [text-wrap:balance] dark:text-white"
           >
             {title}
           </h1>

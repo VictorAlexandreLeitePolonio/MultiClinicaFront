@@ -98,7 +98,8 @@ const stream = {
 } as unknown as MediaStream;
 
 function Harness() {
-  const { active, paused, elapsedSeconds, start } = useConsultationRecorder();
+  const { active, paused, elapsedSeconds, start, pause, resume, requestFinish } =
+    useConsultationRecorder();
 
   return (
     <div>
@@ -112,6 +113,15 @@ function Harness() {
         }}
       >
         iniciar via contexto
+      </button>
+      <button type="button" onClick={pause}>
+        pausar
+      </button>
+      <button type="button" onClick={resume}>
+        retomar
+      </button>
+      <button type="button" onClick={requestFinish}>
+        encerrar
       </button>
     </div>
   );
@@ -177,7 +187,6 @@ test("inicia o microfone, cria o relatório e grava em intervalos de 30 s", asyn
   );
   expect(FakeMediaRecorder.lastInstance?.mimeType).toBe("audio/webm;codecs=opus");
   expect(FakeMediaRecorder.lastInstance?.start).toHaveBeenCalledWith(30_000);
-  expect(screen.getByText("Gravando")).toBeInTheDocument();
 });
 
 test("usa audio/webm quando o codec opus não é suportado", async () => {
@@ -283,21 +292,19 @@ test("avisa quando o microfone não está disponível", async () => {
   expect(screen.getByTestId("active")).toHaveTextContent("nenhum");
 });
 
-test("pausa e retoma pelo mini player", async () => {
+test("pausa e retoma pelo contexto", async () => {
   renderProvider();
   await startAndWait();
 
-  fireEvent.click(screen.getByRole("button", { name: "Pausar" }));
+  fireEvent.click(screen.getByRole("button", { name: "pausar" }));
 
   expect(FakeMediaRecorder.lastInstance?.pause).toHaveBeenCalledTimes(1);
   expect(screen.getByTestId("paused")).toHaveTextContent("pausado");
-  expect(screen.getByText("Pausado")).toBeInTheDocument();
 
-  fireEvent.click(screen.getByRole("button", { name: "Retomar" }));
+  fireEvent.click(screen.getByRole("button", { name: "retomar" }));
 
   expect(FakeMediaRecorder.lastInstance?.resume).toHaveBeenCalledTimes(1);
   expect(screen.getByTestId("paused")).toHaveTextContent("ativo");
-  expect(screen.getByText("Gravando")).toBeInTheDocument();
 });
 
 test("encerra, sobe o último pedaço, para o microfone e abre o painel", async () => {
@@ -307,7 +314,7 @@ test("encerra, sobe o último pedaço, para o microfone e abre o painel", async 
   act(() => FakeMediaRecorder.lastInstance?.emit(new Blob(["um"])));
   await waitFor(() => expect(uploadChunk).toHaveBeenCalledTimes(1));
 
-  fireEvent.click(screen.getByRole("button", { name: "Encerrar" }));
+  fireEvent.click(screen.getByRole("button", { name: "encerrar" }));
 
   expect(await screen.findByText("Painel de encerramento de Ana Souza")).toBeInTheDocument();
   expect(stopTrack).toHaveBeenCalledTimes(1);

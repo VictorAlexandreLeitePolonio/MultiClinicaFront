@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { RecordingIndicator } from "@/components/consultation/RecordingIndicator";
 import { useAuth } from "@/contexts/AuthContext";
 import { getRoleLabel } from "@/lib/auth/routes";
 
@@ -42,7 +43,10 @@ export function Topbar({ area }: TopbarProps) {
           </p>
         )}
       </div>
-      <ThemeToggle />
+      <div className="flex min-w-0 items-center gap-3">
+        <RecordingIndicator />
+        <ThemeToggle />
+      </div>
     </header>
   );
 }
