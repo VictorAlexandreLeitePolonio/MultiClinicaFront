@@ -16,7 +16,6 @@ import {
   startConsultation,
   uploadChunk,
 } from "@/app/(authenticated)/app/agenda/services/consultation.service";
-import { ConsultationMiniPlayer } from "./ConsultationMiniPlayer";
 import {
   FinishConsultationPanel,
   FinishConsultationTarget,
@@ -371,15 +370,6 @@ export function ConsultationRecorderProvider({ children }: { children: ReactNode
       }}
     >
       {children}
-      <ConsultationMiniPlayer
-        active={active}
-        paused={paused}
-        elapsedSeconds={elapsedSeconds}
-        sending={sending}
-        onPause={pause}
-        onResume={resume}
-        onFinish={requestFinish}
-      />
       {finishTarget && (
         <FinishConsultationPanel
           target={finishTarget}

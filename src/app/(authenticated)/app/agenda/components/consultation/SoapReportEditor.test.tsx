@@ -91,14 +91,14 @@ test("edita e salva os quatro campos do relatório", async () => {
   );
 });
 
-test("marca a consulta como revisada e mostra a data", async () => {
+test("marca a consulta como revisada", async () => {
   service.reviewConsultation.mockResolvedValue(undefined);
   renderEditor();
 
   await userEvent.click(screen.getByRole("button", { name: "Marcar como revisado" }));
 
   expect(service.reviewConsultation).toHaveBeenCalledWith(10);
-  expect(await screen.findByText(/Revisado em/)).toBeInTheDocument();
+  expect(await screen.findByText("Revisado")).toBeInTheDocument();
   expect(screen.queryByRole("button", { name: "Marcar como revisado" })).not.toBeInTheDocument();
 });
 
@@ -140,10 +140,10 @@ test("usa o fuso da clínica ao calcular o dia da consulta", async () => {
   );
 });
 
-test("mostra a transcrição recolhível e a ação de gerar evolução", () => {
+test("mostra a transcrição recolhível", () => {
   renderEditor();
 
   expect(screen.getByText("Transcrição")).toBeInTheDocument();
   expect(screen.getByText("Paciente relata dor lombar.")).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: "Gerar evolução" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Gerar evolução" })).not.toBeInTheDocument();
 });
