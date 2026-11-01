@@ -33,12 +33,22 @@ export interface UpdateConsultationReportPayload {
   plan: string | null;
 }
 
+export interface ChargePlanOption {
+  id: number;
+  name: string;
+  planType: "Mensal" | "Avulso";
+  amount: number;
+}
+
 // GET /api/appointments/{id}/consultation/charge-suggestion
+// Traz os planos e o online porque o Profissional não acessa /api/plans nem /api/mercadopago/status.
 export interface ChargeSuggestion {
   planId: number | null;
   planName: string | null;
   planType: "Mensal" | "Avulso" | null;
   alreadyChargedThisMonth: boolean;
+  plans: ChargePlanOption[];
+  onlineAvailable: boolean;
 }
 
 export interface ConsultationCharge {
