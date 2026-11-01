@@ -29,7 +29,7 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
   if (loading) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Detalhes do Prontuário" onBack={onBack} />
+        <PageHeader title="Anamnese" onBack={onBack} />
         <p className="text-gray-600 dark:text-slate-300">Carregando...</p>
       </div>
     );
@@ -38,8 +38,8 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
   if (error || !record) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Detalhes do Prontuário" onBack={onBack} />
-        <p className="text-red-500">{error || "Prontuário não encontrado."}</p>
+        <PageHeader title="Anamnese" onBack={onBack} />
+        <p className="text-red-500">{error || "Anamnese não encontrada."}</p>
       </div>
     );
   }
@@ -48,7 +48,7 @@ export default function ProntuarioDetails({ id, onBack }: Props) {
 
   return (
     <div className="space-y-6">
-      <PageHeader title={`Prontuário #${record.id}`} onBack={onBack} />
+      <PageHeader title={`Anamnese #${record.id}`} onBack={onBack} />
 
       {/* Identificação */}
       <motion.section

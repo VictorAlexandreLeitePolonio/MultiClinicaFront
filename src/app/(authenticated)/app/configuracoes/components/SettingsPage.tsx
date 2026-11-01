@@ -2,12 +2,13 @@
 
 import { Suspense, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Tabs } from "@/components/ui/Tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { ClinicSettingsForm } from "./ClinicSettingsForm";
@@ -19,11 +20,58 @@ import { AvailabilitySettingsSection } from "./AvailabilitySettingsSection";
 import { WhatsAppLinkSection } from "./WhatsAppLinkSection";
 import { MercadoPagoSection } from "./MercadoPagoSection";
 
-export function SettingsPage() {
+type SettingsTab = "atendimento" | "clinica" | "integracoes" | "plano";
+
+const TAB_DEFINITIONS: { value: SettingsTab; label: string; description: string; adminOnly?: boolean }[] = [
+  {
+    value: "atendimento",
+    label: "Atendimento",
+    description: "Disponibilidade, duração das consultas e horários públicos da clínica.",
+  },
+  {
+    value: "clinica",
+    label: "Clínica",
+    description: "Dados, identidade visual, perfil público, categorias e mídia.",
+  },
+  {
+    value: "integracoes",
+    label: "Integrações",
+    description: "WhatsApp e Mercado Pago usados pela clínica.",
+    adminOnly: true,
+  },
+  {
+    value: "plano",
+    label: "Plano",
+    description: "Plano atual, limites de uso e assinatura.",
+    adminOnly: true,
+  },
+];
+
+function resolveTab(value: string | null, isAdmin: boolean): SettingsTab {
+  const tab = TAB_DEFINITIONS.find((item) => item.value === value);
+  if (!tab) return "atendimento";
+  if (tab.adminOnly && !isAdmin) return "atendimento";
+  return tab.value;
+}
+
+function SettingsSkeleton() {
+  return (
+    <div className="mx-auto flex max-w-7xl flex-col gap-6 p-8">
+      <Skeleton className="h-12" />
+      <Skeleton className="h-72" />
+      <Skeleton className="h-48" />
+    </div>
+  );
+}
+
+function SettingsPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { can, updateTenant, user } = useAuth();
   const canView = can("clinic.settings.view");
   const canEdit = can("clinic.settings.update");
+  const isAdmin = user?.role === "Administrador";
+  const activeTab = resolveTab(searchParams.get("aba"), isAdmin);
   const settingsQuery = useClinicSettings(canView);
   const updateMutation = useUpdateClinicSettings();
 
@@ -34,13 +82,7 @@ export function SettingsPage() {
   if (!canView) return null;
 
   if (settingsQuery.isLoading) {
-    return (
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 p-8">
-        <Skeleton className="h-12" />
-        <Skeleton className="h-72" />
-        <Skeleton className="h-48" />
-      </div>
-    );
+    return <SettingsSkeleton />;
   }
 
   if (settingsQuery.isError) {
@@ -84,41 +126,76 @@ export function SettingsPage() {
     }
   };
 
+  const visibleTabs = TAB_DEFINITIONS.filter((tab) => !tab.adminOnly || isAdmin);
+  const activeDefinition = TAB_DEFINITIONS.find((tab) => tab.value === activeTab) ?? TAB_DEFINITIONS[0];
+
+  const handleTabChange = (value: string) => {
+    router.replace(`/app/configuracoes?aba=${resolveTab(value, isAdmin)}`);
+  };
+
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-8">
-      <PageHeader
-        title="Configurações"
-        actions={
-          user?.role === "Administrador" ? (
+      <PageHeader title="Configurações" />
+
+      <Tabs
+        tabs={visibleTabs.map((tab) => ({ value: tab.value, label: tab.label }))}
+        value={activeTab}
+        onChange={handleTabChange}
+      >
+        <p className="text-sm text-[#475569] dark:text-slate-300">{activeDefinition.description}</p>
+
+        {activeTab === "atendimento" && (
+          <div className="space-y-6">
+            <AvailabilitySettingsSection canEdit={canEdit} />
+            <ClinicBusinessHoursSection canEdit={canEdit} />
+          </div>
+        )}
+
+        {activeTab === "clinica" && (
+          <div className="space-y-6">
+            <ClinicSettingsForm
+              settings={settingsQuery.data}
+              canEdit={canEdit}
+              loading={updateMutation.isPending}
+              onSubmit={handleSubmit}
+            />
+            <ClinicCategoriesSection canEdit={canEdit} />
+            <ClinicMediaSection canEdit={canEdit} />
+          </div>
+        )}
+
+        {activeTab === "integracoes" && isAdmin && (
+          <div className="space-y-6">
+            <WhatsAppLinkSection />
+            <Suspense fallback={null}>
+              <MercadoPagoSection />
+            </Suspense>
+          </div>
+        )}
+
+        {activeTab === "plano" && isAdmin && (
+          <section className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900">
+            <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Plano e assinatura</h2>
+            <p className="mt-2 text-sm text-[#475569] dark:text-slate-300">
+              Veja o plano atual, os limites de uso e gerencie a assinatura da clínica.
+            </p>
             <Link
               href="/app/configuracoes/plano"
-              className="rounded-lg border border-[#99f6e4] bg-white px-4 py-2 text-sm font-semibold text-[#0f766e] shadow-sm transition-colors hover:border-[#14b8a6] hover:bg-[#ecfdf5] dark:border-slate-700 dark:bg-slate-900 dark:text-[#67e8f9] dark:hover:bg-slate-800"
+              className="mt-4 inline-flex items-center rounded-xl border border-[#99f6e4] bg-white px-4 py-2 text-sm font-semibold text-[#0f766e] shadow-sm transition-colors hover:border-[#14b8a6] hover:bg-[#ecfdf5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#99f6e4] dark:border-slate-700 dark:bg-slate-900 dark:text-[#67e8f9] dark:hover:bg-slate-800"
             >
               Plano e assinatura
             </Link>
-          ) : undefined
-        }
-      />
-      <p className="text-sm text-slate-600 dark:text-slate-300">
-        Comece pela disponibilidade para receber solicitações. Cada seção tem seu próprio salvamento;
-        alterações em horários públicos e mídia são salvas ao adicionar ou remover um item.
-      </p>
-      <AvailabilitySettingsSection canEdit={canEdit} />
-      {user?.role === "Administrador" && <WhatsAppLinkSection />}
-      {user?.role === "Administrador" && (
-        <Suspense fallback={null}>
-          <MercadoPagoSection />
-        </Suspense>
-      )}
-      <ClinicSettingsForm
-        settings={settingsQuery.data}
-        canEdit={canEdit}
-        loading={updateMutation.isPending}
-        onSubmit={handleSubmit}
-      />
-      <ClinicCategoriesSection canEdit={canEdit} />
-      <ClinicBusinessHoursSection canEdit={canEdit} />
-      <ClinicMediaSection canEdit={canEdit} />
+          </section>
+        )}
+      </Tabs>
     </div>
+  );
+}
+
+export function SettingsPage() {
+  return (
+    <Suspense fallback={<SettingsSkeleton />}>
+      <SettingsPageContent />
+    </Suspense>
   );
 }

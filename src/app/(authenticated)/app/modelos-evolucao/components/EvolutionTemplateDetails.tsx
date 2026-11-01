@@ -126,10 +126,10 @@ export function EvolutionTemplateDetails({ id, onBack, onSave }: EvolutionTempla
           isDefault: data.isDefault,
         },
       });
-      toast.success("Modelo atualizado com sucesso.");
+      toast.success("Ficha de medição atualizada com sucesso.");
       onSave();
     } catch (error) {
-      toast.error(getApiErrorMessage(error, "Erro ao salvar modelo."));
+      toast.error(getApiErrorMessage(error, "Erro ao salvar ficha de medição."));
     }
   };
 
@@ -172,19 +172,19 @@ export function EvolutionTemplateDetails({ id, onBack, onSave }: EvolutionTempla
   if (templateError) {
     return (
       <div className="space-y-4">
-        <PageHeader title="Modelo de evolução" onBack={onBack} />
-        <p className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">Erro ao carregar modelo.</p>
+        <PageHeader title="Ficha de medição" onBack={onBack} />
+        <p className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">Erro ao carregar ficha de medição.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <PageHeader title={template?.name ?? "Modelo de evolução"} onBack={onBack} />
+      <PageHeader title={template?.name ?? "Ficha de medição"} onBack={onBack} />
 
       <div className="rounded-2xl border border-[#d7f3ea] bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
         {loadingTemplate ? (
-          <p className="text-sm text-[#64748b] dark:text-slate-300">Carregando modelo...</p>
+          <p className="text-sm text-[#64748b] dark:text-slate-300">Carregando ficha de medição...</p>
         ) : (
           <EvolutionTemplateForm
             template={template}
@@ -233,7 +233,7 @@ export function EvolutionTemplateDetails({ id, onBack, onSave }: EvolutionTempla
           loading={loadingFields}
           error={fieldsError ? "Erro ao carregar campos." : null}
           onRetry={refetch}
-          emptyMessage="Nenhum campo cadastrado para este modelo."
+          emptyMessage="Nenhum campo cadastrado para esta ficha de medição."
           keyExtractor={(field) => field.id}
         />
       </div>

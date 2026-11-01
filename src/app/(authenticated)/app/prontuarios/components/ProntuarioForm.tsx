@@ -141,7 +141,7 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
           await uploadContrato(record.id, record.patientId, contratoFile);
           toast.success("Contrato enviado com sucesso!");
         } catch {
-          toast.error("Prontuário criado, mas houve erro ao enviar o contrato.");
+          toast.error("Anamnese registrada, mas houve erro ao enviar o contrato.");
         }
       }
 
@@ -151,11 +151,11 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
           await uploadExame(record.id, record.patientId, exameFile);
           toast.success("Exame enviado com sucesso!");
         } catch {
-          toast.error("Prontuário criado, mas houve erro ao enviar o exame.");
+          toast.error("Anamnese registrada, mas houve erro ao enviar o exame.");
         }
       }
 
-      toast.success("Prontuário criado com sucesso!");
+      toast.success("Anamnese registrada com sucesso!");
       onSave();
     } catch {
       // erro já tratado no hook
@@ -166,7 +166,7 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <PageHeader title="Novo Prontuário" onBack={onBack} />
+      <PageHeader title="Nova anamnese" onBack={onBack} />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div data-tutorial="medical-records-form-general">
@@ -282,7 +282,7 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
 
         <div data-tutorial="medical-records-form-save">
           <Button type="submit" loading={isLoading}>
-            Salvar Prontuário
+            Salvar anamnese
           </Button>
         </div>
       </form>

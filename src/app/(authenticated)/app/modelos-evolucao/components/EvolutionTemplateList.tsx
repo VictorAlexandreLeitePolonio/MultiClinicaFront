@@ -30,7 +30,7 @@ export function EvolutionTemplateList({ onCreate, onViewDetails }: EvolutionTemp
   const { deleteTemplate } = useEvolutionTemplateMutations();
 
   const columns: Column<EvolutionTemplate>[] = [
-    { key: "name", label: "Modelo" },
+    { key: "name", label: "Ficha de medição" },
     { key: "category", label: "Categoria", render: (template) => template.category || "-" },
     {
       key: "isActive",
@@ -74,21 +74,21 @@ export function EvolutionTemplateList({ onCreate, onViewDetails }: EvolutionTemp
     if (!toDelete) return;
     try {
       await deleteTemplate.mutateAsync(toDelete.id);
-      toast.success("Modelo desativado com sucesso.");
+      toast.success("Ficha de medição desativada com sucesso.");
       setToDelete(null);
     } catch {
-      toast.error("Erro ao desativar modelo.");
+      toast.error("Erro ao desativar ficha de medição.");
     }
   };
 
   return (
     <div className="space-y-4">
       <PageHeader
-        title="Modelos de evolução"
+        title="Fichas de medição"
         actions={
           canEdit ? (
             <div data-tutorial="evolution-templates-new">
-              <Button onClick={onCreate}><Plus size={16} className="mr-2" />Novo modelo</Button>
+              <Button onClick={onCreate}><Plus size={16} className="mr-2" />Nova ficha</Button>
             </div>
           ) : null
         }
@@ -99,9 +99,9 @@ export function EvolutionTemplateList({ onCreate, onViewDetails }: EvolutionTemp
           columns={columns}
           data={data?.data ?? []}
           loading={isLoading}
-          error={error ? "Erro ao carregar modelos de evolução." : null}
+          error={error ? "Erro ao carregar fichas de medição." : null}
           onRetry={refetch}
-          emptyMessage="Nenhum modelo de evolução encontrado."
+          emptyMessage="Nenhuma ficha de medição encontrada."
           keyExtractor={(template) => template.id}
         />
       </div>
@@ -116,7 +116,7 @@ export function EvolutionTemplateList({ onCreate, onViewDetails }: EvolutionTemp
 
       <DeleteConfirmDialog
         open={!!toDelete}
-        entityLabel="modelo de evolução"
+        entityLabel="ficha de medição"
         name={toDelete?.name ?? ""}
         loading={deleteTemplate.isPending}
         onClose={() => setToDelete(null)}

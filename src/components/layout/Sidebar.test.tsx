@@ -44,7 +44,11 @@ describe("Sidebar", () => {
 
     expect(screen.getByText("Pacientes")).toBeInTheDocument();
     expect(screen.getByText("Agenda")).toBeInTheDocument();
-    expect(screen.getByText("Prontuários")).toBeInTheDocument();
+    expect(screen.queryByText("Prontuários")).not.toBeInTheDocument();
+    expect(screen.getByText("Fichas de medição").closest("a")).toHaveAttribute(
+      "href",
+      "/app/fichas",
+    );
     expect(screen.getByText("Pagamentos")).toBeInTheDocument();
     expect(screen.getByText("Balanço")).toBeInTheDocument();
     expect(screen.queryByText("Financeiro")).not.toBeInTheDocument();
@@ -66,6 +70,7 @@ describe("Sidebar", () => {
 
     expect(screen.getByText("Pacientes")).toBeInTheDocument();
     expect(screen.getByText("Agenda")).toBeInTheDocument();
+    expect(screen.getByText("Fichas de medição")).toBeInTheDocument();
     expect(screen.getByText("Pagamentos")).toBeInTheDocument();
     expect(screen.queryByText("Prontuários")).not.toBeInTheDocument();
     expect(screen.queryByText("Balanço")).not.toBeInTheDocument();
