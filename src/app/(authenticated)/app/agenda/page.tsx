@@ -18,6 +18,16 @@ function AgendaPage() {
   const searchParams = useSearchParams();
   const mode = (searchParams.get("mode") as ViewMode) ?? "list";
   const id = searchParams.get("id") ? Number(searchParams.get("id")) : null;
+  const initialDate = searchParams.get("date");
+  const toPositiveInt = (value: string | null) => {
+    const parsed = Number(value);
+    return value && Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
+  };
+  const registerInitialValues = {
+    patientId: toPositiveInt(searchParams.get("patientId")),
+    professionalId: toPositiveInt(searchParams.get("professionalId")),
+    appointmentDay: initialDate && /^\d{4}-\d{2}-\d{2}$/.test(initialDate) ? initialDate : undefined,
+  };
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [tab, setTab] = useState<AgendaTab>("consultas");
 
@@ -105,7 +115,11 @@ function AgendaPage() {
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2 }}
           >
-            <AgendaRegister onBack={() => goTo("list")} onSave={() => goTo("list")} />
+            <AgendaRegister
+              onBack={() => goTo("list")}
+              onSave={() => goTo("list")}
+              initialValues={registerInitialValues}
+            />
           </motion.div>
         )}
 

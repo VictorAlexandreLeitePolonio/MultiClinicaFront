@@ -1,17 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "motion/react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable, Column } from "@/components/ui/DataTable";
 import { useGetPatientProfile } from "../hooks/profile";
 import { formatCivilDate, formatDate, formatCurrency, formatCPF, formatPhone, todayCivilDate } from "@/utils/formatters";
-import { Activity, Calendar, FileText, CreditCard, User, Phone, MapPin } from "lucide-react";
+import { Activity, Calendar, FileText, FileAudio, CreditCard, User, Phone, MapPin } from "lucide-react";
 import { fadeSlideUp, staggerContainer } from "@/lib/motion";
 import { PatientEvolutionSection } from "./evolution/PatientEvolutionSection";
+import { PatientConsultationReports } from "./PatientConsultationReports";
 import { PatientPortalAccessSection } from "./PatientPortalAccessSection";
 
-type TabType = "appointments" | "medicalRecords" | "payments" | "evolution";
+type TabType = "appointments" | "medicalRecords" | "payments" | "evolution" | "reports";
+
+const TAB_KEYS: TabType[] = ["appointments", "medicalRecords", "payments", "evolution", "reports"];
+
+const parseTab = (value: string | null): TabType | null =>
+  value && TAB_KEYS.includes(value as TabType) ? (value as TabType) : null;
 
 interface Props {
   id: number;
@@ -36,7 +43,9 @@ const formatAddress = (data: {
 
 export default function PacienteProfile({ id, onBack }: Props) {
   const { data, loading, refetch } = useGetPatientProfile(id);
-  const [activeTab, setActiveTab] = useState<TabType>("appointments");
+  const searchParams = useSearchParams();
+  const tabParam = parseTab(searchParams.get("tab"));
+  const [activeTab, setActiveTab] = useState<TabType>(tabParam ?? "appointments");
 
   if (loading) {
     return (
@@ -167,6 +176,7 @@ export default function PacienteProfile({ id, onBack }: Props) {
     { key: "medicalRecords" as TabType, label: "Prontuários", icon: FileText, count: data.medicalRecords.length },
     { key: "payments" as TabType, label: "Pagamentos", icon: CreditCard, count: data.payments.length },
     { key: "evolution" as TabType, label: "Evolução", icon: Activity, count: null },
+    { key: "reports" as TabType, label: "Relatórios", icon: FileAudio, count: null },
   ];
 
   return (
@@ -306,6 +316,9 @@ export default function PacienteProfile({ id, onBack }: Props) {
         )}
         {activeTab === "evolution" && (
           <PatientEvolutionSection patientId={id} />
+        )}
+        {activeTab === "reports" && (
+          <PatientConsultationReports patientId={id} />
         )}
       </motion.div>
     </motion.div>
