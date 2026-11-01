@@ -68,6 +68,33 @@ test("mantém os campos e mostra conflito recusado pelo servidor", async () => {
   expect(getProfessionalDaySchedule).toHaveBeenCalledTimes(requestsBeforeSubmit);
 });
 
+test("aplica valores iniciais de paciente, profissional e data", async () => {
+  getProfessionalDaySchedule.mockResolvedValue({
+    date: "2026-09-28",
+    timeZoneId: "America/Sao_Paulo",
+    durationMinutes: 60,
+    appointments: [],
+    slots: [],
+  });
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  render(
+    <QueryClientProvider client={client}>
+      <AgendaRegister
+        onBack={vi.fn()}
+        onSave={vi.fn()}
+        initialValues={{ patientId: 3, professionalId: 7, appointmentDay: "2026-09-28" }}
+      />
+    </QueryClientProvider>
+  );
+
+  await screen.findByRole("option", { name: "Paciente" });
+  expect(screen.getByLabelText(/Paciente \*/)).toHaveValue("3");
+  await screen.findByRole("option", { name: "Dra. Ana" });
+  expect(screen.getByLabelText(/Profissional \*/)).toHaveValue("7");
+  expect(screen.getByLabelText("Data *")).toHaveValue("2026-09-28");
+  expect(getProfessionalDaySchedule).toHaveBeenCalledWith(7, "2026-09-28");
+});
+
 test("avisa sobre horário ocupado antes de enviar o agendamento", async () => {
   getProfessionalDaySchedule.mockResolvedValue({ date: "2026-09-28", timeZoneId: "America/Sao_Paulo",
     durationMinutes: 60,

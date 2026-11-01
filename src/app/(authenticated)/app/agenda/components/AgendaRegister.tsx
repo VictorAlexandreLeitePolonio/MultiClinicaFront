@@ -21,9 +21,10 @@ import { clinicDateTimeToIso } from "../services/clinicDateTime";
 interface Props {
   onBack: () => void;
   onSave: () => void;
+  initialValues?: { patientId?: number; professionalId?: number; appointmentDay?: string };
 }
 
-export default function AgendaRegister({ onBack, onSave }: Props) {
+export default function AgendaRegister({ onBack, onSave, initialValues }: Props) {
   const { insertAgenda, isPending } = useAgendaInsert();
   const { completeTaskTutorial } = useTutorial();
   const professionals = useQuery({ queryKey: queryKeys.appointments.professionals, queryFn: getAppointmentProfessionals });
@@ -38,11 +39,11 @@ export default function AgendaRegister({ onBack, onSave }: Props) {
   } = useForm<AgendaCreateFormData>({
     resolver: zodResolver(AgendaCreateSchema),
     defaultValues: {
-      patientId: 0,
-      appointmentDay: "",
+      patientId: initialValues?.patientId ?? 0,
+      appointmentDay: initialValues?.appointmentDay ?? "",
       appointmentTime: "",
       status: "Scheduled",
-      professionalId: 0,
+      professionalId: initialValues?.professionalId ?? 0,
     },
   });
 
