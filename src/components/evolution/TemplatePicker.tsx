@@ -70,7 +70,7 @@ export function TemplatePicker({
   }
 
   return (
-    <div className="flex flex-col items-start gap-2">
+    <div className="relative">
       <Button
         type="button"
         variant="outline"
@@ -83,7 +83,7 @@ export function TemplatePicker({
       </Button>
 
       {open && (
-        <div className="w-full rounded-xl border border-[#d7f3ea] bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="absolute right-0 top-full z-20 mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-xl border border-[#d7f3ea] bg-white p-3 shadow-[0_18px_44px_-24px_rgba(15,23,42,0.45)] dark:border-slate-700 dark:bg-slate-900">
           <SearchInput
             value={search}
             onChange={setSearch}

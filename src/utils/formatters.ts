@@ -1,3 +1,4 @@
+import type { EvolutionFieldUnit } from "@/types/evolution";
 // Formatadores para documentos brasileiros
 
 /**
@@ -301,3 +302,25 @@ export function isValidCEP(cep: string): boolean {
   const clean = cep.replace(/\D/g, '')
   return clean.length === 8
 }
+
+/** Unidade de campo de ficha de medição, como exibida ao usuário. */
+export const EVOLUTION_UNIT_LABELS: Record<EvolutionFieldUnit, string> = {
+  None: "",
+  Points: "Pontos",
+  Percentage: "%",
+  Kg: "kg",
+  G: "g",
+  Mg: "mg",
+  Cm: "cm",
+  Mm: "mm",
+  M: "m",
+  Degrees: "graus",
+  Seconds: "s",
+  Minutes: "min",
+  Hours: "h",
+  Days: "dias",
+  Repetitions: "rep.",
+  Liters: "L",
+  Ml: "ml",
+  Score: "pontos",
+};

@@ -1,5 +1,6 @@
 "use client";
 
+import { EVOLUTION_UNIT_LABELS } from "@/utils/formatters";
 import { useQuery } from "@tanstack/react-query";
 import { Activity } from "lucide-react";
 import { Line, LineChart, ResponsiveContainer } from "recharts";
@@ -22,26 +23,6 @@ interface Props {
 
 export type MeasurementTrend = "Melhorou" | "Estável" | "Piorou";
 
-const UNIT_LABELS: Record<EvolutionFieldUnit, string> = {
-  None: "",
-  Points: "Pontos",
-  Percentage: "%",
-  Kg: "kg",
-  G: "g",
-  Mg: "mg",
-  Cm: "cm",
-  Mm: "mm",
-  M: "m",
-  Degrees: "graus",
-  Seconds: "s",
-  Minutes: "min",
-  Hours: "h",
-  Days: "dias",
-  Repetitions: "rep.",
-  Liters: "L",
-  Ml: "ml",
-  Score: "pontos",
-};
 
 const TREND_STYLES: Record<MeasurementTrend, string> = {
   Melhorou: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300",
@@ -64,7 +45,7 @@ export function measurementTrend(
 }
 
 function formatReading(value: number, unit: EvolutionFieldUnit): string {
-  const unitLabel = UNIT_LABELS[unit];
+  const unitLabel = EVOLUTION_UNIT_LABELS[unit];
   return unitLabel ? `${numberFormatter.format(value)} ${unitLabel}` : numberFormatter.format(value);
 }
 
@@ -84,12 +65,17 @@ function MeasurementField({ field }: { field: TreatmentProgressChart }) {
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-sm font-semibold text-[#0f172a] dark:text-white">{field.label}</p>
-          <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${TREND_STYLES[trend]}`}>
-            {trend}
-          </span>
+          {/* Uma leitura só não tem tendência ainda. */}
+          {field.data.length > 1 && (
+            <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${TREND_STYLES[trend]}`}>
+              {trend}
+            </span>
+          )}
         </div>
         <p className="mt-1 text-sm text-[#475569] dark:text-slate-300">
-          {formatReading(field.initialValue, field.unit)} → {formatReading(field.currentValue, field.unit)}
+          {field.data.length > 1
+            ? `${formatReading(field.initialValue, field.unit)} → ${formatReading(field.currentValue, field.unit)}`
+            : `Primeira medição: ${formatReading(field.currentValue, field.unit)}`}
         </p>
       </div>
       <div className="h-14 w-full min-w-[140px]" aria-hidden="true">

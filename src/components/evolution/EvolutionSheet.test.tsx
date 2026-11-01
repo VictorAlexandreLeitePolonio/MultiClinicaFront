@@ -216,7 +216,19 @@ test("mostra a consulta de origem com link para o relatório", async () => {
   expect(appointmentsService.getAppointmentById).toHaveBeenCalledWith(10);
 });
 
-test("concluir com obrigatório faltando mostra o erro da API", async () => {
+test("concluir com obrigatório faltando mostra o erro local e não cria a evolução", async () => {
+  renderSheet();
+
+  await addTemplate("Escala de dor");
+  await userEvent.click(screen.getByRole("button", { name: "Concluir" }));
+
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Preencha os campos obrigatórios da ficha Escala de dor.",
+  );
+  expect(recordService.createPatientEvolution).not.toHaveBeenCalled();
+});
+
+test("erro da API ao concluir é exibido", async () => {
   const apiError = new AxiosError(
     "Requisicao falhou",
     "ERR_BAD_REQUEST",
@@ -231,6 +243,7 @@ test("concluir com obrigatório faltando mostra o erro da API", async () => {
   renderSheet();
 
   await addTemplate("Escala de dor");
+  await userEvent.type(screen.getByRole("spinbutton"), "5");
   await userEvent.click(screen.getByRole("button", { name: "Concluir" }));
 
   expect(await screen.findByRole("alert")).toHaveTextContent(

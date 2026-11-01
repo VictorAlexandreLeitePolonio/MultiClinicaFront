@@ -1,5 +1,6 @@
 "use client";
 
+import { EVOLUTION_UNIT_LABELS } from "@/utils/formatters";
 import {
   EvolutionFormValue,
   isNumericEvolutionField,
@@ -125,7 +126,7 @@ export function EvolutionFieldInput({
       {isNumericEvolutionField(field.type) && (
         <span className="text-xs text-[#475569] dark:text-slate-300">
           {[
-            field.unit !== "None" ? field.unit : null,
+            EVOLUTION_UNIT_LABELS[field.unit] || null,
             field.targetValue !== null ? `Meta: ${field.targetValue}` : null,
           ]
             .filter(Boolean)

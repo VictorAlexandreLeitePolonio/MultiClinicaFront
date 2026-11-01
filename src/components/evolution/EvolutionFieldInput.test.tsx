@@ -39,7 +39,7 @@ test("mostra rótulo, obrigatório, valor anterior e unidade", () => {
   expect(screen.getByText("Dor")).toBeInTheDocument();
   expect(screen.getByText("*")).toBeInTheDocument();
   expect(screen.getByText("antes: 9")).toBeInTheDocument();
-  expect(screen.getByText("Cm · Meta: 10")).toBeInTheDocument();
+  expect(screen.getByText("cm · Meta: 10")).toBeInTheDocument();
   expect(screen.getByRole("spinbutton")).toHaveValue(7);
 });
 

@@ -174,14 +174,15 @@ export function EvolutionSheet({
     setLoadingTemplates(false);
     setTemplateLoadFailed(false);
     setDate(todayCivilDate());
-    setProfessionalId(userRole === "Profissional" ? (userId ?? null) : null);
+    // Administrador também atende: começa por ele mesmo, exceto vindo de uma consulta (usa o profissional dela).
+    setProfessionalId(userRole === "Profissional" || !appointmentId ? (userId ?? null) : null);
     setDescription("");
     setConduct("");
     setObservations("");
     setNextGuidance("");
     setSelectedTemplates([]);
     setValues({});
-  }, [open, editing, userId, userRole]);
+  }, [open, editing, userId, userRole, appointmentId]);
 
   // Ao abrir uma consulta, o administrador já começa com o profissional do agendamento.
   const appointmentProfessionalId = appointmentQuery.data?.professionalId;
@@ -319,6 +320,13 @@ export function EvolutionSheet({
     return map;
   }, [measurementsQuery.data, editedEvolutionDate]);
 
+  // Mesmo filtro do payload: texto vazio não conta como valor preenchido.
+  function buildPayloadValues(fields: EvolutionTemplateField[]) {
+    return buildEvolutionValuesPayload(fields, values).filter(
+      (value) => value.valueText === null || value.valueText.trim().length > 0,
+    );
+  }
+
   const saveMutation = useMutation({
     mutationFn: async (status: EvolutionStatus) => {
       const fields = selectedTemplates.flatMap((item) => item.fields);
@@ -331,9 +339,7 @@ export function EvolutionSheet({
         observations: observations.trim() || null,
         nextGuidance: nextGuidance.trim() || null,
         status,
-        values: buildEvolutionValuesPayload(fields, values).filter(
-          (value) => value.valueText === null || value.valueText.trim().length > 0,
-        ),
+        values: buildPayloadValues(fields),
       };
 
       if (evolutionId) {
@@ -363,6 +369,17 @@ export function EvolutionSheet({
     if (isAdmin && professionalId === null) {
       setSavingError("Selecione o profissional.");
       return;
+    }
+    if (status === "Completed") {
+      for (const { template, fields } of selectedTemplates) {
+        const filledFieldIds = new Set(
+          buildPayloadValues(fields).map((value) => value.fieldId),
+        );
+        if (fields.some((field) => field.required && !filledFieldIds.has(field.id))) {
+          setSavingError(`Preencha os campos obrigatórios da ficha ${template.name}.`);
+          return;
+        }
+      }
     }
     setSavingError(null);
     setPendingStatus(status);
@@ -445,7 +462,13 @@ export function EvolutionSheet({
               />
             </Dialog.Overlay>
 
-            <Dialog.Content asChild forceMount aria-describedby={undefined}>
+            <Dialog.Content
+              asChild
+              forceMount
+              aria-describedby={undefined}
+              // Clique fora não fecha: perderia o registro clínico em edição. Fecha pelo X ou Esc.
+              onInteractOutside={(event) => event.preventDefault()}
+            >
               <motion.div
                 className="fixed inset-y-0 right-0 z-50 flex h-full w-full flex-col overflow-hidden border-l border-[#d7f3ea] bg-white shadow-[0_24px_80px_-32px_rgba(15,23,42,0.5)] dark:border-slate-800 dark:bg-slate-900 sm:w-[560px]"
                 initial={prefersReducedMotion ? { opacity: 0 } : { x: "100%" }}

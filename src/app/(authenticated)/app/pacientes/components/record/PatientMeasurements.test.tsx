@@ -90,10 +90,11 @@ test("mostra uma ficha por bloco, a primeira e a última leitura e a tendência"
   expect(await screen.findByText("Escala de dor")).toBeInTheDocument();
   expect(screen.getByText("Última medição em 01/11/2026 · 3 evoluções")).toBeInTheDocument();
   expect(screen.getByText("8 Pontos → 2 Pontos")).toBeInTheDocument();
-  expect(screen.getByText("10 kg → 10 kg")).toBeInTheDocument();
+  expect(screen.getByText("Primeira medição: 10 kg")).toBeInTheDocument();
   expect(screen.getByText("90 graus → 80 graus")).toBeInTheDocument();
   expect(screen.getByText("Melhorou")).toBeInTheDocument();
-  expect(screen.getByText("Estável")).toBeInTheDocument();
+  // Uma leitura só não mostra tendência.
+  expect(screen.queryByText("Estável")).not.toBeInTheDocument();
   expect(screen.getByText("Piorou")).toBeInTheDocument();
 });
 
