@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { toast } from "sonner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Payment } from "@/types";
+import type { Payment, PaymentStatusSummary } from "@/types";
 import { PagamentoBoard } from "./PagamentoBoard";
 
 const updatePagamento = vi.fn();
@@ -39,10 +39,17 @@ function makePayment(overrides: Partial<Payment>): Payment {
   return { ...basePayment, ...overrides };
 }
 
-function renderBoard(payments: Payment[], onChanged = vi.fn()) {
+function renderBoard(
+  payments: Payment[],
+  onChanged = vi.fn(),
+  summary?: PaymentStatusSummary[],
+  summaryLoading = false,
+) {
   return render(
     <PagamentoBoard
       payments={payments}
+      summary={summary}
+      summaryLoading={summaryLoading}
       onViewDetails={vi.fn()}
       onChanged={onChanged}
     />,
@@ -88,6 +95,92 @@ describe("PagamentoBoard", () => {
     expect(
       within(cancelled).getByTestId("payments-column-total"),
     ).toHaveTextContent("45,00");
+  });
+
+  it("usa a contagem e o total do resumo no cabeçalho, não os da página", () => {
+    renderBoard(
+      [
+        makePayment({ id: 1, patientName: "Ana Souza", planAmount: 100 }),
+        makePayment({ id: 2, patientName: "Bruno Lima", planAmount: 50 }),
+        makePayment({
+          id: 3,
+          patientName: "Carla Dias",
+          status: "Paid",
+          planAmount: 80,
+        }),
+      ],
+      vi.fn(),
+      [
+        { status: "Pending", count: 12, total: 3450.75 },
+        { status: "Paid", count: 5, total: 900.5 },
+        { status: "Cancelled", count: 0, total: 0 },
+      ],
+    );
+
+    const pending = column("Pendente");
+    expect(within(pending).getByText("12 pagamentos")).toBeInTheDocument();
+    expect(
+      within(pending).getByTestId("payments-column-total"),
+    ).toHaveTextContent("3.450,75");
+    expect(within(pending).queryByText("2 pagamentos")).not.toBeInTheDocument();
+
+    const paid = column("Pago");
+    expect(within(paid).getByText("5 pagamentos")).toBeInTheDocument();
+    expect(within(paid).getByTestId("payments-column-total")).toHaveTextContent(
+      "900,50",
+    );
+    expect(within(paid).queryByText("1 pagamento")).not.toBeInTheDocument();
+
+    const cancelled = column("Cancelado");
+    expect(within(cancelled).getByText("0 pagamentos")).toBeInTheDocument();
+    expect(
+      within(cancelled).getByTestId("payments-column-total"),
+    ).toHaveTextContent("0,00");
+  });
+
+  it("mostra 'Mostrando N de M' quando o resumo tem mais pagamentos que a página", () => {
+    renderBoard(
+      [
+        makePayment({ id: 1, patientName: "Ana Souza", planAmount: 100 }),
+        makePayment({ id: 2, patientName: "Bruno Lima", planAmount: 50 }),
+        makePayment({
+          id: 3,
+          patientName: "Carla Dias",
+          status: "Paid",
+          planAmount: 80,
+        }),
+      ],
+      vi.fn(),
+      [
+        { status: "Pending", count: 5, total: 750 },
+        { status: "Paid", count: 1, total: 80 },
+        { status: "Cancelled", count: 0, total: 0 },
+      ],
+    );
+
+    expect(
+      within(column("Pendente")).getByText(
+        "Mostrando 2 de 5 · veja as outras páginas",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(column("Pago")).queryByText(/Mostrando/),
+    ).not.toBeInTheDocument();
+  });
+
+  it("mostra '—' no cabeçalho enquanto o resumo carrega", () => {
+    renderBoard(
+      [makePayment({ id: 1, patientName: "Ana Souza", planAmount: 150 })],
+      vi.fn(),
+      undefined,
+      true,
+    );
+
+    const pending = column("Pendente");
+    expect(within(pending).getAllByText("—")).toHaveLength(2);
+    expect(
+      within(pending).getByTestId("payments-column-total"),
+    ).toHaveTextContent("—");
   });
 
   it("pede confirmação antes de mover Pendente para Pago e chama a mutação", async () => {

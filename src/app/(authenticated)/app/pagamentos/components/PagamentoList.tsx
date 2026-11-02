@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/ViewSwitcher";
 import { Eye, KanbanSquare, Table2, Trash2 } from "lucide-react";
 import { usePagamentosPaginated, PagamentoFilters } from "../hooks/pagined";
+import { usePaymentsSummary } from "../hooks/summary";
+import { useDebounce } from "@/app/hooks/useDebounce";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Pagination } from "@/components/ui/Pagination";
 import { usePagamentoDelete } from "../hooks/delete";
@@ -71,6 +73,21 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const reduceMotion = useReducedMotion();
   const activeView = isDesktop ? view : "table";
+
+  // Mesmos filtros da listagem, sem status/página; o resumo só é buscado no quadro.
+  const debouncedSearch = useDebounce(search, 400);
+  const {
+    data: summary,
+    isLoading: summaryLoading,
+    refetch: refetchSummary,
+  } = usePaymentsSummary(
+    {
+      patientName: debouncedSearch || undefined,
+      patientId: filters.patientId,
+      referenceMonth: filters.referenceMonth,
+    },
+    activeView === "board",
+  );
 
   const [toDelete, setToDelete] = useState<Payment | null>(null);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -289,8 +306,13 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
               <PagamentoBoard
                 payments={data}
                 loading={loading}
+                summary={summary}
+                summaryLoading={summaryLoading}
                 onViewDetails={onViewDetails}
-                onChanged={() => void refetch()}
+                onChanged={() => {
+                  void refetch();
+                  void refetchSummary();
+                }}
               />
             ) : (
               <DataTable
