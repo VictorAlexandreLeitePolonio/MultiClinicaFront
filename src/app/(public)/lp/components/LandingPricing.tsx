@@ -3,8 +3,11 @@
 import Link from "next/link";
 import NumberFlow from "@number-flow/react";
 import { useQuery } from "@tanstack/react-query";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { Check, Minus } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useReducedMotion } from "motion/react";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { queryKeys } from "@/lib/queryKeys";
@@ -13,6 +16,7 @@ import type { BillingCycle, ClinicPlan, PlanFeature, PublicPlan } from "@/types/
 import { formatCurrency } from "@/utils/formatters";
 import { FEATURE_LABELS, METRIC_LABELS, PLAN_LABELS, annualSavings } from "@/utils/plans";
 import { fetchPublicPlans } from "../services/plans.service";
+import { getLpEaseOut, registerLpGsap } from "./features/lpGsap";
 
 const planOrder: ClinicPlan[] = ["Free", "Pro", "Premium"];
 const features = Object.keys(FEATURE_LABELS) as PlanFeature[];
@@ -207,6 +211,9 @@ function FallbackCard({ plan }: { plan: ClinicPlan }) {
 
 export function LandingPricing() {
   const [cycle, setCycle] = useState<BillingCycle>("Monthly");
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion() === true;
   const { data, isLoading, isError } = useQuery({
     queryKey: queryKeys.plans.public,
     queryFn: fetchPublicPlans,
@@ -217,8 +224,34 @@ export function LandingPricing() {
     ? data.plans.reduce((max, plan) => Math.max(max, annualSavings(plan)), 0)
     : 0;
 
+  useGSAP(
+    () => {
+      const cards = cardsRef.current;
+      if (reduce || isLoading || !cards) return;
+      if (typeof window.matchMedia !== "function") return;
+
+      const columns = Array.from(cards.children);
+      if (columns.length === 0) return;
+
+      registerLpGsap();
+      gsap.from(columns, {
+        opacity: 0.4,
+        y: 16,
+        duration: 0.5,
+        stagger: 0.06,
+        ease: getLpEaseOut(),
+        scrollTrigger: {
+          trigger: cards,
+          start: "top 75%",
+          once: true,
+        },
+      });
+    },
+    { scope: sectionRef, dependencies: [isLoading, reduce, showFallback] },
+  );
+
   return (
-    <section id="planos" className="bg-[var(--lp-bg)] py-24 sm:py-28">
+    <section ref={sectionRef} id="planos" className="bg-[var(--lp-bg)] py-24 sm:py-28">
       <div className="mx-auto max-w-[88rem] px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-wide text-balance text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] tracking-[-0.03em] text-[var(--lp-ink)]">
@@ -272,7 +305,7 @@ export function LandingPricing() {
         </p>
 
         {isLoading && (
-          <div className="mt-12 grid gap-5 lg:grid-cols-3 lg:gap-6">
+          <div ref={cardsRef} className="mt-12 grid gap-5 lg:grid-cols-3 lg:gap-6">
             {Array.from({ length: 3 }, (_, index) => (
               <Skeleton key={index} className="h-[34rem] rounded-2xl" />
             ))}
@@ -280,7 +313,7 @@ export function LandingPricing() {
         )}
 
         {!isLoading && (
-          <div className="mt-12 grid gap-5 lg:grid-cols-3 lg:gap-6">
+          <div ref={cardsRef} className="mt-12 grid gap-5 lg:grid-cols-3 lg:gap-6">
             {showFallback
               ? planOrder.map((plan) => <FallbackCard key={plan} plan={plan} />)
               : planOrder.map((plan) => {

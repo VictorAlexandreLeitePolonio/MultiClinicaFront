@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/site";
+import { SmoothScroll } from "./(public)/lp/components/SmoothScroll";
 import { LandingHeader } from "./(public)/lp/components/LandingHeader";
 import { HeroSection } from "./(public)/lp/components/hero/HeroSection";
 import { FeaturesSection } from "./(public)/lp/components/features/FeaturesSection";
@@ -33,16 +34,18 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <main className="theme-lp min-h-screen overflow-x-clip">
-      <LandingHeader />
-      <HeroSection />
-      <FeaturesSection />
-      <IntegrationSection />
-      <HubSection />
-      <LandingPricing />
-      <LandingFaq />
-      <LandingCTA />
-      <LandingFooter />
-    </main>
+    <SmoothScroll>
+      <main className="theme-lp min-h-screen overflow-x-clip">
+        <LandingHeader />
+        <HeroSection />
+        <FeaturesSection />
+        <IntegrationSection />
+        <HubSection />
+        <LandingPricing />
+        <LandingFaq />
+        <LandingCTA />
+        <LandingFooter />
+      </main>
+    </SmoothScroll>
   );
 }
