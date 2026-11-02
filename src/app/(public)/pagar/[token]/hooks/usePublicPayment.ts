@@ -8,7 +8,8 @@ import {
   PublicPaymentFormData,
 } from "../services/public-payment.service";
 
-const ONGOING_MP_STATUSES = new Set(["pending", "in_process"]);
+// Igual ao conjunto da página: "authorized" também ainda não é o resultado final.
+const ONGOING_MP_STATUSES = new Set(["pending", "in_process", "authorized"]);
 
 export function usePublicPayment(token: string) {
   return useQuery({
