@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
+import { CommandPalette } from "@/components/command/CommandPalette";
 import { MascotAssistant } from "@/components/mascot/MascotAssistant";
 import { TutorialProvider } from "@/components/tutorial/TutorialProvider";
 import { useAuth } from "@/contexts/AuthContext";
@@ -33,6 +34,7 @@ export function AppShell({ children }: AppShellProps) {
             {children}
           </main>
           <MascotAssistant />
+          <CommandPalette />
         </div>
       </div>
     </TutorialProvider>
