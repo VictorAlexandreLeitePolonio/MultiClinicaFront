@@ -4,7 +4,6 @@ export type TutorialModuleId =
   | "agenda"
   | "dashboard"
   | "patients"
-  | "medical-records"
   | "evolution-templates"
   | "payments"
   | "financial"

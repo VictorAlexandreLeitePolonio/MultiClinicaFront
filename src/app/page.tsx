@@ -1,16 +1,15 @@
-import "./(public)/lp/landing-enhancements.css";
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/site";
+import { SmoothScroll } from "./(public)/lp/components/SmoothScroll";
 import { LandingHeader } from "./(public)/lp/components/LandingHeader";
-import { LandingExperience } from "./(public)/lp/components/LandingExperience";
-import { LandingClients } from "./(public)/lp/components/LandingClients";
-import { LandingClinicsShowcase } from "./(public)/lp/components/LandingClinicsShowcase";
-import { LandingPatientExperience } from "./(public)/lp/components/LandingPatientExperience";
+import { HeroSection } from "./(public)/lp/components/hero/HeroSection";
+import { FeaturesSection } from "./(public)/lp/components/features/FeaturesSection";
+import { IntegrationSection } from "./(public)/lp/components/features/IntegrationSection";
+import { HubSection } from "./(public)/lp/components/hub/HubSection";
 import { LandingPricing } from "./(public)/lp/components/LandingPricing";
 import { LandingFaq } from "./(public)/lp/components/LandingFaq";
 import { LandingCTA } from "./(public)/lp/components/LandingCTA";
 import { LandingFooter } from "./(public)/lp/components/LandingFooter";
-import { LandingMascot } from "./(public)/lp/components/LandingMascot";
 
 export const metadata: Metadata = {
   title: { absolute: `${siteConfig.name} | A clínica inteira, em uma visão só` },
@@ -35,17 +34,18 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <main className="theme-light landing-page min-h-screen overflow-x-clip bg-background text-secondary">
-      <LandingHeader />
-      <LandingMascot />
-      <LandingExperience />
-      <LandingClients />
-      <LandingPatientExperience />
-      <LandingClinicsShowcase />
-      <LandingPricing />
-      <LandingFaq />
-      <LandingCTA />
-      <LandingFooter />
-    </main>
+    <SmoothScroll>
+      <main className="theme-lp min-h-screen overflow-x-clip">
+        <LandingHeader />
+        <HeroSection />
+        <FeaturesSection />
+        <IntegrationSection />
+        <HubSection />
+        <LandingPricing />
+        <LandingFaq />
+        <LandingCTA />
+        <LandingFooter />
+      </main>
+    </SmoothScroll>
   );
 }

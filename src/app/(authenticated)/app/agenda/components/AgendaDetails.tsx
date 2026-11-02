@@ -30,6 +30,9 @@ interface Props {
   id: number;
   onBack: () => void;
   onSave: () => void;
+  /** "sheet" remove o cabeçalho de página (o FormSheet já traz título e fechar). */
+  variant?: "page" | "sheet";
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 const appointmentStatusMapping: Record<string, { label: string; className: string }> = {
@@ -62,7 +65,14 @@ const isoToDateTimeLocal = (isoDate?: string, timeZoneId = "America/Sao_Paulo"):
   }
 };
 
-export default function AgendaDetails({ id, onBack, onSave }: Props) {
+export default function AgendaDetails({
+  id,
+  onBack,
+  onSave,
+  variant = "page",
+  onDirtyChange,
+}: Props) {
+  const isSheet = variant === "sheet";
   const { user } = useAuth();
   const { data, loading, error, refetch } = useAgendaById(id);
   const { updateAgenda, isPending } = useAgendaUpdate();
@@ -123,6 +133,10 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
     }
   }, [data, reset]);
 
+  useEffect(() => {
+    onDirtyChange?.(isEditing);
+  }, [isEditing, onDirtyChange]);
+
   const onSubmit = async (formData: AgendaFormData) => {
     try {
       const payload = { appointmentDate: clinicDateTimeToIso(formData.appointmentDate, data?.timeZoneId ?? "America/Sao_Paulo"),
@@ -177,9 +191,9 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
 
   if (loading) {
     return (
-      <div className="space-y-6 max-w-6xl">
-        <PageHeader title="Detalhes do Agendamento" onBack={onBack} />
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div className={isSheet ? "space-y-6" : "space-y-6 max-w-6xl"}>
+        {!isSheet && <PageHeader title="Detalhes do Agendamento" onBack={onBack} />}
+        <div className={isSheet ? "space-y-4" : "grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]"}>
           <Skeleton className="h-64 w-full" />
           <Skeleton className="h-48 w-full" />
         </div>
@@ -189,18 +203,18 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
 
   if (error) {
     return (
-      <div className="space-y-6 max-w-6xl">
-        <PageHeader title="Detalhes do Agendamento" onBack={onBack} />
+      <div className={isSheet ? "space-y-6" : "space-y-6 max-w-6xl"}>
+        {!isSheet && <PageHeader title="Detalhes do Agendamento" onBack={onBack} />}
         <ErrorState message={error} onRetry={() => refetch()} />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 max-w-6xl">
-      <PageHeader title="Detalhes do Agendamento" onBack={onBack} />
+    <div className={isSheet ? "space-y-6" : "space-y-6 max-w-6xl"}>
+      {!isSheet && <PageHeader title="Detalhes do Agendamento" onBack={onBack} />}
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div className={isSheet ? "space-y-6" : "grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]"}>
         <div className="min-w-0 space-y-6">
           {isEditing ? (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -218,7 +232,7 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
                     value={patientId || 0}
                     onChange={(e) => setValue("patientId", Number(e.target.value), { shouldValidate: true })}
                     className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
-                      focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
+                      focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-[border-color,box-shadow]"
                   >
                     <option value={0}>{loadingPatients ? "Carregando..." : "Selecione um paciente"}</option>
                     {patients.map((p) => (
@@ -246,7 +260,7 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
                     value={appointmentDate || ""}
                     onChange={(e) => { clearErrors("appointmentDate"); setValue("appointmentDate", e.target.value, { shouldValidate: true }); }}
                     className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
-                      focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
+                      focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-[border-color,box-shadow]"
                   />
                   {errors.appointmentDate && (
                     <span className="text-xs text-red-600">{errors.appointmentDate.message}</span>
@@ -268,7 +282,7 @@ export default function AgendaDetails({ id, onBack, onSave }: Props) {
           )}
         </div>
 
-        <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <aside className={isSheet ? "space-y-4" : "space-y-4 lg:sticky lg:top-24 lg:self-start"}>
           <section className="rounded-2xl border border-[#d7f3ea] bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
             <h2 className="text-sm font-bold text-[#0f172a] dark:text-white">Resumo</h2>
             <dl className="mt-4 space-y-3 text-sm">

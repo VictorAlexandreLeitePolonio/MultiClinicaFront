@@ -1,5 +1,13 @@
 import { Variants } from "motion/react";
 
+// Curvas e springs do sistema (ver docs/superpowers/plans/2026-11-02-redesign-tech.md).
+export const ease = { out: [0.23, 1, 0.32, 1], inOut: [0.77, 0, 0.175, 1], drawer: [0.32, 0.72, 0, 1] } as const;
+export const spring = {
+  ui: { type: "spring", duration: 0.35, bounce: 0 },
+  soft: { type: "spring", duration: 0.6, bounce: 0.15 },
+} as const;
+export const easeCss = { out: "cubic-bezier(0.23, 1, 0.32, 1)", inOut: "cubic-bezier(0.77, 0, 0.175, 1)" } as const;
+
 // Container com stagger para animações sequenciais
 export const staggerContainer: Variants = {
   hidden: {},

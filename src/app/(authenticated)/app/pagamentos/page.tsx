@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AnimatePresence, motion } from "motion/react";
+import { FormSheet } from "@/components/ui/FormSheet";
 import PagamentoList from "./components/PagamentoList";
 import PagamentoRegister from "./components/PagamentoRegister";
 import PagamentoDetails from "./components/PagamentoDetails";
@@ -13,63 +13,61 @@ function PagamentosPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const mode = (searchParams.get("mode") as ViewMode) ?? "list";
-  const id = searchParams.get("id") ? Number(searchParams.get("id")) : null;
+  const rawId = searchParams.get("id");
+  const parsedId = rawId ? Number(rawId) : null;
+  const id =
+    parsedId !== null && Number.isFinite(parsedId) ? parsedId : null;
 
-  const goTo = (mode: ViewMode, id?: number) => {
-    const params = new URLSearchParams({ mode });
-    if (id) params.set("id", String(id));
-    router.push(`/app/pagamentos?${params.toString()}`);
+  const [createDirty, setCreateDirty] = useState(false);
+  const [detailsDirty, setDetailsDirty] = useState(false);
+
+  const closeSheet = () => {
+    setCreateDirty(false);
+    setDetailsDirty(false);
+    router.push("/app/pagamentos");
   };
+
+  const openCreate = () => router.push("/app/pagamentos?mode=create");
+  const openView = (paymentId: number) =>
+    router.push(`/app/pagamentos?mode=view&id=${paymentId}`);
 
   return (
     <div className="p-8">
-      <AnimatePresence mode="wait" initial={false}>
-        {mode === "list" && (
-          <motion.div
-            key="list"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PagamentoList
-              onCreate={() => goTo("create")}
-              onViewDetails={(id) => goTo("view", id)}
-            />
-          </motion.div>
-        )}
+      <PagamentoList onCreate={openCreate} onViewDetails={openView} />
 
+      <FormSheet
+        open={mode === "create"}
+        onClose={closeSheet}
+        title="Novo pagamento"
+        dirty={createDirty}
+        size="lg"
+      >
         {mode === "create" && (
-          <motion.div
-            key="create"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PagamentoRegister
-              onBack={() => goTo("list")}
-              onSave={() => goTo("list")}
-            />
-          </motion.div>
+          <PagamentoRegister
+            variant="sheet"
+            onBack={closeSheet}
+            onSave={closeSheet}
+            onDirtyChange={setCreateDirty}
+          />
         )}
+      </FormSheet>
 
-        {mode === "view" && id && (
-          <motion.div
-            key="view"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PagamentoDetails
-              id={id}
-              onBack={() => goTo("list")}
-              onSave={() => goTo("list")}
-            />
-          </motion.div>
+      <FormSheet
+        open={mode === "view" && id !== null}
+        onClose={closeSheet}
+        title="Detalhes do pagamento"
+        dirty={detailsDirty}
+      >
+        {mode === "view" && id !== null && (
+          <PagamentoDetails
+            id={id}
+            variant="sheet"
+            onBack={closeSheet}
+            onSave={closeSheet}
+            onDirtyChange={setDetailsDirty}
+          />
         )}
-      </AnimatePresence>
+      </FormSheet>
     </div>
   );
 }

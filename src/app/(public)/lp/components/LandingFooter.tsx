@@ -1,37 +1,59 @@
-import { siteConfig } from "@/lib/site";
 import Link from "next/link";
 import { Mail } from "lucide-react";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { siteConfig } from "@/lib/site";
+
+const linkClassName =
+  "rounded-sm text-[var(--lp-muted)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]";
 
 export function LandingFooter() {
-  const year = new Date().getFullYear();
-
   return (
-    <footer className="border-t border-slate-200 bg-white py-10">
-      <div className="mx-auto flex max-w-[88rem] flex-col gap-6 px-6 text-center sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:text-left">
-        <Link href="/" className="flex items-center gap-2">
-          <BrandLogo variant="mark" size={32} className="rounded-lg" />
-          <span className="text-sm font-bold text-slate-950">Cliniq</span>
-        </Link>
-        <div className="flex flex-col items-center gap-2 text-xs text-slate-500 sm:items-end">
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 sm:justify-end">
-            <Link href="/paciente/login" className="font-semibold transition-colors hover:text-teal-700">
-              Portal do paciente
-            </Link>
-            <Link href="/login" className="font-semibold transition-colors hover:text-teal-700">
-              Acesso da clínica
-            </Link>
-            <a href={`mailto:${siteConfig.contactEmail}`} className="inline-flex items-center gap-2 transition-colors hover:text-teal-700">
-              <Mail size={13} />
-              Fale com a gente
-            </a>
+    <footer className="border-t border-[var(--lp-line)] bg-[var(--lp-bg)]">
+      <div className="mx-auto max-w-[88rem] px-6 py-10 lg:px-8">
+        <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+          <Link
+            href="/"
+            className="flex w-fit items-center gap-2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-bg)]"
+          >
+            <BrandLogo variant="lockup-dark" size={32} />
+          </Link>
+
+          <div className="flex flex-col gap-4 text-sm sm:items-end">
+            <nav
+              aria-label="Links do rodapé"
+              className="flex flex-wrap gap-x-6 gap-y-2 sm:justify-end"
+            >
+              <Link href="/paciente/login" className={linkClassName}>
+                Portal do paciente
+              </Link>
+              <Link href="/login" className={linkClassName}>
+                Acesso da clínica
+              </Link>
+              <a href={`mailto:${siteConfig.contactEmail}`} className={linkClassName}>
+                <span className="inline-flex items-center gap-1.5">
+                  <Mail size={13} aria-hidden="true" />
+                  Fale com a gente
+                </span>
+              </a>
+            </nav>
+
+            <nav
+              aria-label="Legal"
+              className="flex flex-wrap gap-x-5 gap-y-2 text-xs sm:justify-end"
+            >
+              <Link href="/privacidade" className={linkClassName}>
+                Política de privacidade
+              </Link>
+              <Link href="/termos" className={linkClassName}>
+                Termos de uso
+              </Link>
+            </nav>
           </div>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/privacidade" className="hover:text-teal-700 hover:underline">Política de privacidade</Link>
-            <Link href="/termos" className="hover:text-teal-700 hover:underline">Termos de uso</Link>
-          </div>
-          <p>© {year} Cliniq. Todos os direitos reservados.</p>
         </div>
+
+        <p className="mt-8 border-t border-[var(--lp-line)] pt-6 font-mono text-xs text-[var(--lp-muted)]">
+          © Cliniq Care
+        </p>
       </div>
     </footer>
   );

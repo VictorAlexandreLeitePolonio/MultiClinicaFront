@@ -17,7 +17,6 @@ import { getPatients } from "@/app/(authenticated)/app/pacientes/services/patien
 import { useAuth } from "@/contexts/AuthContext";
 import { Patient } from "@/types";
 import { FileText, Image as ImageIcon, X } from "lucide-react";
-import { useTutorial } from "@/hooks/tutorial/useTutorial";
 
 interface Props {
   preselectedPatientId?: number | null;
@@ -40,7 +39,6 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
   const { insertProntuario, isPending: inserting } = useInsertProntuario();
   const { uploadContrato, loading: uploadingContrato } = useUploadContrato();
   const { uploadExame, loading: uploadingExame } = useUploadExame();
-  const { completeTaskTutorial } = useTutorial();
 
   const {
     register,
@@ -133,7 +131,6 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
         professionalId: user.id,
       });
       if (!record) return;
-      completeTaskTutorial("medical-records", "create-record");
 
       // 2. Upload do contrato se selecionado
       if (contratoFile) {
@@ -169,7 +166,7 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
       <PageHeader title="Nova anamnese" onBack={onBack} />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div data-tutorial="medical-records-form-general">
+        <div>
         <FormSection title="Informações Gerais">
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold tracking-wide uppercase text-secondary dark:text-white">
@@ -196,7 +193,7 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
         </FormSection>
         </div>
 
-        <div data-tutorial="medical-records-form-anamnese">
+        <div>
         <FormSection title="Anamnese">
           <FormField label="Patologia *" error={errors.patologia?.message} {...register("patologia")} />
           <FormField label="Queixa Principal *" error={errors.queixaPrincipal?.message} {...register("queixaPrincipal")} />
@@ -217,7 +214,7 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
           <FormField label="Outras Doenças" {...register("outrasDoencas")} />
         </FormSection>
 
-        <div data-tutorial="medical-records-form-session">
+        <div>
         <FormSection title="Sessão e Orientações">
           <FormField label="Sessão" {...register("sessao")} />
           <FormField label="Orientação Domiciliar" {...register("orientacaoDomiciliar")} />
@@ -280,7 +277,7 @@ export default function ProntuarioForm({ preselectedPatientId, onBack, onSave }:
           </div>
         </FormSection>
 
-        <div data-tutorial="medical-records-form-save">
+        <div>
           <Button type="submit" loading={isLoading}>
             Salvar anamnese
           </Button>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Toaster } from "sonner";
+import { GeistMono } from "geist/font/mono";
 import { ClientProviders } from "@/providers/ClientProviders";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
@@ -39,7 +40,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className="h-full" suppressHydrationWarning>
+    <html lang="pt-BR" className={`h-full ${GeistMono.variable}`} suppressHydrationWarning>
       <body className="min-h-full antialiased">
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-B6H4JM0G6B"

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -14,6 +15,9 @@ import { SessionTypeField } from "./SessionTypeField";
 interface Props {
   onBack: () => void;
   onSave: () => void;
+  /** "sheet" remove o cabeçalho de página quando renderizado dentro do FormSheet. */
+  variant?: "page" | "sheet";
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 const tipoPlanoOptions = [
@@ -21,14 +25,19 @@ const tipoPlanoOptions = [
   { value: "Avulso", label: "Avulso" },
 ];
 
-export default function PlanoRegister({ onBack, onSave }: Props) {
+export default function PlanoRegister({
+  onBack,
+  onSave,
+  variant = "page",
+  onDirtyChange,
+}: Props) {
   const { insertPlano, isPending } = usePlanoInsert();
 
   const {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<PlanoFormData>({
     resolver: zodResolver(PlanoSchema),
     defaultValues: {
@@ -44,6 +53,10 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
   const tipoPlano = watch("tipoPlano");
   const tipoSessaoId = watch("tipoSessaoId");
 
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
   const onSubmit = async (data: PlanoFormData) => {
     try {
       await insertPlano(data);
@@ -55,8 +68,8 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <PageHeader title="Novo Plano" onBack={onBack} />
+    <div className={variant === "page" ? "space-y-6 max-w-2xl" : "space-y-6"}>
+      {variant === "page" && <PageHeader title="Novo Plano" onBack={onBack} />}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <FormSection title="Dados do Plano" columns={1}>
@@ -66,7 +79,7 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
             error={errors.name?.message}
             value={name || ""}
             onChange={(e) =>
-              setValue("name", e.target.value, { shouldValidate: true })
+              setValue("name", e.target.value, { shouldValidate: true, shouldDirty: true })
             }
           />
 
@@ -80,6 +93,7 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
             onChange={(e) =>
               setValue("valor", Number(e.target.value), {
                 shouldValidate: true,
+                shouldDirty: true,
               })
             }
           />
@@ -96,6 +110,7 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
               onChange={(e) =>
                 setValue("tipoPlano", e.target.value as "Mensal" | "Avulso", {
                   shouldValidate: true,
+                  shouldDirty: true,
                 })
               }
               className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
@@ -111,7 +126,7 @@ export default function PlanoRegister({ onBack, onSave }: Props) {
 
           <SessionTypeField
             value={tipoSessaoId}
-            onChange={(id) => setValue("tipoSessaoId", id, { shouldValidate: true })}
+            onChange={(id) => setValue("tipoSessaoId", id, { shouldValidate: true, shouldDirty: true })}
             error={errors.tipoSessaoId?.message}
           />
         </FormSection>

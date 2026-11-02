@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { Patient } from "@/types";
 import PacienteList from "./PacienteList";
 
 const hooks = vi.hoisted(() => ({
@@ -8,11 +9,12 @@ const hooks = vi.hoisted(() => ({
   deletePaciente: vi.fn(),
   changeStatus: vi.fn(),
   importPatients: vi.fn(),
+  patients: [] as Patient[],
 }));
 
 vi.mock("../hooks/pagined", () => ({
   usePacientesPaginated: () => ({
-    data: [],
+    data: hooks.patients,
     page: 1,
     setPage: vi.fn(),
     pageSize: 10,
@@ -40,8 +42,40 @@ vi.mock("../hooks/import", () => ({
   usePatientImport: () => ({ mutate: hooks.importPatients, isPending: false, error: null }),
 }));
 
+const patient: Patient = {
+  id: 1,
+  name: "Ana Souza",
+  email: "ana@cliniq.local",
+  cpf: null,
+  rg: null,
+  phone: "11999990000",
+  rua: null,
+  numero: null,
+  bairro: null,
+  cidade: null,
+  estado: null,
+  cep: null,
+  birthDate: null,
+  isActive: true,
+  appointmentStatus: null,
+  paymentStatus: null,
+  nextAppointmentAt: null,
+  lastSessionAt: null,
+};
+
+const renderList = (onVerPerfil = vi.fn()) =>
+  render(
+    <PacienteList
+      onCreate={vi.fn()}
+      onViewDetails={vi.fn()}
+      onVerPerfil={onVerPerfil}
+    />,
+  );
+
 describe("PacienteList import action", () => {
   beforeEach(() => {
+    hooks.patients = [];
+    window.localStorage.clear();
     hooks.refetch.mockReset();
     hooks.deletePaciente.mockReset();
     hooks.changeStatus.mockReset();
@@ -102,5 +136,38 @@ describe("PacienteList import action", () => {
     expect(screen.getByText(/linha 3/i)).toBeInTheDocument();
     expect(screen.getByText(/nome é obrigatório/i)).toBeInTheDocument();
     expect(hooks.refetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("alterna para cards e lembra a escolha no localStorage e no próximo render", async () => {
+    hooks.patients = [patient];
+    const onVerPerfil = vi.fn();
+    const user = userEvent.setup();
+    const { unmount } = renderList(onVerPerfil);
+
+    await user.click(screen.getByRole("radio", { name: "Cards" }));
+
+    expect(window.localStorage.getItem("cliniq:view:pacientes")).toBe("cards");
+    const card = await screen.findByRole("button", { name: "Abrir perfil de Ana Souza" });
+    expect(card).toBeInTheDocument();
+
+    await user.click(card);
+    expect(onVerPerfil).toHaveBeenCalledWith(1);
+
+    unmount();
+    renderList();
+    expect(screen.getByRole("button", { name: "Abrir perfil de Ana Souza" })).toBeInTheDocument();
+  });
+
+  it("mostra travessão quando o paciente não tem próxima consulta nem última sessão", () => {
+    hooks.patients = [patient];
+    window.localStorage.setItem("cliniq:view:pacientes", "cards");
+
+    renderList();
+
+    const card = screen.getByRole("button", { name: "Abrir perfil de Ana Souza" });
+    expect(within(card).getByText("Próxima consulta")).toBeInTheDocument();
+    expect(within(card).getByText("Última sessão")).toBeInTheDocument();
+    expect(within(card).getAllByText("—")).toHaveLength(2);
+    expect(within(card).getByText("(11) 99999-0000")).toBeInTheDocument();
   });
 });

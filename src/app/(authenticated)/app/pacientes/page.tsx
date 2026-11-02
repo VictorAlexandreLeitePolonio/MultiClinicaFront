@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import PacienteList from "./components/PacienteList";
@@ -15,57 +15,47 @@ function PacientesPage() {
   const searchParams = useSearchParams();
   const mode = (searchParams.get("mode") as ViewMode) ?? "list";
   const id = searchParams.get("id") ? Number(searchParams.get("id")) : null;
+  // Mantém o paciente montado durante a animação de saída do modo foco.
+  const [lastPatientId, setLastPatientId] = useState<number | null>(id);
 
   const goTo = (mode: ViewMode, id?: number) => {
+    if (mode === "view" && id) setLastPatientId(id);
+    if (mode === "list") {
+      router.push("/app/pacientes");
+      return;
+    }
     const params = new URLSearchParams({ mode });
     if (id) params.set("id", String(id));
     router.push(`/app/pacientes?${params.toString()}`);
   };
 
+  const closeFocus = () => goTo("list");
+
   return (
     <div className="p-8">
+      {mode !== "profile" && (
+        <PacienteList
+          onCreate={() => goTo("create")}
+          onViewDetails={(id) => goTo("view", id)}
+          onVerProntuarios={(patientId) => router.push(`/app/pacientes?mode=profile&id=${patientId}&aba=anamnese`)}
+          onVerPerfil={(patientId) => goTo("profile", patientId)}
+        />
+      )}
+
+      <PacienteRegister
+        open={mode === "create"}
+        onClose={closeFocus}
+        onSaved={closeFocus}
+      />
+
+      <PacienteDetails
+        open={mode === "view" && id !== null}
+        patientId={id ?? lastPatientId}
+        onClose={closeFocus}
+        onSaved={closeFocus}
+      />
+
       <AnimatePresence mode="wait" initial={false}>
-        {mode === "list" && (
-          <motion.div
-            key="list"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PacienteList
-              onCreate={() => goTo("create")}
-              onViewDetails={(id) => goTo("view", id)}
-              onVerProntuarios={(patientId) => router.push(`/app/pacientes?mode=profile&id=${patientId}&aba=anamnese`)}
-              onVerPerfil={(patientId) => goTo("profile", patientId)}
-            />
-          </motion.div>
-        )}
-
-        {mode === "create" && (
-          <motion.div
-            key="create"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PacienteRegister onBack={() => goTo("list")} onSave={() => goTo("list")} />
-          </motion.div>
-        )}
-
-        {mode === "view" && id && (
-          <motion.div
-            key="view"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PacienteDetails id={id} onBack={() => goTo("list")} onSave={() => goTo("list")} />
-          </motion.div>
-        )}
-
         {mode === "profile" && id && (
           <motion.div
             key="profile"

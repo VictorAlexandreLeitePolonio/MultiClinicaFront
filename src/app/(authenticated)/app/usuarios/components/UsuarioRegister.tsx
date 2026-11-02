@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +14,9 @@ import { useUsuarioInsert } from "../hooks/insert";
 interface Props {
   onBack: () => void;
   onSave: () => void;
+  /** "sheet" remove o cabeçalho de página quando renderizado dentro do FormSheet. */
+  variant?: "page" | "sheet";
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 const roleOptions = [
@@ -20,14 +24,19 @@ const roleOptions = [
   { value: "Recepcao", label: "Recepção" },
 ];
 
-export default function UsuarioRegister({ onBack, onSave }: Props) {
+export default function UsuarioRegister({
+  onBack,
+  onSave,
+  variant = "page",
+  onDirtyChange,
+}: Props) {
   const { insertUsuario, isPending } = useUsuarioInsert();
 
   const {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<UsuarioInviteFormData>({
     resolver: zodResolver(UsuarioInviteSchema),
     defaultValues: {
@@ -41,6 +50,10 @@ export default function UsuarioRegister({ onBack, onSave }: Props) {
   const email = watch("email");
   const role = watch("role");
 
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
   const onSubmit = async (data: UsuarioInviteFormData) => {
     try {
       const result = await insertUsuario(data);
@@ -53,8 +66,8 @@ export default function UsuarioRegister({ onBack, onSave }: Props) {
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <PageHeader title="Convidar para a equipe" onBack={onBack} />
+    <div className={variant === "page" ? "space-y-6 max-w-2xl" : "space-y-6"}>
+      {variant === "page" && <PageHeader title="Convidar para a equipe" onBack={onBack} />}
 
       <p className="text-sm text-slate-600 dark:text-slate-300">Informe nome, e-mail e perfil. O convite vale por 72 horas; a pessoa define a própria senha.</p>
 
@@ -65,7 +78,7 @@ export default function UsuarioRegister({ onBack, onSave }: Props) {
             id="name"
             error={errors.name?.message}
             value={name || ""}
-            onChange={(e) => setValue("name", e.target.value, { shouldValidate: true })}
+            onChange={(e) => setValue("name", e.target.value, { shouldValidate: true, shouldDirty: true })}
           />
 
           <FormField
@@ -74,7 +87,7 @@ export default function UsuarioRegister({ onBack, onSave }: Props) {
             type="email"
             error={errors.email?.message}
             value={email || ""}
-            onChange={(e) => setValue("email", e.target.value, { shouldValidate: true })}
+            onChange={(e) => setValue("email", e.target.value, { shouldValidate: true, shouldDirty: true })}
           />
 
           {/* Select de Perfil */}
@@ -86,7 +99,7 @@ export default function UsuarioRegister({ onBack, onSave }: Props) {
             </label>
             <select id="invite-role"
               value={role}
-              onChange={(e) => setValue("role", e.target.value as UsuarioInviteFormData["role"], { shouldValidate: true })}
+              onChange={(e) => setValue("role", e.target.value as UsuarioInviteFormData["role"], { shouldValidate: true, shouldDirty: true })}
               className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
                 focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
             >

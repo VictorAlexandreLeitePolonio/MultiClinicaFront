@@ -1,8 +1,9 @@
 "use client";
 
 import type { MouseEvent, ReactNode } from "react";
+import { useLenis } from "./SmoothScroll";
 
-const LANDING_HEADER_OFFSET = 88;
+const LANDING_HEADER_OFFSET = 72;
 
 interface LandingSmoothLinkProps {
   children: ReactNode;
@@ -10,22 +11,9 @@ interface LandingSmoothLinkProps {
   href: `#${string}`;
 }
 
-function scrollToSection(target: HTMLElement, hash: string, keyboard: boolean) {
-  document.querySelector("details[open]")?.removeAttribute("open");
-  window.history.pushState({}, "", hash);
-  if (keyboard) {
-    target.tabIndex = -1;
-    target.focus({ preventScroll: true });
-  }
-  window.scrollTo({
-    top: Math.max(target.getBoundingClientRect().top + window.scrollY - LANDING_HEADER_OFFSET, 0),
-    behavior: keyboard || window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? "instant"
-      : "smooth",
-  });
-}
-
 export function LandingSmoothLink({ children, className, href }: LandingSmoothLinkProps) {
+  const lenis = useLenis();
+
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (
       event.defaultPrevented ||
@@ -45,7 +33,32 @@ export function LandingSmoothLink({ children, className, href }: LandingSmoothLi
     }
 
     event.preventDefault();
-    scrollToSection(target, href, event.detail === 0);
+
+    const keyboard = event.detail === 0;
+    document.querySelector("details[open]")?.removeAttribute("open");
+    window.history.pushState({}, "", href);
+
+    if (keyboard) {
+      target.tabIndex = -1;
+      target.focus({ preventScroll: true });
+    }
+
+    if (lenis) {
+      // As seções da LP já têm scroll-margin-top; o Lenis desconta essa margem.
+      lenis.scrollTo(target, { offset: 0, immediate: keyboard });
+      return;
+    }
+
+    window.scrollTo({
+      top: Math.max(
+        target.getBoundingClientRect().top + window.scrollY - LANDING_HEADER_OFFSET,
+        0,
+      ),
+      behavior:
+        keyboard || window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+    });
   };
 
   return (

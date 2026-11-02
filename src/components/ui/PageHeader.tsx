@@ -1,39 +1,32 @@
 "use client";
 
-import { motion } from "motion/react";
-import { slideFromLeft } from "@/lib/motion";
 import { Button } from "./Button";
 
 interface PageHeaderProps {
   title: string;
+  description?: string;
   onBack?: () => void;
+  /** Ações à direita (ex.: ViewSwitcher, botão Novo). */
   actions?: React.ReactNode;
 }
 
-export function PageHeader({ title, onBack, actions }: PageHeaderProps) {
+export function PageHeader({ title, description, onBack, actions }: PageHeaderProps) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <motion.div 
-        className="flex items-center gap-3"
-        variants={slideFromLeft}
-        initial="hidden"
-        animate="show"
-      >
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex min-w-0 items-center gap-3">
         {onBack && (
           <Button variant="outline" fullWidth={false} onClick={onBack}>
             ← Voltar
           </Button>
         )}
-        <div>
-          <h1 
-            className="text-2xl font-bold tracking-tight text-[#0f172a] [text-wrap:balance] dark:text-white"
-          >
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-secondary)] [text-wrap:balance]">
             {title}
           </h1>
-          <div className="mt-2 h-1 w-14 rounded-full bg-gradient-to-r from-[#14b8a6] to-[#67e8f9]" />
+          {description && <p className="mt-1 text-sm text-[var(--color-gray-600)]">{description}</p>}
         </div>
-      </motion.div>
-      {actions && <div className="flex gap-2">{actions}</div>}
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
   );
 }
