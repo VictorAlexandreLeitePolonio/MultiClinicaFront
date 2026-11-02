@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { ErrorState } from "@/components/ui/ErrorState";
 import type { MercadoPagoSettings, MercadoPagoStatus } from "@/types/mercadoPago";
 import { getApiErrorMessage } from "@/utils/apiError";
+import { formatDate } from "@/utils/formatters";
 import {
   useConnectMercadoPago,
   useDisconnectMercadoPago,
@@ -27,6 +28,46 @@ const settingsFromStatus = (status: MercadoPagoStatus): MercadoPagoSettings => (
   maxInstallments: status.maxInstallments,
   acceptDebit: status.acceptDebit,
 });
+
+function ClinicAccountNotice() {
+  return (
+    <p className="max-w-md text-sm text-[var(--color-gray-600)]">
+      Entre com a conta Mercado Pago{" "}
+      <strong className="font-semibold text-[var(--color-secondary)]">da clínica</strong>. O Mercado Pago usa a
+      conta que estiver logada neste navegador.
+    </p>
+  );
+}
+
+function ConnectedAccount({ status }: { status: MercadoPagoStatus }) {
+  return (
+    <div className="space-y-2 border-t border-[var(--color-gray-200)] pt-3">
+      <h3 className="text-sm font-semibold text-[var(--color-secondary)]">Conta conectada</h3>
+      <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+        <dt className="text-[var(--color-gray-600)]">Apelido</dt>
+        <dd className="font-medium text-[var(--color-secondary)]">{status.nickname ?? "Conta Mercado Pago"}</dd>
+        {status.email && (
+          <>
+            <dt className="text-[var(--color-gray-600)]">E-mail</dt>
+            <dd className="break-all text-[var(--color-secondary)]">{status.email}</dd>
+          </>
+        )}
+        {status.accountId !== null && (
+          <>
+            <dt className="text-[var(--color-gray-600)]">ID</dt>
+            <dd className="font-mono text-[var(--color-secondary)]">{status.accountId}</dd>
+          </>
+        )}
+        {status.connectedAt && (
+          <>
+            <dt className="text-[var(--color-gray-600)]">Conectada em</dt>
+            <dd className="text-[var(--color-secondary)]">{formatDate(status.connectedAt)}</dd>
+          </>
+        )}
+      </dl>
+    </div>
+  );
+}
 
 interface SettingsFormProps {
   initialSettings: MercadoPagoSettings;
@@ -240,6 +281,7 @@ export function MercadoPagoSection() {
               >
                 Desconectar
               </button>
+              <ClinicAccountNotice />
             </div>
           ) : connected ? (
             <div className="flex flex-wrap items-center gap-3">
@@ -270,8 +312,11 @@ export function MercadoPagoSection() {
               >
                 Conectar Mercado Pago
               </button>
+              <ClinicAccountNotice />
             </div>
           )}
+
+          {(connected || revoked) && data && <ConnectedAccount status={data} />}
 
           <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
             Cadastre uma chave Pix na sua conta Mercado Pago para receber por Pix

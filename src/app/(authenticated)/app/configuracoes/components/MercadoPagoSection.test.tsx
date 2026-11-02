@@ -55,6 +55,14 @@ const connected: MercadoPagoStatus = {
   acceptDebit: false,
 };
 
+const connectedAccount: MercadoPagoStatus = {
+  ...connected,
+  accountId: 987654321,
+  nickname: "Clínica Vida",
+  email: "financeiro@clinicavida.com.br",
+  connectedAt: "2026-10-15T14:30:00Z",
+};
+
 function renderSection() {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
@@ -93,6 +101,46 @@ describe("MercadoPagoSection", () => {
 
     await waitFor(() => expect(disconnectMercadoPago).toHaveBeenCalledTimes(1));
     expect(toast.success).toHaveBeenCalledWith("Mercado Pago desconectado.");
+  });
+
+  it("mostra a conta conectada com apelido, e-mail, ID e data de conexão", async () => {
+    vi.mocked(getMercadoPagoStatus).mockResolvedValue(connectedAccount);
+    renderSection();
+
+    expect(await screen.findByText("Conta conectada")).toBeInTheDocument();
+    expect(screen.getByText("Clínica Vida")).toBeInTheDocument();
+    expect(screen.getByText("financeiro@clinicavida.com.br")).toBeInTheDocument();
+    expect(screen.getByText("987654321")).toHaveClass("font-mono");
+    expect(screen.getByText("15/10/2026")).toBeInTheDocument();
+  });
+
+  it("usa 'Conta Mercado Pago' quando o apelido da conta não foi informado", async () => {
+    vi.mocked(getMercadoPagoStatus).mockResolvedValue({ ...connectedAccount, nickname: null, email: null });
+    renderSection();
+
+    expect(await screen.findByText("Conta conectada")).toBeInTheDocument();
+    expect(screen.getByText("Conta Mercado Pago")).toBeInTheDocument();
+    expect(screen.queryByText("E-mail")).not.toBeInTheDocument();
+  });
+
+  it("avisa para entrar com a conta Mercado Pago da clínica antes de conectar", async () => {
+    vi.mocked(getMercadoPagoStatus).mockResolvedValue(disconnected);
+    renderSection();
+
+    const notice = await screen.findByText(/Entre com a conta Mercado Pago/);
+    expect(notice).toHaveTextContent(
+      "Entre com a conta Mercado Pago da clínica. O Mercado Pago usa a conta que estiver logada neste navegador.",
+    );
+    expect(screen.queryByText("Conta conectada")).not.toBeInTheDocument();
+  });
+
+  it("mostra a conta conectada e o aviso da clínica ao reconectar uma conta revogada", async () => {
+    vi.mocked(getMercadoPagoStatus).mockResolvedValue({ ...connectedAccount, revoked: true });
+    renderSection();
+
+    expect(await screen.findByText("Conta conectada")).toBeInTheDocument();
+    expect(screen.getByText("Clínica Vida")).toBeInTheDocument();
+    expect(screen.getByText(/Entre com a conta Mercado Pago/)).toBeInTheDocument();
   });
 
   it("pede para reconectar uma conta revogada", async () => {
