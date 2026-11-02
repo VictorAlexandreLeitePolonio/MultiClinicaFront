@@ -4,7 +4,7 @@ import { beforeEach, expect, test, vi } from "vitest";
 import { MedicalRecord } from "@/types";
 import { PatientAnamnesis } from "./PatientAnamnesis";
 
-const service = vi.hoisted(() => ({ getMedicalRecords: vi.fn() }));
+const service = vi.hoisted(() => ({ getMedicalRecords: vi.fn(), getMedicalRecordById: vi.fn() }));
 
 vi.mock("@/app/(authenticated)/app/prontuarios/services/medical-records.service", () => service);
 vi.mock("@/app/(authenticated)/app/prontuarios/components/ProntuarioDetails", () => ({
@@ -64,6 +64,7 @@ function renderAnamnesis(props: { creating?: boolean; focusRecordId?: number | n
 
 beforeEach(() => {
   service.getMedicalRecords.mockReset();
+  service.getMedicalRecordById.mockReset();
 });
 
 test("abre a avaliação mais recente e lista as anteriores", async () => {
@@ -95,4 +96,15 @@ test("mostra o vazio quando o paciente não tem anamnese", async () => {
   renderAnamnesis();
 
   expect(await screen.findByText("Nenhuma anamnese registrada.")).toBeInTheDocument();
+});
+
+test("busca pelo id a avaliação que não está na primeira página, sem trocar pela mais recente", async () => {
+  const veryOld = record({ id: 99, titulo: "Avaliação de 2024", createdAt: "2024-03-01T12:00:00.000Z" });
+  mockRecords([older, latest]); // a 99 ficou fora das 50 mais recentes
+  service.getMedicalRecordById.mockResolvedValue(veryOld);
+  renderAnamnesis({ focusRecordId: 99 });
+
+  expect(await screen.findByText("Detalhes da anamnese 99")).toBeInTheDocument();
+  expect(screen.queryByText("Detalhes da anamnese 2")).not.toBeInTheDocument();
+  expect(service.getMedicalRecordById).toHaveBeenCalledWith(99);
 });

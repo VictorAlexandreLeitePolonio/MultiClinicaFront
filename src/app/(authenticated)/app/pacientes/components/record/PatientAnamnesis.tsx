@@ -15,7 +15,10 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { queryKeys } from "@/lib/queryKeys";
 import { MedicalRecord } from "@/types";
 import { formatDate } from "@/utils/formatters";
-import { getMedicalRecords } from "@/app/(authenticated)/app/prontuarios/services/medical-records.service";
+import {
+  getMedicalRecordById,
+  getMedicalRecords,
+} from "@/app/(authenticated)/app/prontuarios/services/medical-records.service";
 import ProntuarioDetails from "@/app/(authenticated)/app/prontuarios/components/ProntuarioDetails";
 import ProntuarioForm from "@/app/(authenticated)/app/prontuarios/components/ProntuarioForm";
 import { useProntuarioUpdate } from "@/app/(authenticated)/app/prontuarios/hooks/update";
@@ -160,9 +163,17 @@ export function PatientAnamnesis({
     (first, second) => new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime(),
   );
   const latest = records[0] ?? null;
-  const selected = records.find((record) => record.id === selectedId) ?? latest;
+  const selectedInList = records.find((record) => record.id === selectedId);
+  // A lista traz só as 50 mais recentes: uma avaliação mais antiga aberta pela linha do tempo é
+  // buscada pelo id, nunca trocada pela mais recente.
+  const selectedQuery = useQuery({
+    queryKey: queryKeys.medicalRecords.detail(selectedId ?? 0),
+    queryFn: () => getMedicalRecordById(selectedId!),
+    enabled: selectedId != null && recordsQuery.isSuccess && !selectedInList,
+  });
+  const selected = selectedId == null ? latest : (selectedInList ?? selectedQuery.data ?? null);
 
-  if (recordsQuery.isPending) {
+  if (recordsQuery.isPending || (selectedId != null && !selectedInList && selectedQuery.isPending)) {
     return (
       <div className="space-y-2" aria-label="Carregando anamnese">
         <Skeleton className="h-24" />
@@ -171,11 +182,11 @@ export function PatientAnamnesis({
     );
   }
 
-  if (recordsQuery.isError) {
+  if (recordsQuery.isError || selectedQuery.isError) {
     return (
       <ErrorState
         message="Não foi possível carregar a anamnese."
-        onRetry={() => void recordsQuery.refetch()}
+        onRetry={() => void (recordsQuery.isError ? recordsQuery.refetch() : selectedQuery.refetch())}
       />
     );
   }
