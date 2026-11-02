@@ -15,12 +15,14 @@ interface Props {
   categories: MarketplaceCategory[];
   onSearchChange: (value: string) => void;
   onChange: (patch: Partial<MarketplaceClinicFilters>) => void;
+  /** No Hub público não existe curtida, então o filtro não aparece. */
+  showLikedOnly?: boolean;
 }
 
 const inputClass =
   "rounded-xl border border-[#d7f3ea] bg-white px-3 py-2 text-sm text-[#0f172a] focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/40 dark:border-slate-800 dark:bg-slate-900 dark:text-white";
 
-export function MarketplaceFilters({ filters, search, city, state, categories, onSearchChange, onCityChange, onStateChange, onChange }: Props) {
+export function MarketplaceFilters({ filters, search, city, state, categories, onSearchChange, onCityChange, onStateChange, onChange, showLikedOnly = true }: Props) {
   const selectedCategories = filters.categoryIds ?? [];
   const [categorySearch, setCategorySearch] = useState("");
   const visibleCategories = categories.filter((category) =>
@@ -116,14 +118,16 @@ export function MarketplaceFilters({ filters, search, city, state, categories, o
           />
           Aceita solicitações online
         </label>
-        <label className="flex items-center gap-2 text-sm text-[#475569] dark:text-slate-300">
-          <input
-            type="checkbox"
-            checked={filters.likedOnly === true}
-            onChange={(event) => onChange({ likedOnly: event.target.checked || undefined })}
-          />
-          Somente curtidas
-        </label>
+        {showLikedOnly && (
+          <label className="flex items-center gap-2 text-sm text-[#475569] dark:text-slate-300">
+            <input
+              type="checkbox"
+              checked={filters.likedOnly === true}
+              onChange={(event) => onChange({ likedOnly: event.target.checked || undefined })}
+            />
+            Somente curtidas
+          </label>
+        )}
         <select
           aria-label="Ordenação"
           value={filters.sort ?? "MostLiked"}

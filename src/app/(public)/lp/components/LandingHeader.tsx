@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import { BrandLogo } from "@/components/ui/BrandLogo";
@@ -9,13 +9,37 @@ import { LandingSmoothLink } from "./LandingSmoothLink";
 
 const NAV_LINKS = [
   { href: "#funcionalidades", label: "Funcionalidades" },
-  { href: "#hub", label: "Hub" },
+  { href: "/hub", label: "Hub" },
   { href: "#planos", label: "Planos" },
   { href: "#faq", label: "Dúvidas" },
 ] as const;
 
 const FOCUS_RING =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-bg)]";
+
+function NavigationLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className: string;
+  children: ReactNode;
+}) {
+  if (href.startsWith("#")) {
+    return (
+      <LandingSmoothLink href={href as `#${string}`} className={className}>
+        {children}
+      </LandingSmoothLink>
+    );
+  }
+
+  return (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  );
+}
 
 export function LandingHeader() {
   const [scrolled, setScrolled] = useState(false);
@@ -53,7 +77,7 @@ export function LandingHeader() {
 
         <nav className="hidden items-center gap-7 text-sm text-[var(--lp-muted)] lg:flex">
           {NAV_LINKS.map((link) => (
-            <LandingSmoothLink
+            <NavigationLink
               key={link.href}
               href={link.href}
               className={cn(
@@ -62,7 +86,7 @@ export function LandingHeader() {
               )}
             >
               {link.label}
-            </LandingSmoothLink>
+            </NavigationLink>
           ))}
         </nav>
 
@@ -99,7 +123,7 @@ export function LandingHeader() {
 
             <div className="absolute top-full right-0 mt-2 grid w-60 gap-1 rounded-xl border border-[var(--lp-line)] bg-[var(--lp-surface)] p-2 shadow-lg">
               {NAV_LINKS.map((link) => (
-                <LandingSmoothLink
+                <NavigationLink
                   key={link.href}
                   href={link.href}
                   className={cn(
@@ -108,7 +132,7 @@ export function LandingHeader() {
                   )}
                 >
                   {link.label}
-                </LandingSmoothLink>
+                </NavigationLink>
               ))}
               <div className="mt-1 grid gap-1 border-t border-[var(--lp-line)] pt-2">
                 <Link

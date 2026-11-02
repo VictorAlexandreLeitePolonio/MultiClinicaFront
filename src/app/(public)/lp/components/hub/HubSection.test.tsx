@@ -87,6 +87,7 @@ describe("HubSection", () => {
       "href",
       "/cadastro",
     );
+    expect(screen.getByRole("link", { name: "Explorar o Hub" })).toHaveAttribute("href", "/hub");
 
     await userEvent.click(screen.getAllByRole("button", { name: /Clínica Alfa/ })[0]);
 
