@@ -205,3 +205,15 @@ export interface PatientTimeline {
   /** Passe em ?before= para a próxima página; null quando acabou. */
   nextBefore: string | null;
 }
+
+// GET /api/patient-records/timeline?before=&take= (Administrador, Profissional)
+export interface ClinicTimelineEvent {
+  patientId: number;
+  patientName: string;
+  event: PatientTimelineEvent;
+}
+
+export interface ClinicTimeline {
+  events: ClinicTimelineEvent[];
+  nextBefore: string | null;
+}

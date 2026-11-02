@@ -409,6 +409,10 @@ export interface Patient {
   createdAt?: string;
   appointmentStatus: "Scheduled" | "Completed" | "Cancelled" | null;
   paymentStatus: "Pending" | "Paid" | "Cancelled" | null;
+  /** Próximo agendamento (ISO) ou null. */
+  nextAppointmentAt?: string | null;
+  /** Última consulta concluída (ISO) ou null. */
+  lastSessionAt?: string | null;
   /** null quando o paciente não possui acesso ao portal ("Sem acesso"). */
   portalAccessStatus?: PatientAccountStatus | null;
 }

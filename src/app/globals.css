@@ -666,6 +666,23 @@ body {
   scroll-margin-top: 72px;
 }
 
+/* Painel lateral (FormSheet) e modo foco (FocusForm): entrada 240ms, saída 180ms. */
+.form-sheet[data-state="open"] { animation: form-sheet-in 240ms cubic-bezier(0.32, 0.72, 0, 1); }
+.form-sheet[data-state="closed"] { animation: form-sheet-out 180ms cubic-bezier(0.23, 1, 0.32, 1); }
+.form-sheet__overlay[data-state="open"] { animation: fade-in 200ms ease-out; }
+.form-sheet__overlay[data-state="closed"] { animation: fade-out 180ms ease-out; }
+.focus-form[data-state="open"] { animation: focus-form-in 220ms cubic-bezier(0.23, 1, 0.32, 1); }
+.focus-form[data-state="closed"] { animation: fade-out 150ms ease-out; }
+@keyframes form-sheet-in { from { transform: translateX(100%); } }
+@keyframes form-sheet-out { to { transform: translateX(100%); } }
+@keyframes focus-form-in { from { opacity: 0; transform: scale(0.98); } }
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes fade-out { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .form-sheet[data-state], .focus-form[data-state] { animation: fade-in 120ms ease-out; }
+  .form-sheet[data-state="closed"], .focus-form[data-state="closed"] { animation: fade-out 120ms ease-out; }
+}
+
 /* Trilha F1 */
 .hero-demo__wave-bar {
   transform-origin: center;
@@ -758,3 +775,15 @@ body {
     transition-duration: 0ms !important;
   }
 }
+
+/* BO Pacientes */
+
+/* BO Agenda */
+
+/* BO Pagamentos */
+
+/* BO Cadastros */
+
+/* LP GSAP */
+
+/* Auth */
