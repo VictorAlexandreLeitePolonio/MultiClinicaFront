@@ -3,32 +3,35 @@
 import { ReactNode } from "react";
 import { Logo } from "@/components/ui/Logo";
 import { AuthLayout } from "@/components/auth/AuthLayout";
-import type { AuthRobotState } from "@/components/auth/AuthMouseRobot";
 
 interface Props {
   title: string;
   subtitle?: string;
   children: ReactNode;
   footer?: ReactNode;
-  robotState?: AuthRobotState;
 }
 
-/** Shell das telas públicas do paciente — mesmo palco do login da clínica (robô flutuante). */
-export function PatientAuthShell({ title, subtitle, children, footer, robotState = "idle" }: Props) {
+/** Shell das telas públicas do paciente — mesmo split da clínica, com a marca do paciente. */
+export function PatientAuthShell({ title, subtitle, children, footer }: Props) {
   return (
-    <div className="theme-light flex min-h-screen">
-      <AuthLayout robotState={robotState}>
+    <AuthLayout variant="patient">
+      <div className="lg:hidden">
         <Logo light />
+      </div>
 
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#0f172a]">{title}</h1>
-          {subtitle && <p className="mt-1 text-sm text-[#64748b]">{subtitle}</p>}
-        </div>
+      <div>
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--color-primary-dark)]">
+          Portal do paciente
+        </p>
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--color-secondary)]">
+          {title}
+        </h1>
+        {subtitle && <p className="mt-1 text-sm text-[var(--color-gray-600)]">{subtitle}</p>}
+      </div>
 
-        {children}
+      {children}
 
-        {footer && <div className="text-center text-sm">{footer}</div>}
-      </AuthLayout>
-    </div>
+      {footer && <div className="text-center text-sm">{footer}</div>}
+    </AuthLayout>
   );
 }
