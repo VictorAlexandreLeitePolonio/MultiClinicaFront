@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { useAuth } from '@/contexts/AuthContext'
 import { usePatientAuth } from '@/contexts/PatientAuthContext'
 import { logout } from '@/app/(public)/login/services/auth.service'
@@ -31,7 +31,7 @@ import {
 } from 'lucide-react'
 import { getTenantTheme } from '@/utils/tenant'
 
-const baseModules = [
+export const baseModules = [
   {
     href: '/app',
     label: 'Início',
@@ -58,7 +58,7 @@ const baseModules = [
   },
 ]
 
-const adminModules = [
+export const adminModules = [
   {
     href: '/app/pagamentos',
     label: 'Pagamentos',
@@ -85,7 +85,7 @@ const adminModules = [
   },
 ]
 
-const settingsModule = {
+export const settingsModule = {
   href: '/app/configuracoes',
   label: 'Configurações',
   icon: <Settings size={18} />,
@@ -136,6 +136,7 @@ export function Sidebar({ area }: SidebarProps) {
   const router = useRouter()
   const [collapsed, setCollapsed] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const reduceMotion = useReducedMotion()
 
   const isPatient = area === 'patient'
   const clinicModules = [...baseModules, ...adminModules].filter((module) =>
@@ -168,9 +169,10 @@ export function Sidebar({ area }: SidebarProps) {
 
   return (
     <motion.aside
+      initial={false}
       animate={{ width: collapsed ? 72 : 256 }}
-      transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-      className={`sticky top-0 h-screen flex-col overflow-hidden border-r border-[#d7f3ea] bg-white/95 px-3 py-6 shadow-[10px_0_40px_-34px_rgba(15,23,42,0.55)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/95 ${isPatient ? 'hidden md:flex' : 'flex'}`}
+      transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 200, damping: 25 }}
+      className={`sticky top-0 h-screen flex-col overflow-hidden border-r border-[var(--color-gray-200)] bg-[var(--color-card)] px-3 py-6 ${isPatient ? 'hidden md:flex' : 'flex'}`}
     >
       {/* Logo + botão colapsar */}
       <div
@@ -182,7 +184,7 @@ export function Sidebar({ area }: SidebarProps) {
               <BrandLogo variant="mark" size={56} className="rounded-2xl" priority />
             ) : (
               <div
-                className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-[#a7f3d0] text-white shadow-[0_18px_34px_-24px_rgba(20,184,166,0.85)]"
+                className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-[var(--color-gray-200)] text-[var(--color-white)] shadow-[var(--shadow-teal-sm)]"
                 style={{ backgroundColor: tenantTheme.primaryColor }}
               >
                 {tenant?.logoUrl ? (
@@ -197,10 +199,10 @@ export function Sidebar({ area }: SidebarProps) {
               </div>
             )}
             <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-wide text-[#0f172a] dark:text-white">
+              <p className="text-xs font-bold uppercase tracking-wide text-[var(--color-secondary)]">
                 {isPatient ? 'Cliniq' : area === 'superadmin' ? 'Cliniq' : clinicName}
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-[#14b8a6]">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-primary-dark)] dark:text-[var(--color-primary-light)]">
                 {isPatient ? 'Portal do Paciente' : area === 'superadmin' ? 'Painel Global' : 'App Clínica'}
               </p>
             </div>
@@ -208,14 +210,15 @@ export function Sidebar({ area }: SidebarProps) {
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className={`rounded-xl border border-transparent p-1.5 text-[#64748b] transition-colors hover:border-[#d7f3ea] hover:bg-[#ecfdf5] hover:text-[#0f766e] dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-900 dark:hover:text-white ${collapsed ? '' : 'ml-auto'}`}
+          aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+          className={`rounded-xl border border-transparent p-1.5 text-[var(--color-gray-600)] transition-colors hover:bg-[var(--color-primary-muted)] hover:text-[var(--color-primary-dark)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${collapsed ? '' : 'ml-auto'}`}
         >
           {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
       </div>
 
       {/* Separador */}
-      <div className="mx-2 my-3 h-px shrink-0 bg-[#d7f3ea] dark:bg-slate-800" />
+      <div className="mx-2 my-3 h-px shrink-0 bg-[var(--color-gray-200)]" />
 
       {/* Módulos */}
       <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain">
@@ -228,25 +231,25 @@ export function Sidebar({ area }: SidebarProps) {
       </nav>
 
       {/* Divisor */}
-      <div className="mx-2 my-4 h-px shrink-0 bg-[#d7f3ea] dark:bg-slate-800" />
+      <div className="mx-2 my-4 h-px shrink-0 bg-[var(--color-gray-200)]" />
 
       {!collapsed && !isPatient && user && (
-        <div className="mb-3 shrink-0 rounded-2xl border border-[#d7f3ea] bg-[#f8fffc] px-3 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <p className="truncate text-xs font-semibold text-[#0f172a] dark:text-white">
+        <div className="mb-3 shrink-0 rounded-2xl border border-[var(--color-gray-200)] bg-[var(--color-gray-50)] px-3 py-2 shadow-[var(--shadow-sm)]">
+          <p className="truncate text-xs font-semibold text-[var(--color-secondary)]">
             {user.name}
           </p>
-          <p className="truncate text-[11px] text-[#64748b] dark:text-slate-300">
+          <p className="truncate text-[11px] text-[var(--color-gray-600)]">
             {getRoleLabel(user.role)}
           </p>
         </div>
       )}
 
       {!collapsed && isPatient && patient && (
-        <div className="mb-3 shrink-0 rounded-2xl border border-[#d7f3ea] bg-[#f8fffc] px-3 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <p className="truncate text-xs font-semibold text-[#0f172a] dark:text-white">
+        <div className="mb-3 shrink-0 rounded-2xl border border-[var(--color-gray-200)] bg-[var(--color-gray-50)] px-3 py-2 shadow-[var(--shadow-sm)]">
+          <p className="truncate text-xs font-semibold text-[var(--color-secondary)]">
             {patient.name ?? 'Paciente'}
           </p>
-          <p className="truncate text-[11px] text-[#64748b] dark:text-slate-300">
+          <p className="truncate text-[11px] text-[var(--color-gray-600)]">
             {patient.email ?? 'Paciente'}
           </p>
         </div>
@@ -255,7 +258,7 @@ export function Sidebar({ area }: SidebarProps) {
       {isPatient && (
         <div className={`mb-2 flex shrink-0 items-center ${collapsed ? 'justify-center' : 'justify-between px-1'}`}>
           {!collapsed && (
-            <span className="text-[11px] font-semibold uppercase tracking-wide text-[#64748b] dark:text-slate-400">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-gray-600)]">
               Tema
             </span>
           )}
@@ -264,18 +267,18 @@ export function Sidebar({ area }: SidebarProps) {
       )}
 
       {/* Sair */}
-      <motion.button
-        whileHover={{ x: collapsed ? 0 : 2 }}
+      <button
         onClick={handleLogout}
         disabled={isLoggingOut}
         className={`flex shrink-0 items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold
-          text-[#64748b] transition-colors hover:border-red-100 hover:bg-red-50 hover:text-red-600 disabled:cursor-wait disabled:opacity-60 dark:text-slate-300 dark:hover:border-red-900/60 dark:hover:bg-red-950/30 dark:hover:text-red-300
+          text-[var(--color-gray-600)] transition-[color,background-color] duration-[160ms] hover:bg-red-50 hover:text-red-600 active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 dark:hover:bg-red-950/30 dark:hover:text-red-300
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] motion-reduce:transition-none motion-reduce:active:scale-100
           ${collapsed ? 'justify-center' : ''}`}
         title={collapsed ? 'Sair' : undefined}
       >
         <LogOut size={18} />
         {!collapsed && <span>Sair</span>}
-      </motion.button>
+      </button>
     </motion.aside>
   )
 }
