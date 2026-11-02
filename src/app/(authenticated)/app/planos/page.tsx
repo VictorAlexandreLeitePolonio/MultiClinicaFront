@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AnimatePresence, motion } from "motion/react";
+import { FormSheet } from "@/components/ui/FormSheet";
 import PlanoList from "./components/PlanoList";
 import PlanoRegister from "./components/PlanoRegister";
 import PlanoDetails from "./components/PlanoDetails";
@@ -13,63 +13,72 @@ function PlanosPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const mode = (searchParams.get("mode") as ViewMode) ?? "list";
-  const id = searchParams.get("id") ? Number(searchParams.get("id")) : null;
+  const idParam = searchParams.get("id");
+  const id = idParam ? Number(idParam) : null;
+  const [dirty, setDirty] = useState(false);
+  const [listVersion, setListVersion] = useState(0);
 
-  const goTo = (mode: ViewMode, id?: number) => {
-    const params = new URLSearchParams({ mode });
-    if (id) params.set("id", String(id));
-    router.push(`/app/planos?${params.toString()}`);
+  const closePanel = () => {
+    setDirty(false);
+    router.push("/app/planos");
+  };
+
+  const openCreate = () => {
+    setDirty(false);
+    router.push("/app/planos?mode=create");
+  };
+
+  const openView = (planId: number) => {
+    setDirty(false);
+    router.push(`/app/planos?mode=view&id=${planId}`);
+  };
+
+  const handleSaved = () => {
+    setListVersion((version) => version + 1);
+    closePanel();
   };
 
   return (
     <div className="p-8">
-      <AnimatePresence mode="wait" initial={false}>
-        {mode === "list" && (
-          <motion.div
-            key="list"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PlanoList
-              onCreate={() => goTo("create")}
-              onViewDetails={(id) => goTo("view", id)}
-            />
-          </motion.div>
-        )}
+      <PlanoList
+        key={listVersion}
+        onCreate={openCreate}
+        onViewDetails={openView}
+      />
 
+      <FormSheet
+        open={mode === "create"}
+        onClose={closePanel}
+        title="Novo plano"
+        description="Defina valor, tipo de cobrança e sessão."
+        dirty={dirty}
+      >
         {mode === "create" && (
-          <motion.div
-            key="create"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PlanoRegister
-              onBack={() => goTo("list")}
-              onSave={() => goTo("list")}
-            />
-          </motion.div>
+          <PlanoRegister
+            variant="sheet"
+            onBack={closePanel}
+            onSave={handleSaved}
+            onDirtyChange={setDirty}
+          />
         )}
+      </FormSheet>
 
-        {mode === "view" && id && (
-          <motion.div
-            key="view"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PlanoDetails
-              id={id}
-              onBack={() => goTo("list")}
-              onSave={() => goTo("list")}
-            />
-          </motion.div>
+      <FormSheet
+        open={mode === "view" && id !== null}
+        onClose={closePanel}
+        title="Detalhes do plano"
+        dirty={dirty}
+      >
+        {mode === "view" && id !== null && (
+          <PlanoDetails
+            id={id}
+            variant="sheet"
+            onBack={closePanel}
+            onSave={handleSaved}
+            onDirtyChange={setDirty}
+          />
         )}
-      </AnimatePresence>
+      </FormSheet>
     </div>
   );
 }

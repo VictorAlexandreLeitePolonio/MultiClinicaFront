@@ -18,6 +18,9 @@ interface Props {
   id: number;
   onBack: () => void;
   onSave: () => void;
+  /** "sheet" remove o cabeçalho de página quando renderizado dentro do FormSheet. */
+  variant?: "page" | "sheet";
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 const roleOptions = [
@@ -30,7 +33,13 @@ function isClinicUserRole(role: string): role is UsuarioFormData["role"] {
   return roleOptions.some((option) => option.value === role);
 }
 
-export default function UsuarioDetails({ id, onBack, onSave }: Props) {
+export default function UsuarioDetails({
+  id,
+  onBack,
+  onSave,
+  variant = "page",
+  onDirtyChange,
+}: Props) {
   const { data, loading, error } = useUsuarioById(id);
   const { updateUsuario, isPending } = useUsuarioUpdate();
   const [isEditing, setIsEditing] = useState(false);
@@ -40,7 +49,7 @@ export default function UsuarioDetails({ id, onBack, onSave }: Props) {
     reset,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<UsuarioFormData>({
     resolver: zodResolver(UsuarioSchema),
     defaultValues: {
@@ -86,10 +95,35 @@ export default function UsuarioDetails({ id, onBack, onSave }: Props) {
     }
   };
 
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
+  const containerClass = variant === "page" ? "space-y-6 max-w-2xl" : "space-y-6";
+
+  const renderActions = (compact: boolean) =>
+    isEditing ? (
+      <>
+        <Button variant="outline" onClick={handleCancelEdit}>
+          <X size={16} className="mr-2" />
+          Cancelar
+        </Button>
+        <Button onClick={handleSubmit(onSubmit)} loading={isPending}>
+          <Save size={16} className="mr-2" />
+          {compact ? "Salvar" : "Salvar Alterações"}
+        </Button>
+      </>
+    ) : (
+      <Button onClick={() => setIsEditing(true)}>
+        <Edit3 size={16} className="mr-2" />
+        Editar
+      </Button>
+    );
+
   if (loading) {
     return (
-      <div className="space-y-6 max-w-2xl">
-        <PageHeader title="Detalhes do Usuário" onBack={onBack} />
+      <div className={containerClass}>
+        {variant === "page" && <PageHeader title="Detalhes do Usuário" onBack={onBack} />}
         <p className="text-gray-600 dark:text-slate-300">
           Carregando...
         </p>
@@ -99,38 +133,22 @@ export default function UsuarioDetails({ id, onBack, onSave }: Props) {
 
   if (error) {
     return (
-      <div className="space-y-6 max-w-2xl">
-        <PageHeader title="Detalhes do Usuário" onBack={onBack} />
+      <div className={containerClass}>
+        {variant === "page" && <PageHeader title="Detalhes do Usuário" onBack={onBack} />}
         <p className="text-red-500">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <PageHeader
-        title="Detalhes do Usuário"
-        onBack={onBack}
-        actions={
-          !isEditing ? (
-            <Button onClick={() => setIsEditing(true)}>
-              <Edit3 size={16} className="mr-2" />
-              Editar
-            </Button>
-          ) : (
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={handleCancelEdit}>
-                <X size={16} className="mr-2" />
-                Cancelar
-              </Button>
-              <Button onClick={handleSubmit(onSubmit)} loading={isPending}>
-                <Save size={16} className="mr-2" />
-                Salvar Alterações
-              </Button>
-            </div>
-          )
-        }
-      />
+    <div className={containerClass}>
+      {variant === "page" && (
+        <PageHeader
+          title="Detalhes do Usuário"
+          onBack={onBack}
+          actions={renderActions(false)}
+        />
+      )}
 
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -166,7 +184,7 @@ export default function UsuarioDetails({ id, onBack, onSave }: Props) {
             error={errors.name?.message}
             disabled={!isEditing}
             value={name || ""}
-            onChange={(e) => setValue("name", e.target.value, { shouldValidate: true })}
+            onChange={(e) => setValue("name", e.target.value, { shouldValidate: true, shouldDirty: true })}
           />
 
           <FormField
@@ -176,7 +194,7 @@ export default function UsuarioDetails({ id, onBack, onSave }: Props) {
             error={errors.email?.message}
             disabled={!isEditing}
             value={email || ""}
-            onChange={(e) => setValue("email", e.target.value, { shouldValidate: true })}
+            onChange={(e) => setValue("email", e.target.value, { shouldValidate: true, shouldDirty: true })}
           />
 
           {/* Select de Perfil */}
@@ -191,7 +209,7 @@ export default function UsuarioDetails({ id, onBack, onSave }: Props) {
             <select
               disabled={!isEditing}
               value={role}
-              onChange={(e) => setValue("role", e.target.value as UsuarioFormData["role"], { shouldValidate: true })}
+              onChange={(e) => setValue("role", e.target.value as UsuarioFormData["role"], { shouldValidate: true, shouldDirty: true })}
               className={`w-full px-4 py-3 border rounded-xl transition-all
                 ${!isEditing
                   ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
@@ -207,25 +225,13 @@ export default function UsuarioDetails({ id, onBack, onSave }: Props) {
           </div>
         </FormSection>
 
-        <div className="flex gap-2 md:hidden">
-          {!isEditing ? (
-            <Button onClick={() => setIsEditing(true)}>
-              <Edit3 size={16} className="mr-2" />
-              Editar
-            </Button>
-          ) : (
-            <>
-              <Button variant="outline" onClick={handleCancelEdit}>
-                <X size={16} className="mr-2" />
-                Cancelar
-              </Button>
-              <Button onClick={handleSubmit(onSubmit)} loading={isPending}>
-                <Save size={16} className="mr-2" />
-                Salvar
-              </Button>
-            </>
-          )}
-        </div>
+        {variant === "page" ? (
+          <div className="flex gap-2 md:hidden">{renderActions(false)}</div>
+        ) : (
+          <div className="border-t border-[var(--color-gray-200)] pt-4">
+            {renderActions(true)}
+          </div>
+        )}
       </form>
     </div>
   );
