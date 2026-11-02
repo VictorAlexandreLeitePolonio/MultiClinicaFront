@@ -27,6 +27,7 @@ export const queryKeys = {
     all: ["payments"] as const,
     list: (params: unknown) => ["payments", "list", params] as const,
     detail: (paymentId: number) => ["payments", "detail", paymentId] as const,
+    summary: (params: unknown) => ["payments", "summary", params] as const,
   },
   financial: {
     balance: (params?: unknown) => params === undefined ? ["financial", "balance"] as const : ["financial", "balance", params] as const,

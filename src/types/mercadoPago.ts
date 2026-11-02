@@ -8,6 +8,11 @@ export interface MercadoPagoStatus {
   acceptCredit: boolean;
   maxInstallments: number;
   acceptDebit: boolean;
+  /** Conta conectada; apelido e e-mail ficam nulos em contas ligadas antes de 2026-11-02. */
+  accountId: number | null;
+  nickname: string | null;
+  email: string | null;
+  connectedAt: string | null;
 }
 
 export interface MercadoPagoSettings {

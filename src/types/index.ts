@@ -240,6 +240,13 @@ export interface Plan {
 
 export type PaymentStatus = "Pending" | "Paid" | "Cancelled";
 
+/** GET /api/payments/summary: total do quadro sobre todo o filtro, não só a página. */
+export interface PaymentStatusSummary {
+  status: PaymentStatus;
+  count: number;
+  total: number;
+}
+
 export interface Payment {
   id: number;
   userId: number;

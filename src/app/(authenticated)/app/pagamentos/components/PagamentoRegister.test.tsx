@@ -18,6 +18,10 @@ const connected: MercadoPagoStatus = {
   acceptCredit: true,
   maxInstallments: 6,
   acceptDebit: true,
+  accountId: null,
+  nickname: null,
+  email: null,
+  connectedAt: null,
 };
 
 const disconnected: MercadoPagoStatus = {

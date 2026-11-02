@@ -1,6 +1,6 @@
 import api from '@/lib/api'
 import { normalizePagedResult } from '@/lib/pagination'
-import { CreatePaymentDto, PagedResult, Payment } from '@/types'
+import { CreatePaymentDto, PagedResult, Payment, PaymentStatusSummary } from '@/types'
 import { PagamentoFormData } from '@/app/(authenticated)/app/pagamentos/schemas/pagamento.schema'
 
 export interface GetPaymentsParams {
@@ -31,6 +31,14 @@ export async function getPayments(
   )
 
   return normalizePagedResult<Payment>(response.data, params?.pageSize)
+}
+
+/** Contagem e soma por status sobre todo o filtro (sem paginação); sempre os 3 status. */
+export async function getPaymentsSummary(
+  params?: Omit<GetPaymentsParams, 'status' | 'page' | 'pageSize'>,
+): Promise<PaymentStatusSummary[]> {
+  const response = await api.get<PaymentStatusSummary[]>('/api/payments/summary', { params })
+  return response.data
 }
 
 export async function getPaymentById(id: number): Promise<Payment> {
