@@ -20,18 +20,12 @@ export const dashboardTutorial: ModuleTutorial = {
       placement: "bottom",
     },
     {
-      id: "actions",
-      target: '[data-tutorial="dashboard-actions"]',
-      title: "Atalhos da sua rotina",
-      description: "Acesse rapidamente as ações mais usadas do seu perfil.",
-      placement: "top",
-    },
-    {
       id: "evolutions",
       target: '[data-tutorial="dashboard-evolutions"]',
-      title: "Evoluções clínicas",
-      description: "Veja um resumo das evoluções registradas recentemente.",
+      title: "Pulso clínico",
+      description: "Acompanhe o progresso e a distribuição clínica dos pacientes em acompanhamento.",
       placement: "top",
+      roles: ["Administrador", "Profissional"],
     },
     {
       id: "today",
