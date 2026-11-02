@@ -44,7 +44,7 @@ const dashboardActions: DashboardAction[] = [
     title: "Fichas de medição",
     description: "Definir o que é medido nas evoluções (dor, amplitude, força).",
     icon: FileText,
-    roles: ["Administrador", "Profissional"],
+    roles: ["Administrador", "Profissional", "Recepcao"],
   },
   {
     href: "/app/pagamentos",

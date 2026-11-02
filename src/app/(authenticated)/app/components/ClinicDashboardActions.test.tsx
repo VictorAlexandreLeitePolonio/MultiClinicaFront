@@ -32,7 +32,7 @@ describe("ClinicDashboardActions", () => {
     expect(screen.getByRole("link", { name: "Abrir Agenda" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Abrir Pacientes" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Abrir Pagamentos" })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Abrir Fichas de medição" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Abrir Fichas de medição" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Abrir Balanço" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Abrir Planos" })).not.toBeInTheDocument();
   });
