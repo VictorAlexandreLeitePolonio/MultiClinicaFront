@@ -11,7 +11,10 @@ import { FilterPopover, FilterOption, FilterValues } from "@/components/ui/Filte
 import { Button } from "@/components/ui/Button";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
 import { ViewSwitcher, useViewPreference } from "@/components/ui/ViewSwitcher";
-import { Eye, Power, Trash2, FileText, UserCircle, FileUp, LayoutGrid, Table2 } from "lucide-react";
+import { Activity, Eye, Power, Trash2, FileText, UserCircle, FileUp, LayoutGrid, Table2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+// ponytail: /app/prontuarios redireciona para cá (next.config.ts), então a linha do tempo da clínica mora em Pacientes.
+import { ClinicTimelineView } from "../../prontuarios/components/ClinicTimelineView";
 import { usePacientesPaginated, PacienteFilters } from "../hooks/pagined";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Pagination } from "@/components/ui/Pagination";
@@ -42,11 +45,12 @@ const paymentStatusOptions = [
   { value: "Cancelled", label: "Cancelado" },
 ];
 
-type PatientView = "table" | "cards";
+type PatientView = "table" | "cards" | "timeline";
 
 const viewOptions = [
   { value: "table" as const, label: "Tabela", icon: Table2 },
   { value: "cards" as const, label: "Cards", icon: LayoutGrid },
+  { value: "timeline" as const, label: "Linha do tempo", icon: Activity },
 ];
 
 const cardsContainer: Variants = {
@@ -55,7 +59,15 @@ const cardsContainer: Variants = {
 };
 
 export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios, onVerPerfil }: Props) {
-  const [view, setView] = useViewPreference<PatientView>("pacientes", "table", ["table", "cards"]);
+  const { user } = useAuth();
+  // A linha do tempo usa dado clínico: o endpoint aceita só Administrador e Profissional.
+  const canSeeTimeline = user?.role === "Administrador" || user?.role === "Profissional";
+  const [savedView, setView] = useViewPreference<PatientView>("pacientes", "table", [
+    "table",
+    "cards",
+    "timeline",
+  ]);
+  const view: PatientView = savedView === "timeline" && !canSeeTimeline ? "table" : savedView;
   const reduceMotion = useReducedMotion();
   const {
     data,
@@ -249,7 +261,11 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
         title="Pacientes"
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <ViewSwitcher options={viewOptions} value={view} onChange={setView} />
+            <ViewSwitcher
+              options={canSeeTimeline ? viewOptions : viewOptions.filter((o) => o.value !== "timeline")}
+              value={view}
+              onChange={setView}
+            />
             <Button
               variant="outline"
               fullWidth={false}
@@ -274,6 +290,10 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
         }
       />
 
+      {view === "timeline" ? (
+        <ClinicTimelineView />
+      ) : (
+        <>
       <div data-tutorial="patients-search">
         <SearchInput
           value={search}
@@ -329,6 +349,8 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
         onPageChange={setPage}
         onPageSizeChange={setPageSize}
       />
+        </>
+      )}
 
       <PatientImportDialog
         open={patientImportOpen}
