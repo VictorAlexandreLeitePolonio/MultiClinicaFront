@@ -68,7 +68,6 @@ function PatientLoginForm() {
     <PatientAuthShell
       title="Portal do Paciente"
       subtitle="Entre para acompanhar suas consultas e clínicas"
-      robotState={loading ? "loading" : "idle"}
       footer={
         <span className="flex flex-col items-center gap-1">
           <Link href="/paciente/esqueci-senha" className="font-medium text-[#0f766e] hover:text-[#14b8a6]">

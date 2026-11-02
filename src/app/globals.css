@@ -787,3 +787,16 @@ body {
 /* LP GSAP */
 
 /* Auth */
+
+/* Mini demonstração da LP no painel de login, reduzida para caber ao lado do formulário. */
+.auth-brand__demo {
+  width: 128%;
+  transform: scale(0.78);
+  transform-origin: top left;
+}
+
+@media (max-height: 780px) {
+  .auth-brand__demo {
+    display: none;
+  }
+}
