@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { DataTable, Column } from "@/components/ui/DataTable";
@@ -8,7 +9,8 @@ import { DeleteConfirmDialog } from "@/components/ui/DeleteConfirmDialog";
 import { FilterPopover, FilterOption, FilterValues } from "@/components/ui/FilterPopover";
 import { Button } from "@/components/ui/Button";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
-import { Eye, CheckCircle, XCircle, Trash2, List, CalendarDays, Mic } from "lucide-react";
+import { ViewSwitcher } from "@/components/ui/ViewSwitcher";
+import { Eye, CheckCircle, XCircle, Trash2, List, CalendarDays, Columns3, Mic } from "lucide-react";
 import { useAgendaPaginated, AgendaFilters } from "../hooks/pagined";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Pagination } from "@/components/ui/Pagination";
@@ -25,11 +27,13 @@ import {
   useStartConsultation,
 } from "./consultation/StartConsultationButton";
 
+export type AgendaView = "list" | "week" | "day";
+
 interface Props {
   onCreate: () => void;
   onViewDetails: (id: number) => void;
-  viewMode?: "list" | "calendar";
-  onChangeViewMode?: (mode: "list" | "calendar") => void;
+  view: AgendaView;
+  onChangeView: (view: AgendaView) => void;
 }
 
 const statusOptions = [
@@ -38,7 +42,20 @@ const statusOptions = [
   { value: "Cancelled", label: "Cancelado" },
 ];
 
-export default function AgendaList({ onCreate, onViewDetails, viewMode = "list", onChangeViewMode }: Props) {
+const viewOptions = [
+  { value: "list" as const, label: "Lista", icon: List },
+  { value: "week" as const, label: "Semana", icon: CalendarDays },
+  { value: "day" as const, label: "Dia", icon: Columns3, mobile: false },
+];
+
+const statusMapping = {
+  Scheduled: { label: "Agendado", className: "bg-blue-100 text-blue-700 border-blue-200" },
+  Completed: { label: "Completo", className: "bg-green-100 text-green-700 border-green-200" },
+  Cancelled: { label: "Cancelado", className: "bg-red-100 text-red-700 border-red-200" },
+};
+
+export default function AgendaList({ onCreate, onViewDetails, view, onChangeView }: Props) {
+  const reduceMotion = useReducedMotion();
   const {
     data,
     page,
@@ -118,8 +135,6 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
     setNewStatus(status);
   };
 
-
-
   const formatDateTime = (dateString?: string) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
@@ -147,21 +162,14 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
     {
       key: "appointmentDate",
       label: "Data e Hora",
-      render: (a) => formatDateTime(a.appointmentDate),
+      render: (a) => <span className="font-mono">{formatDateTime(a.appointmentDate)}</span>,
     },
     {
       key: "status",
       label: "Status",
       render: (a) => (
         <div className="flex items-center gap-2">
-          <StatusBadge
-            status={a.status}
-            mapping={{
-              Scheduled: { label: "Agendado", className: "bg-blue-100 text-blue-700 border-blue-200" },
-              Completed: { label: "Completo", className: "bg-green-100 text-green-700 border-green-200" },
-              Cancelled: { label: "Cancelado", className: "bg-red-100 text-red-700 border-red-200" },
-            }}
-          />
+          <StatusBadge status={a.status} mapping={statusMapping} />
           <ConsultationStatusIcon
             status={a.consultationStatus}
             reviewed={a.consultationReviewed}
@@ -223,44 +231,15 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
     },
   ];
 
-  if (error) return <p className="text-red-500">{error}</p>;
-
   return (
     <div className="space-y-4">
       <PageHeader
         title="Agenda"
+        description="Consultas da clínica por período e profissional."
         actions={
           <div className="flex flex-wrap gap-2">
-            <div
-              data-tutorial="agenda-view-mode"
-              className="inline-flex overflow-hidden rounded-2xl border border-gray-200 bg-white p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900"
-            >
-              <button
-                type="button"
-                onClick={() => onChangeViewMode?.("list")}
-                className={`relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
-                  viewMode === "list"
-                    ? "bg-primary-dark text-white shadow-[0_12px_26px_-20px_rgba(15,118,110,0.9)]"
-                    : "text-gray-600 hover:bg-sidebar-active hover:text-primary-dark dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                }`}
-                aria-pressed={viewMode === "list"}
-              >
-                <List size={16} />
-                Lista
-              </button>
-              <button
-                type="button"
-                onClick={() => onChangeViewMode?.("calendar")}
-                className={`relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
-                  viewMode === "calendar"
-                    ? "bg-primary-dark text-white shadow-[0_12px_26px_-20px_rgba(15,118,110,0.9)]"
-                    : "text-gray-600 hover:bg-sidebar-active hover:text-primary-dark dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                }`}
-                aria-pressed={viewMode === "calendar"}
-              >
-                <CalendarDays size={16} />
-                Calendário
-              </button>
+            <div data-tutorial="agenda-view-mode">
+              <ViewSwitcher options={viewOptions} value={view} onChange={onChangeView} />
             </div>
             <div data-tutorial="agenda-filters">
               <FilterPopover
@@ -272,46 +251,48 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
               />
             </div>
             <div data-tutorial="agenda-new">
-              <Button onClick={onCreate}>Novo Agendamento</Button>
+              <Button onClick={onCreate}>Novo agendamento</Button>
             </div>
           </div>
         }
       />
 
-      {viewMode === "list" && (
-        <>
-      <div data-tutorial="agenda-search">
-        <SearchInput
-          value={search}
-          onChange={setSearch}
-          placeholder="Buscar por nome do paciente..."
-        />
-      </div>
+      {error && view === "list" && <p role="alert" className="text-sm text-red-600">{error}</p>}
 
-      <div data-tutorial="agenda-list">
-        <DataTable
-          columns={columns}
-          data={data}
-          loading={loading}
-          emptyMessage="Nenhum agendamento encontrado."
-          keyExtractor={(a) => a.id}
-        />
-      </div>
-      </>
-      )}
+      {view === "list" && (
+        <motion.div
+          key="list"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: reduceMotion ? 0 : 0.15 }}
+          className="space-y-4"
+        >
+          <div data-tutorial="agenda-search">
+            <SearchInput
+              value={search}
+              onChange={setSearch}
+              placeholder="Buscar por nome do paciente..."
+            />
+          </div>
 
-      {viewMode === "list" && (
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          pageSize={pageSize}
-          onPageChange={setPage}
-          onPageSizeChange={setPageSize}
-        />
-      )}
+          <div data-tutorial="agenda-list">
+            <DataTable
+              columns={columns}
+              data={data}
+              loading={loading}
+              emptyMessage="Nenhum agendamento encontrado."
+              keyExtractor={(a) => a.id}
+            />
+          </div>
 
-      {viewMode === "list" && (
-        <>
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
+
           <DeleteConfirmDialog
             open={!!toDelete}
             entityLabel="agendamento"
@@ -335,8 +316,8 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
                   <Button variant="outline" onClick={() => setToChangeStatus(null)}>
                     Cancelar
                   </Button>
-                  <Button 
-                    onClick={handleConfirmChangeStatus} 
+                  <Button
+                    onClick={handleConfirmChangeStatus}
                     loading={changingStatus}
                     variant={newStatus === "Cancelled" ? "danger" : "primary"}
                   >
@@ -353,7 +334,7 @@ export default function AgendaList({ onCreate, onViewDetails, viewMode = "list",
             onCancel={closeStartConsultation}
             onConfirm={() => void confirmStartConsultation()}
           />
-        </>
+        </motion.div>
       )}
     </div>
   );

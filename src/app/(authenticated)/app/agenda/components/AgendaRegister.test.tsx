@@ -95,6 +95,36 @@ test("aplica valores iniciais de paciente, profissional e data", async () => {
   expect(getProfessionalDaySchedule).toHaveBeenCalledWith(7, "2026-09-28");
 });
 
+test("no painel lateral não repete o cabeçalho da página e avisa alterações", async () => {
+  getProfessionalDaySchedule.mockResolvedValue({
+    date: "2026-09-28",
+    timeZoneId: "America/Sao_Paulo",
+    durationMinutes: 60,
+    appointments: [],
+    slots: [],
+  });
+  const onDirtyChange = vi.fn();
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  render(
+    <QueryClientProvider client={client}>
+      <AgendaRegister
+        variant="sheet"
+        onBack={vi.fn()}
+        onSave={vi.fn()}
+        onDirtyChange={onDirtyChange}
+      />
+    </QueryClientProvider>,
+  );
+
+  await screen.findByRole("option", { name: "Paciente" });
+  expect(screen.queryByRole("heading", { name: "Novo Agendamento" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /Voltar/ })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Cadastrar" })).toBeInTheDocument();
+
+  await userEvent.selectOptions(screen.getByLabelText(/Paciente \*/), "3");
+  expect(onDirtyChange).toHaveBeenCalledWith(true);
+});
+
 test("avisa sobre horário ocupado antes de enviar o agendamento", async () => {
   getProfessionalDaySchedule.mockResolvedValue({ date: "2026-09-28", timeZoneId: "America/Sao_Paulo",
     durationMinutes: 60,

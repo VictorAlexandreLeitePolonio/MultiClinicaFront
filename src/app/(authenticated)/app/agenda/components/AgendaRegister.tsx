@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -22,9 +23,19 @@ interface Props {
   onBack: () => void;
   onSave: () => void;
   initialValues?: { patientId?: number; professionalId?: number; appointmentDay?: string };
+  /** "sheet" remove o cabeçalho de página (o FormSheet já traz título e fechar). */
+  variant?: "page" | "sheet";
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
-export default function AgendaRegister({ onBack, onSave, initialValues }: Props) {
+export default function AgendaRegister({
+  onBack,
+  onSave,
+  initialValues,
+  variant = "page",
+  onDirtyChange,
+}: Props) {
+  const isSheet = variant === "sheet";
   const { insertAgenda, isPending } = useAgendaInsert();
   const { completeTaskTutorial } = useTutorial();
   const professionals = useQuery({ queryKey: queryKeys.appointments.professionals, queryFn: getAppointmentProfessionals });
@@ -35,7 +46,7 @@ export default function AgendaRegister({ onBack, onSave, initialValues }: Props)
     setError,
     clearErrors,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<AgendaCreateFormData>({
     resolver: zodResolver(AgendaCreateSchema),
     defaultValues: {
@@ -71,6 +82,10 @@ export default function AgendaRegister({ onBack, onSave, initialValues }: Props)
     }
   })();
 
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
   const onSubmit = async (data: AgendaCreateFormData) => {
     try {
       if (!daySchedule.data?.timeZoneId || daySchedule.data.date !== data.appointmentDay)
@@ -88,21 +103,21 @@ export default function AgendaRegister({ onBack, onSave, initialValues }: Props)
   };
 
   return (
-    <div className="max-w-6xl space-y-6">
-      <PageHeader title="Novo Agendamento" onBack={onBack} />
+    <div className={isSheet ? "space-y-6" : "max-w-6xl space-y-6"}>
+      {!isSheet && <PageHeader title="Novo Agendamento" onBack={onBack} />}
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,380px)] lg:items-start">
+      <div className={isSheet ? "space-y-6" : "grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,380px)] lg:items-start"}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <FormSection title="Dados do Agendamento">
           <AppointmentPatientSelect value={patientId} error={errors.patientId?.message}
-            onChange={(id) => setValue("patientId", id, { shouldValidate: true })} />
+            onChange={(id) => setValue("patientId", id, { shouldValidate: true, shouldDirty: true })} />
 
           <div className="flex flex-col gap-2">
             <label htmlFor="appointment-professional" className="text-sm font-semibold uppercase tracking-wider text-secondary dark:text-white">Profissional *</label>
             <select id="appointment-professional" value={professionalId || 0}
               onChange={(event) => {
                 clearErrors("appointmentTime");
-                setValue("professionalId", Number(event.target.value), { shouldValidate: true });
+                setValue("professionalId", Number(event.target.value), { shouldValidate: true, shouldDirty: true });
               }}
               className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-secondary focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
               <option value={0}>{professionals.isPending ? "Carregando profissionais..." : "Selecione um profissional"}</option>
@@ -126,10 +141,10 @@ export default function AgendaRegister({ onBack, onSave, initialValues }: Props)
               value={appointmentDay || ""}
               onChange={(e) => {
                 clearErrors("appointmentTime");
-                setValue("appointmentDay", e.target.value, { shouldValidate: true });
+                setValue("appointmentDay", e.target.value, { shouldValidate: true, shouldDirty: true });
               }}
               className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-secondary dark:text-white
-                focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-all"
+                focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none transition-[border-color,box-shadow]"
             />
             {errors.appointmentDay && (
               <span className="text-xs text-red-600">{errors.appointmentDay.message}</span>
@@ -138,7 +153,7 @@ export default function AgendaRegister({ onBack, onSave, initialValues }: Props)
           <div className="flex flex-col gap-2">
             <label htmlFor="appointment-time" className="text-sm font-semibold text-secondary dark:text-white uppercase tracking-wider">Hora *</label>
             <input id="appointment-time" type="time" value={appointmentTime || ""}
-              onChange={(event) => { clearErrors("appointmentTime"); setValue("appointmentTime", event.target.value, { shouldValidate: true }); }}
+              onChange={(event) => { clearErrors("appointmentTime"); setValue("appointmentTime", event.target.value, { shouldValidate: true, shouldDirty: true }); }}
               className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 rounded-xl text-secondary focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white" />
             {(errors.appointmentTime || availabilityError) && (
               <span role="alert" className="text-xs text-red-600">{errors.appointmentTime?.message ?? availabilityError}</span>
@@ -150,7 +165,7 @@ export default function AgendaRegister({ onBack, onSave, initialValues }: Props)
         </FormSection>
 
         <div data-tutorial="agenda-form-save">
-          <Button type="submit" loading={isPending}
+          <Button type="submit" fullWidth={!isSheet} loading={isPending}
             disabled={isPending || !!availabilityError || (professionalId > 0 && !!appointmentDay && !daySchedule.data)}>
             Cadastrar
           </Button>
@@ -161,8 +176,8 @@ export default function AgendaRegister({ onBack, onSave, initialValues }: Props)
           selectedLocalDateTime={selectedLocalDateTime}
           onSelect={(local) => {
             clearErrors("appointmentTime");
-            setValue("appointmentDay", local.slice(0, 10), { shouldValidate: true });
-            setValue("appointmentTime", local.slice(11, 16), { shouldValidate: true });
+            setValue("appointmentDay", local.slice(0, 10), { shouldValidate: true, shouldDirty: true });
+            setValue("appointmentTime", local.slice(11, 16), { shouldValidate: true, shouldDirty: true });
           }} />
       )}
       </div>
