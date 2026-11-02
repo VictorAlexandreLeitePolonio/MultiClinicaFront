@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Building2, MapPin } from "lucide-react";
+import { Building2, Heart, MapPin } from "lucide-react";
 import type { HubBadge } from "@/types/plans";
 import { ClinicLikeButton } from "@/components/ClinicLikeButton";
 import { MarketplaceClinicCard as MarketplaceClinicCardType } from "../types/marketplace.types";
@@ -9,6 +9,8 @@ import { MarketplaceClinicCard as MarketplaceClinicCardType } from "../types/mar
 interface Props {
   clinic: MarketplaceClinicCardType;
   onSelect: (id: number) => void;
+  /** No Hub público não há curtidas: mostra apenas o contador. */
+  likeable?: boolean;
 }
 
 const badgeStyles: Record<Exclude<HubBadge, null>, { label: string; className: string }> = {
@@ -22,7 +24,7 @@ const badgeStyles: Record<Exclude<HubBadge, null>, { label: string; className: s
   },
 };
 
-export function MarketplaceClinicCard({ clinic, onSelect }: Props) {
+export function MarketplaceClinicCard({ clinic, onSelect, likeable = true }: Props) {
   const location = [clinic.city, clinic.state].filter(Boolean).join(" / ");
 
   return (
@@ -57,12 +59,22 @@ export function MarketplaceClinicCard({ clinic, onSelect }: Props) {
             )}
           </div>
           <div className="relative z-20">
-            <ClinicLikeButton
-              clinicId={clinic.id}
-              likeCount={clinic.likeCount}
-              likedByMe={clinic.likedByMe}
-              canLike
-            />
+            {likeable ? (
+              <ClinicLikeButton
+                clinicId={clinic.id}
+                likeCount={clinic.likeCount}
+                likedByMe={clinic.likedByMe}
+                canLike
+              />
+            ) : (
+              <span
+                aria-label={`${clinic.likeCount} curtidas`}
+                className="inline-flex items-center gap-1 font-mono text-xs text-[#64748b] dark:text-slate-400"
+              >
+                <Heart size={13} aria-hidden="true" />
+                {clinic.likeCount}
+              </span>
+            )}
           </div>
         </div>
         {clinic.categories.length > 0 && (

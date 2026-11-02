@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { CalendarPlus, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { usePatientAuth } from "@/contexts/PatientAuthContext";
@@ -16,8 +17,13 @@ interface Props {
 
 export function ClinicAppointmentRequestCta({ clinicId, clinicName, acceptsAppointmentRequests, onRequestsDisabled }: Props) {
   const { isAuthenticated, isLoading } = usePatientAuth();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const [disabledByServer, setDisabledByServer] = useState(false);
+
+  const query = searchParams.toString();
+  const returnTo = `${pathname || "/"}${query ? `?${query}` : ""}`;
 
   // Sem ação de solicitação quando a clínica não aceita.
   if (!acceptsAppointmentRequests || disabledByServer) return null;
@@ -40,11 +46,12 @@ export function ClinicAppointmentRequestCta({ clinicId, clinicName, acceptsAppoi
             Solicitar consulta
           </Button>
         ) : (
-          <Link href="/paciente/login">
-            <Button fullWidth={false}>
-              <LogIn size={16} />
-              Entrar para solicitar
-            </Button>
+          <Link
+            href={`/paciente/login?next=${encodeURIComponent(returnTo)}`}
+            className="inline-flex w-auto items-center justify-center gap-1.5 rounded-xl border border-[var(--color-primary-dark)] bg-[var(--color-primary-dark)] px-5 py-2.5 text-sm font-semibold text-[var(--color-white)] shadow-[var(--shadow-teal-sm)] transition-[transform,background-color,box-shadow] duration-150 hover:brightness-110 hover:shadow-[var(--shadow-teal-md)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+          >
+            <LogIn size={16} />
+            Entrar para solicitar
           </Link>
         )}
       </div>

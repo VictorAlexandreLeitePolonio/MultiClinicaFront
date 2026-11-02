@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -15,9 +15,11 @@ import { usePatientAuth } from "@/contexts/PatientAuthContext";
 import { resendActivation } from "../services/patient-auth.service";
 import { patientLoginSchema, PatientLoginFormData } from "../schemas/patient-auth.schema";
 import { PatientAuthShell } from "../components/PatientAuthShell";
+import { safeNext } from "./safeNext";
 
-export default function PatientLoginPage() {
+function PatientLoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = usePatientAuth();
   const [loading, setLoading] = useState(false);
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
@@ -36,7 +38,7 @@ export default function PatientLoginPage() {
     setPendingEmail(null);
     try {
       await login(data.email, data.password);
-      router.replace("/paciente");
+      router.replace(safeNext(searchParams.get("next")));
     } catch (err) {
       // 403 = conta pendente de ativação: orienta a ativação/reenvio.
       if (axios.isAxiosError(err) && err.response?.status === 403) {
@@ -118,5 +120,13 @@ export default function PatientLoginPage() {
         </Button>
       </form>
     </PatientAuthShell>
+  );
+}
+
+export default function PatientLoginPage() {
+  return (
+    <Suspense fallback={<div className="theme-light min-h-screen bg-[#f8fafc]" />}>
+      <PatientLoginForm />
+    </Suspense>
   );
 }

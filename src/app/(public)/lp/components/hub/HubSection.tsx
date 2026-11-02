@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useSyncExternalStore, type CSSProperties } from "react";
 import { useReducedMotion } from "motion/react";
-import { ArrowUpRight, Building2, Check } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Building2, Check } from "lucide-react";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Marquee } from "@/components/magicui/marquee";
 import { usePublicClinics } from "@/components/clinic/usePublicClinics";
@@ -231,13 +231,22 @@ export function HubSection() {
             ))}
           </ul>
 
-          <Link
-            href="/cadastro"
-            className="mt-8 inline-flex items-center gap-2 rounded-full border border-[var(--lp-line)] px-5 py-2.5 text-sm font-semibold text-[var(--lp-ink)] transition-transform duration-150 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-bg)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
-          >
-            Colocar minha clínica no Hub
-            <ArrowUpRight size={16} aria-hidden="true" />
-          </Link>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link
+              href="/cadastro"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--lp-line)] px-5 py-2.5 text-sm font-semibold text-[var(--lp-ink)] transition-transform duration-150 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-bg)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+            >
+              Colocar minha clínica no Hub
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
+            <Link
+              href="/hub"
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[var(--lp-muted)] transition-[color,transform] duration-150 hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-bg)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+            >
+              Explorar o Hub
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
         </div>
 
         <div className="min-w-0">
