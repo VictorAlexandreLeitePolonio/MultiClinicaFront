@@ -781,6 +781,13 @@ body {
 /* BO Agenda */
 
 /* BO Pagamentos */
+.payments-board__card {
+  cursor: grab;
+}
+
+.payments-board__card:active {
+  cursor: grabbing;
+}
 
 /* BO Cadastros */
 

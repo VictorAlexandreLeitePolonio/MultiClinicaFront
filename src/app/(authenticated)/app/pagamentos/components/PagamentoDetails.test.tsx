@@ -143,4 +143,22 @@ describe("PagamentoDetails", () => {
       ),
     ).toBeInTheDocument();
   });
+
+  it("no painel, não repete o cabeçalho e mantém a ação de editar", () => {
+    render(
+      <PagamentoDetails
+        id={7}
+        variant="sheet"
+        onBack={vi.fn()}
+        onSave={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("heading", { name: "Detalhes do Pagamento" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Editar" }),
+    ).toBeInTheDocument();
+  });
 });
