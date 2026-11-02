@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { DataTable, Column } from "@/components/ui/DataTable";
@@ -9,7 +10,8 @@ import { StatusToggleModal } from "@/components/ui/StatusToggleModal";
 import { FilterPopover, FilterOption, FilterValues } from "@/components/ui/FilterPopover";
 import { Button } from "@/components/ui/Button";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
-import { Eye, Power, Trash2, FileText, UserCircle, FileUp } from "lucide-react";
+import { ViewSwitcher, useViewPreference } from "@/components/ui/ViewSwitcher";
+import { Eye, Power, Trash2, FileText, UserCircle, FileUp, LayoutGrid, Table2 } from "lucide-react";
 import { usePacientesPaginated, PacienteFilters } from "../hooks/pagined";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Pagination } from "@/components/ui/Pagination";
@@ -19,6 +21,7 @@ import { usePacienteChangeStatus } from "../hooks/changeStatus";
 import { Patient } from "@/types";
 import { formatCPF, formatPhone } from "@/utils/formatters";
 import { PatientImportDialog } from "./PatientImportDialog";
+import { PatientCard } from "./cards/PatientCard";
 
 interface Props {
   onCreate: () => void;
@@ -39,7 +42,21 @@ const paymentStatusOptions = [
   { value: "Cancelled", label: "Cancelado" },
 ];
 
+type PatientView = "table" | "cards";
+
+const viewOptions = [
+  { value: "table" as const, label: "Tabela", icon: Table2 },
+  { value: "cards" as const, label: "Cards", icon: LayoutGrid },
+];
+
+const cardsContainer: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.04 } },
+};
+
 export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios, onVerPerfil }: Props) {
+  const [view, setView] = useViewPreference<PatientView>("pacientes", "table", ["table", "cards"]);
+  const reduceMotion = useReducedMotion();
   const {
     data,
     page,
@@ -65,6 +82,14 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
     appointmentStatus: "",
     paymentStatus: "",
   });
+
+  const openPatient = (patient: Patient) => {
+    if (onVerPerfil) {
+      onVerPerfil(patient.id);
+      return;
+    }
+    onViewDetails(patient.id);
+  };
 
   const handleConfirmDelete = async () => {
     if (!toDelete) return;
@@ -179,7 +204,7 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
       label: "",
       className: "text-right",
       render: (p) => (
-        <span data-tutorial="patients-actions">
+        <span data-tutorial="patients-actions" onClick={(event) => event.stopPropagation()}>
         <ActionsDropdown
           actions={[
             {
@@ -223,7 +248,8 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
       <PageHeader
         title="Pacientes"
         actions={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <ViewSwitcher options={viewOptions} value={view} onChange={setView} />
             <Button
               variant="outline"
               fullWidth={false}
@@ -257,13 +283,43 @@ export default function PacienteList({ onCreate, onViewDetails, onVerProntuarios
       </div>
 
       <div data-tutorial="patients-list">
-        <DataTable
-          columns={columns}
-          data={data}
-          loading={loading}
-          emptyMessage="Nenhum paciente encontrado."
-          keyExtractor={(p) => p.id}
-        />
+        {view === "table" ? (
+          <DataTable
+            columns={columns}
+            data={data}
+            loading={loading}
+            emptyMessage="Nenhum paciente encontrado."
+            keyExtractor={(p) => p.id}
+            onRowClick={openPatient}
+          />
+        ) : loading ? (
+          <div className="paciente-cards" aria-busy="true">
+            {Array.from({ length: Math.min(pageSize, 8) }).map((_, index) => (
+              <div
+                key={index}
+                className="h-40 animate-pulse rounded-2xl border border-[var(--color-gray-200)] bg-[var(--color-gray-50)] motion-reduce:animate-none"
+              />
+            ))}
+          </div>
+        ) : data.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-[var(--color-gray-200)] bg-[var(--color-card)] px-6 py-10 text-center shadow-[var(--shadow-sm)]">
+            <p className="text-sm font-medium text-[var(--color-gray-600)]">
+              Nenhum paciente encontrado.
+            </p>
+          </div>
+        ) : (
+          <motion.div
+            key={`${page}-${view}`}
+            initial={reduceMotion ? false : "hidden"}
+            animate="show"
+            variants={cardsContainer}
+            className="paciente-cards"
+          >
+            {data.map((patient) => (
+              <PatientCard key={patient.id} patient={patient} onOpen={openPatient} />
+            ))}
+          </motion.div>
+        )}
       </div>
 
       <Pagination

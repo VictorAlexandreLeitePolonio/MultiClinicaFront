@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +9,10 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { FormSection } from "@/components/ui/FormSection";
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
+import {
+  FocusFormSectionBlock,
+  type FocusFormSection,
+} from "@/components/ui/FocusForm";
 import { PacienteSchema, PacienteFormData, step1Fields } from "../schemas/paciente.schema";
 import { usePacienteInsert } from "../hooks/insert";
 import { PatientCreatedResponse } from "@/types";
@@ -18,7 +22,15 @@ import { unformatCPF, unformatRG, unformatPhone, unformatCEP } from "@/utils/for
 interface Props {
   onBack: () => void;
   onSave: () => void;
+  variant?: "page" | "focus";
+  /** Usado no modo foco para que a barra do FocusForm peça confirmação ao fechar. */
+  onDirtyChange?: (dirty: boolean) => void;
 }
+
+export const PACIENTE_FOCUS_SECTIONS: FocusFormSection[] = [
+  { id: "dados-pessoais", label: "Dados pessoais" },
+  { id: "endereco", label: "Endereço" },
+];
 
 const toNullable = (value: string) => {
   const trimmed = value.trim();
@@ -34,16 +46,22 @@ const registrationMessage = (res: PatientCreatedResponse): string => {
   return "Paciente cadastrado. Enviamos um convite para ele ativar sua conta Cliniq.";
 };
 
-export default function PacienteRegister({ onBack, onSave }: Props) {
+export default function PacienteRegister({
+  onBack,
+  onSave,
+  variant = "page",
+  onDirtyChange,
+}: Props) {
   const { insertPaciente, isPending } = usePacienteInsert();
   const [step, setStep] = useState<1 | 2>(1);
+  const isFocus = variant === "focus";
 
   const {
     register,
     control,
     handleSubmit,
     trigger,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<
     z.input<typeof PacienteSchema>,
     unknown,
@@ -65,6 +83,11 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
       cep: "",
     },
   });
+
+  useEffect(() => {
+    if (!isFocus) return;
+    onDirtyChange?.(isDirty);
+  }, [isDirty, isFocus, onDirtyChange]);
 
   const onSubmit = async (data: PacienteFormData) => {
     try {
@@ -101,155 +124,184 @@ export default function PacienteRegister({ onBack, onSave }: Props) {
     setStep(1);
   };
 
-  return (
-    <div className="space-y-6 max-w-3xl">
-      <PageHeader title="Novo Paciente" onBack={onBack} />
+  const personalFields = (
+    <>
+      <FormField label="Nome" error={errors.name?.message} {...register("name")} />
+      <FormField label="E-mail" error={errors.email?.message} {...register("email")} />
 
-      {/* Indicador de Progresso */}
-      <div className="flex items-center justify-center gap-4 py-4">
-        {/* Step 1 */}
-        <div className="flex items-center gap-2">
-          <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
-              step === 1
-                ? "bg-primary-dark text-white"
-                : "bg-white dark:bg-slate-900 border border-primary-dark text-primary-dark"
-            }`}
-          >
-            1
-          </div>
-          <span
-            className={`text-sm font-medium ${
-              step === 1 ? "text-primary-dark" : "text-gray-600 dark:text-slate-300"
-            }`}
-          >
-            Dados Pessoais
-          </span>
-        </div>
-
-        {/* Linha conectora */}
-        <div
-          className={`w-16 h-0.5 transition-colors ${
-            step === 2 ? "bg-primary-dark" : "bg-gray-200"
-          }`}
-        />
-
-        {/* Step 2 */}
-        <div className="flex items-center gap-2">
-          <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
-              step === 2
-                ? "bg-primary-dark text-white"
-                : "bg-white dark:bg-slate-900 border border-primary-dark text-primary-dark"
-            }`}
-          >
-            2
-          </div>
-          <span
-            className={`text-sm font-medium ${
-              step === 2 ? "text-primary-dark" : "text-gray-600 dark:text-slate-300"
-            }`}
-          >
-            Endereço
-          </span>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {step === 1 && (
-        <FormSection title="Dados Pessoais">
-          <FormField label="Nome" error={errors.name?.message} {...register("name")} />
-          <FormField label="E-mail" error={errors.email?.message} {...register("email")} />
-
-          <Controller
-            control={control}
-            name="cpf"
-            render={({ field }) => (
-              <FormField
-                label="CPF"
-                error={errors.cpf?.message}
-                value={field.value ?? ""}
-                onChange={(e) => field.onChange(maskCPF(e.target.value))}
-                onBlur={field.onBlur}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="rg"
-            render={({ field }) => (
-              <FormField
-                label="RG"
-                value={field.value ?? ""}
-                onChange={(e) => field.onChange(maskRG(e.target.value))}
-                onBlur={field.onBlur}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="phone"
-            render={({ field }) => (
-              <FormField
-                label="Telefone"
-                error={errors.phone?.message}
-                value={field.value ?? ""}
-                onChange={(e) => field.onChange(maskPhone(e.target.value))}
-                onBlur={field.onBlur}
-              />
-            )}
-          />
+      <Controller
+        control={control}
+        name="cpf"
+        render={({ field }) => (
           <FormField
-            label="Data de nascimento"
-            type="date"
-            error={errors.birthDate?.message}
-            {...register("birthDate")}
+            label="CPF"
+            error={errors.cpf?.message}
+            value={field.value ?? ""}
+            onChange={(e) => field.onChange(maskCPF(e.target.value))}
+            onBlur={field.onBlur}
           />
-        </FormSection>
         )}
+      />
 
-        {step === 2 && (
-        <FormSection title="Endereço">
-          <Controller
-            control={control}
-            name="cep"
-            render={({ field }) => (
-              <FormField
-                label="CEP"
-                error={errors.cep?.message}
-                value={field.value ?? ""}
-                onChange={(e) => field.onChange(maskCEP(e.target.value))}
-                onBlur={field.onBlur}
-              />
+      <Controller
+        control={control}
+        name="rg"
+        render={({ field }) => (
+          <FormField
+            label="RG"
+            value={field.value ?? ""}
+            onChange={(e) => field.onChange(maskRG(e.target.value))}
+            onBlur={field.onBlur}
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="phone"
+        render={({ field }) => (
+          <FormField
+            label="Telefone"
+            error={errors.phone?.message}
+            value={field.value ?? ""}
+            onChange={(e) => field.onChange(maskPhone(e.target.value))}
+            onBlur={field.onBlur}
+          />
+        )}
+      />
+      <FormField
+        label="Data de nascimento"
+        type="date"
+        error={errors.birthDate?.message}
+        {...register("birthDate")}
+      />
+    </>
+  );
+
+  const addressFields = (
+    <>
+      <Controller
+        control={control}
+        name="cep"
+        render={({ field }) => (
+          <FormField
+            label="CEP"
+            error={errors.cep?.message}
+            value={field.value ?? ""}
+            onChange={(e) => field.onChange(maskCEP(e.target.value))}
+            onBlur={field.onBlur}
+          />
+        )}
+      />
+      <FormField label="Rua" error={errors.rua?.message} {...register("rua")} />
+      <FormField label="Número" error={errors.numero?.message} {...register("numero")} />
+      <FormField label="Bairro" error={errors.bairro?.message} {...register("bairro")} />
+      <FormField label="Cidade" error={errors.cidade?.message} {...register("cidade")} />
+      <FormField label="Estado" error={errors.estado?.message} {...register("estado")} />
+    </>
+  );
+
+  return (
+    <div className={isFocus ? undefined : "max-w-3xl space-y-6"}>
+      {!isFocus && (
+        <>
+          <PageHeader title="Novo Paciente" onBack={onBack} />
+
+          {/* Indicador de Progresso */}
+          <div className="flex items-center justify-center gap-4 py-4">
+            {/* Step 1 */}
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
+                  step === 1
+                    ? "bg-primary-dark text-white"
+                    : "bg-white dark:bg-slate-900 border border-primary-dark text-primary-dark"
+                }`}
+              >
+                1
+              </div>
+              <span
+                className={`text-sm font-medium ${
+                  step === 1 ? "text-primary-dark" : "text-gray-600 dark:text-slate-300"
+                }`}
+              >
+                Dados Pessoais
+              </span>
+            </div>
+
+            {/* Linha conectora */}
+            <div
+              className={`w-16 h-0.5 transition-colors ${
+                step === 2 ? "bg-primary-dark" : "bg-gray-200"
+              }`}
+            />
+
+            {/* Step 2 */}
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
+                  step === 2
+                    ? "bg-primary-dark text-white"
+                    : "bg-white dark:bg-slate-900 border border-primary-dark text-primary-dark"
+                }`}
+              >
+                2
+              </div>
+              <span
+                className={`text-sm font-medium ${
+                  step === 2 ? "text-primary-dark" : "text-gray-600 dark:text-slate-300"
+                }`}
+              >
+                Endereço
+              </span>
+            </div>
+          </div>
+        </>
+      )}
+
+      <form
+        id="paciente-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className={isFocus ? "space-y-12" : "space-y-6"}
+      >
+        {isFocus ? (
+          <>
+            <FocusFormSectionBlock id="dados-pessoais" title="Dados pessoais">
+              {personalFields}
+            </FocusFormSectionBlock>
+            <FocusFormSectionBlock id="endereco" title="Endereço">
+              {addressFields}
+            </FocusFormSectionBlock>
+          </>
+        ) : (
+          <>
+            {step === 1 && (
+              <FormSection title="Dados Pessoais">{personalFields}</FormSection>
             )}
-          />
-          <FormField label="Rua" error={errors.rua?.message} {...register("rua")} />
-          <FormField label="Número" error={errors.numero?.message} {...register("numero")} />
-          <FormField label="Bairro" error={errors.bairro?.message} {...register("bairro")} />
-          <FormField label="Cidade" error={errors.cidade?.message} {...register("cidade")} />
-          <FormField label="Estado" error={errors.estado?.message} {...register("estado")} />
-        </FormSection>
-        )}
 
-        {/* Botões de navegação */}
-        <div className="flex gap-3">
-          {step === 1 ? (
-            <Button type="button" onClick={goToNextStep}>
-              Próximo →
-            </Button>
-          ) : (
-            <>
-              <Button type="button" variant="outline" onClick={goToPreviousStep}>
-                ← Voltar
-              </Button>
-              <Button type="submit" loading={isPending}>
-                Cadastrar
-              </Button>
-            </>
-          )}
-        </div>
+            {step === 2 && (
+              <FormSection title="Endereço">{addressFields}</FormSection>
+            )}
+
+            {/* Botões de navegação */}
+            <div className="flex gap-3">
+              {step === 1 ? (
+                <Button type="button" onClick={goToNextStep}>
+                  Próximo →
+                </Button>
+              ) : (
+                <>
+                  <Button type="button" variant="outline" onClick={goToPreviousStep}>
+                    ← Voltar
+                  </Button>
+                  <Button type="submit" loading={isPending}>
+                    Cadastrar
+                  </Button>
+                </>
+              )}
+            </div>
+          </>
+        )}
       </form>
     </div>
   );

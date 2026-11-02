@@ -6,6 +6,8 @@ interface ButtonProps {
   children: React.ReactNode;
   loading?: boolean;
   type?: "button" | "submit" | "reset";
+  /** id do <form> que este botão envia quando está fora dele (ex.: barra do FocusForm). */
+  form?: string;
   disabled?: boolean;
   onClick?: () => void;
   variant?: "primary" | "secondary" | "outline" | "danger";
@@ -17,6 +19,7 @@ export function Button({
   children,
   loading,
   type = "button",
+  form,
   disabled,
   onClick,
   variant = "primary",
@@ -38,6 +41,7 @@ export function Button({
   return (
     <button
       type={type}
+      form={form}
       onClick={onClick}
       disabled={loading || disabled}
       style={{
