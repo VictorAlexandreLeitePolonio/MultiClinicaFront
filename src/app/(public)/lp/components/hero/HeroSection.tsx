@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
-import { ShimmerButton } from "@/components/magicui/shimmer-button";
+import { ShimmerLink } from "@/components/magicui/shimmer-button";
 import { LandingSmoothLink } from "../LandingSmoothLink";
 import { HeroDemo } from "./HeroDemo";
 
@@ -32,23 +31,16 @@ export function HeroSection() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <Link
+            <ShimmerLink
               href="/cadastro"
-              className="relative inline-flex min-h-12 items-center justify-center rounded-full transition-transform duration-200 active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-bg)]"
+              className="hero-cta min-h-12 rounded-full px-7 text-sm font-semibold text-[var(--lp-bg)]"
+              background="var(--color-primary)"
+              shimmerColor="var(--color-primary-light)"
+              shimmerDuration="4s"
+              borderRadius="9999px"
             >
-              <ShimmerButton
-                aria-hidden="true"
-                tabIndex={-1}
-                className="hero-cta pointer-events-none min-h-12 rounded-full px-7 text-sm font-semibold text-[var(--lp-bg)]"
-                background="var(--color-primary)"
-                shimmerColor="var(--color-primary-light)"
-                shimmerDuration="4s"
-                borderRadius="9999px"
-              >
-                Começar grátis
-              </ShimmerButton>
-              <span className="sr-only">Começar grátis</span>
-            </Link>
+              Começar grátis
+            </ShimmerLink>
 
             <LandingSmoothLink
               href="#funcionalidades"
