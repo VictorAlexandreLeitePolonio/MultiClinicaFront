@@ -3,10 +3,8 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { Button } from "@/components/ui/Button";
-import { FocusForm } from "@/components/ui/FocusForm";
 import PacienteList from "./components/PacienteList";
-import PacienteRegister, { PACIENTE_FOCUS_SECTIONS } from "./components/PacienteRegister";
+import PacienteRegister from "./components/PacienteRegister";
 import PacienteDetails from "./components/PacienteDetails";
 import PacienteProfile from "./components/PacienteProfile";
 
@@ -17,9 +15,11 @@ function PacientesPage() {
   const searchParams = useSearchParams();
   const mode = (searchParams.get("mode") as ViewMode) ?? "list";
   const id = searchParams.get("id") ? Number(searchParams.get("id")) : null;
-  const [createDirty, setCreateDirty] = useState(false);
+  // Mantém o paciente montado durante a animação de saída do modo foco.
+  const [lastPatientId, setLastPatientId] = useState<number | null>(id);
 
   const goTo = (mode: ViewMode, id?: number) => {
+    if (mode === "view" && id) setLastPatientId(id);
     if (mode === "list") {
       router.push("/app/pacientes");
       return;
@@ -29,19 +29,11 @@ function PacientesPage() {
     router.push(`/app/pacientes?${params.toString()}`);
   };
 
-  const closeCreate = () => {
-    setCreateDirty(false);
-    goTo("list");
-  };
-
-  const handleCreateSaved = () => {
-    setCreateDirty(false);
-    goTo("list");
-  };
+  const closeFocus = () => goTo("list");
 
   return (
     <div className="p-8">
-      {(mode === "list" || mode === "create") && (
+      {mode !== "profile" && (
         <PacienteList
           onCreate={() => goTo("create")}
           onViewDetails={(id) => goTo("view", id)}
@@ -50,19 +42,20 @@ function PacientesPage() {
         />
       )}
 
-      <AnimatePresence mode="wait" initial={false}>
-        {mode === "view" && id && (
-          <motion.div
-            key="view"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PacienteDetails id={id} onBack={() => goTo("list")} onSave={() => goTo("list")} />
-          </motion.div>
-        )}
+      <PacienteRegister
+        open={mode === "create"}
+        onClose={closeFocus}
+        onSaved={closeFocus}
+      />
 
+      <PacienteDetails
+        open={mode === "view" && id !== null}
+        patientId={id ?? lastPatientId}
+        onClose={closeFocus}
+        onSaved={closeFocus}
+      />
+
+      <AnimatePresence mode="wait" initial={false}>
         {mode === "profile" && id && (
           <motion.div
             key="profile"
@@ -75,26 +68,6 @@ function PacientesPage() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <FocusForm
-        open={mode === "create"}
-        onClose={closeCreate}
-        title="Novo paciente"
-        sections={PACIENTE_FOCUS_SECTIONS}
-        dirty={createDirty}
-        actions={
-          <Button type="submit" form="paciente-form" fullWidth={false}>
-            Salvar
-          </Button>
-        }
-      >
-        <PacienteRegister
-          variant="focus"
-          onBack={closeCreate}
-          onSave={handleCreateSaved}
-          onDirtyChange={setCreateDirty}
-        />
-      </FocusForm>
     </div>
   );
 }

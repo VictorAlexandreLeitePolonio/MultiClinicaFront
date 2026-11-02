@@ -17,15 +17,16 @@ vi.mock("./components/PacienteList", () => ({
 }));
 
 vi.mock("./components/PacienteRegister", () => ({
-  default: ({ variant }: { variant?: string }) => <div>Cadastro {variant}</div>,
-  PACIENTE_FOCUS_SECTIONS: [
-    { id: "dados-pessoais", label: "Dados pessoais" },
-    { id: "endereco", label: "Endereço" },
-  ],
+  default: ({ open }: { open: boolean }) =>
+    open ? (
+      <div role="dialog" aria-label="Novo paciente">
+        Cadastro de paciente
+      </div>
+    ) : null,
 }));
 
 vi.mock("./components/PacienteDetails", () => ({
-  default: () => <div>Detalhes do paciente</div>,
+  default: () => null,
 }));
 
 vi.mock("./components/PacienteProfile", () => ({
@@ -43,6 +44,6 @@ it("abre o cadastro em modo foco mantendo a lista renderizada", async () => {
   render(<Page />);
 
   expect(await screen.findByRole("dialog", { name: "Novo paciente" })).toBeInTheDocument();
-  expect(screen.getByText("Cadastro focus")).toBeInTheDocument();
+  expect(screen.getByText("Cadastro de paciente")).toBeInTheDocument();
   expect(screen.getByText("Lista de pacientes")).toBeInTheDocument();
 });

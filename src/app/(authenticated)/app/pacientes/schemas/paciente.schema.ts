@@ -74,5 +74,5 @@ export interface PacientePayload {
 }
 
 // Campos de cada step para validação parcial
-export const step1Fields = ["name", "email", "cpf", "phone", "birthDate"] as const;
+export const step1Fields = ["name", "email", "cpf", "rg", "phone", "birthDate"] as const;
 export const step2Fields = ["rua", "numero", "bairro", "cidade", "estado", "cep"] as const;

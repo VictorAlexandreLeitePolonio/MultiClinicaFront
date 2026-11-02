@@ -3,6 +3,7 @@
 import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { motion, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
@@ -10,6 +11,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs } from "@/components/ui/Tabs";
 import { useAuth } from "@/contexts/AuthContext";
+import { ease } from "@/lib/motion";
 import { getApiErrorMessage } from "@/utils/apiError";
 import { ClinicSettingsForm } from "./ClinicSettingsForm";
 import { ClinicCategoriesSection } from "./ClinicCategoriesSection";
@@ -72,6 +74,7 @@ function SettingsPageContent() {
   const canEdit = can("clinic.settings.update");
   const isAdmin = user?.role === "Administrador";
   const activeTab = resolveTab(searchParams.get("aba"), isAdmin);
+  const reduceMotion = useReducedMotion() === true;
   const settingsQuery = useClinicSettings(canView);
   const updateMutation = useUpdateClinicSettings();
 
@@ -142,51 +145,59 @@ function SettingsPageContent() {
         value={activeTab}
         onChange={handleTabChange}
       >
-        <p className="text-sm text-[#475569] dark:text-slate-300">{activeDefinition.description}</p>
+        <motion.div
+          key={activeTab}
+          initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.16, ease: ease.out }}
+          className="space-y-4"
+        >
+          <p className="text-sm text-[#475569] dark:text-slate-300">{activeDefinition.description}</p>
 
-        {activeTab === "atendimento" && (
-          <div className="space-y-6">
-            <AvailabilitySettingsSection canEdit={canEdit} />
-            <ClinicBusinessHoursSection canEdit={canEdit} />
-          </div>
-        )}
+          {activeTab === "atendimento" && (
+            <div className="space-y-6">
+              <AvailabilitySettingsSection canEdit={canEdit} />
+              <ClinicBusinessHoursSection canEdit={canEdit} />
+            </div>
+          )}
 
-        {activeTab === "clinica" && (
-          <div className="space-y-6">
-            <ClinicSettingsForm
-              settings={settingsQuery.data}
-              canEdit={canEdit}
-              loading={updateMutation.isPending}
-              onSubmit={handleSubmit}
-            />
-            <ClinicCategoriesSection canEdit={canEdit} />
-            <ClinicMediaSection canEdit={canEdit} />
-          </div>
-        )}
+          {activeTab === "clinica" && (
+            <div className="space-y-6">
+              <ClinicSettingsForm
+                settings={settingsQuery.data}
+                canEdit={canEdit}
+                loading={updateMutation.isPending}
+                onSubmit={handleSubmit}
+              />
+              <ClinicCategoriesSection canEdit={canEdit} />
+              <ClinicMediaSection canEdit={canEdit} />
+            </div>
+          )}
 
-        {activeTab === "integracoes" && isAdmin && (
-          <div className="space-y-6">
-            <WhatsAppLinkSection />
-            <Suspense fallback={null}>
-              <MercadoPagoSection />
-            </Suspense>
-          </div>
-        )}
+          {activeTab === "integracoes" && isAdmin && (
+            <div className="space-y-6">
+              <WhatsAppLinkSection />
+              <Suspense fallback={null}>
+                <MercadoPagoSection />
+              </Suspense>
+            </div>
+          )}
 
-        {activeTab === "plano" && isAdmin && (
-          <section className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900">
-            <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Plano e assinatura</h2>
-            <p className="mt-2 text-sm text-[#475569] dark:text-slate-300">
-              Veja o plano atual, os limites de uso e gerencie a assinatura da clínica.
-            </p>
-            <Link
-              href="/app/configuracoes/plano"
-              className="mt-4 inline-flex items-center rounded-xl border border-[#99f6e4] bg-white px-4 py-2 text-sm font-semibold text-[#0f766e] shadow-sm transition-colors hover:border-[#14b8a6] hover:bg-[#ecfdf5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#99f6e4] dark:border-slate-700 dark:bg-slate-900 dark:text-[#67e8f9] dark:hover:bg-slate-800"
-            >
-              Plano e assinatura
-            </Link>
-          </section>
-        )}
+          {activeTab === "plano" && isAdmin && (
+            <section className="rounded-2xl border border-[#d7f3ea] bg-white p-6 shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-900">
+              <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Plano e assinatura</h2>
+              <p className="mt-2 text-sm text-[#475569] dark:text-slate-300">
+                Veja o plano atual, os limites de uso e gerencie a assinatura da clínica.
+              </p>
+              <Link
+                href="/app/configuracoes/plano"
+                className="mt-4 inline-flex items-center rounded-xl border border-[#99f6e4] bg-white px-4 py-2 text-sm font-semibold text-[#0f766e] shadow-sm transition-colors hover:border-[#14b8a6] hover:bg-[#ecfdf5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#99f6e4] dark:border-slate-700 dark:bg-slate-900 dark:text-[#67e8f9] dark:hover:bg-slate-800"
+              >
+                Plano e assinatura
+              </Link>
+            </section>
+          )}
+        </motion.div>
       </Tabs>
     </div>
   );
