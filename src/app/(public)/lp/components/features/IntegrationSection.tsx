@@ -2,6 +2,8 @@
 
 import type { RefObject } from "react";
 import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { useReducedMotion } from "motion/react";
 import {
   CalendarDays,
@@ -15,6 +17,7 @@ import { AnimatedBeam } from "@/components/magicui/animated-beam";
 import { DotPattern } from "@/components/magicui/dot-pattern";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { cn } from "@/lib/utils";
+import { getLpEaseOut, registerLpGsap } from "./lpGsap";
 
 interface IntegrationNodeProps {
   label: string;
@@ -27,7 +30,7 @@ function IntegrationNode({ label, icon: Icon, nodeRef, className }: IntegrationN
   return (
     <div
       className={cn(
-        "relative z-10 flex w-full max-w-[220px] items-center gap-3 rounded-xl border border-[var(--lp-line)] bg-[var(--lp-surface)] px-4 py-3 shadow-[var(--shadow-md)]",
+        "lp-integration-node relative z-10 flex w-full max-w-[220px] items-center gap-3 rounded-xl border border-[var(--lp-line)] bg-[var(--lp-surface)] px-4 py-3 shadow-[var(--shadow-md)]",
         className,
       )}
     >
@@ -43,6 +46,7 @@ function IntegrationNode({ label, icon: Icon, nodeRef, className }: IntegrationN
 }
 
 export function IntegrationSection() {
+  const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const centerRef = useRef<HTMLDivElement>(null);
   const whatsappRef = useRef<HTMLDivElement>(null);
@@ -51,6 +55,32 @@ export function IntegrationSection() {
   const pagamentoRef = useRef<HTMLDivElement>(null);
   const copilotoRef = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion() === true;
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section || reduce) return;
+      if (typeof window.matchMedia !== "function") return;
+
+      const nodes = Array.from(section.querySelectorAll<HTMLElement>(".lp-integration-node"));
+      if (nodes.length === 0) return;
+
+      registerLpGsap();
+      gsap.from(nodes, {
+        opacity: 0.4,
+        y: 16,
+        duration: 0.5,
+        stagger: 0.06,
+        ease: getLpEaseOut(),
+        scrollTrigger: {
+          trigger: section,
+          start: "top 75%",
+          once: true,
+        },
+      });
+    },
+    { scope: sectionRef, dependencies: [reduce] },
+  );
 
   const nodes = [
     { label: "WhatsApp", icon: MessageCircle, ref: whatsappRef },
@@ -62,6 +92,7 @@ export function IntegrationSection() {
 
   return (
     <section
+      ref={sectionRef}
       id="integracoes"
       aria-labelledby="integracoes-title"
       className="relative overflow-hidden border-t border-[var(--lp-line)] bg-[var(--lp-bg)] py-24 sm:py-32"

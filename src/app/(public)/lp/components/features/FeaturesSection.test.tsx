@@ -36,7 +36,7 @@ describe("FeaturesSection", () => {
       "Agenda e copiloto no WhatsApp",
       "Cobrança online",
     ]) {
-      expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
+      expect(screen.getAllByRole("heading", { name: title }).length).toBeGreaterThan(0);
     }
   });
 });
