@@ -2081,6 +2081,52 @@ body {
 }
 
 /* Trilha F1 */
+.hero-demo__wave-bar {
+  transform-origin: center;
+  animation: hero-demo-wave 900ms ease-in-out infinite;
+}
+
+@keyframes hero-demo-wave {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.hero-demo__rec-dot {
+  animation: hero-demo-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes hero-demo-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-demo__wave-bar,
+  .hero-demo__rec-dot {
+    animation: none;
+  }
+
+  .hero-demo__wave-bar {
+    transform: scaleY(0.6);
+  }
+
+  .hero-cta .animate-shimmer-slide,
+  .hero-cta .animate-spin-around {
+    animation: none;
+  }
+}
 
 /* Trilha F2 */
 
