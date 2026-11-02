@@ -268,4 +268,26 @@ describe("PagamentoRegister", () => {
     );
     expect(toast.success).toHaveBeenCalledWith("Pagamento cadastrado com sucesso!");
   });
+
+  it("no painel, não repete o cabeçalho de página e avisa sobre alterações", async () => {
+    const onDirtyChange = vi.fn();
+    render(
+      <PagamentoRegister
+        variant="sheet"
+        onBack={vi.fn()}
+        onSave={vi.fn()}
+        onDirtyChange={onDirtyChange}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("heading", { name: "Novo Pagamento" }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/Paciente/)).toBeInTheDocument();
+    expect(onDirtyChange).toHaveBeenLastCalledWith(false);
+
+    await fillCommonFields();
+
+    await waitFor(() => expect(onDirtyChange).toHaveBeenLastCalledWith(true));
+  });
 });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { DataTable, Column } from "@/components/ui/DataTable";
@@ -8,12 +9,19 @@ import { DeleteConfirmDialog } from "@/components/ui/DeleteConfirmDialog";
 import { FilterPopover, FilterOption, FilterValues } from "@/components/ui/FilterPopover";
 import { Button } from "@/components/ui/Button";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
-import { Eye, Trash2 } from "lucide-react";
+import {
+  ViewSwitcher,
+  useMediaQuery,
+  useViewPreference,
+  type ViewOption,
+} from "@/components/ui/ViewSwitcher";
+import { Eye, KanbanSquare, Table2, Trash2 } from "lucide-react";
 import { usePagamentosPaginated, PagamentoFilters } from "../hooks/pagined";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Pagination } from "@/components/ui/Pagination";
 import { usePagamentoDelete } from "../hooks/delete";
 import { PagamentoOnlineCell } from "./PagamentoOnlineCell";
+import { PagamentoBoard } from "./PagamentoBoard";
 import { Payment, Patient } from "@/types";
 import { formatCivilDate, formatCurrency, todayCivilDate } from "@/utils/formatters";
 import { toast } from "sonner";
@@ -28,6 +36,13 @@ const paymentStatusOptions = [
   { value: "Pending", label: "Pendente" },
   { value: "Paid", label: "Pago" },
   { value: "Cancelled", label: "Cancelado" },
+];
+
+type PagamentosView = "table" | "board";
+
+const viewOptions: ViewOption<PagamentosView>[] = [
+  { value: "table", label: "Tabela", icon: Table2 },
+  { value: "board", label: "Quadro", icon: KanbanSquare, mobile: false },
 ];
 
 export default function PagamentoList({ onCreate, onViewDetails }: Props) {
@@ -48,6 +63,14 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
     refetch,
   } = usePagamentosPaginated();
   const { deletePagamento, isPending: deleting } = usePagamentoDelete();
+  const [view, setView] = useViewPreference<PagamentosView>(
+    "pagamentos",
+    "table",
+    ["table", "board"],
+  );
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const reduceMotion = useReducedMotion();
+  const activeView = isDesktop ? view : "table";
 
   const [toDelete, setToDelete] = useState<Payment | null>(null);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -218,8 +241,14 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
     <div className="space-y-4">
       <PageHeader
         title="Pagamentos"
+        description="Acompanhe as cobranças e os pagamentos dos pacientes."
         actions={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <ViewSwitcher
+              options={viewOptions}
+              value={activeView}
+              onChange={setView}
+            />
             <div data-tutorial="payments-filters">
               <FilterPopover
                 filters={filterOptions}
@@ -244,14 +273,36 @@ export default function PagamentoList({ onCreate, onViewDetails }: Props) {
         />
       </div>
 
-      <div data-tutorial="payments-list">
-        <DataTable
-          columns={columns}
-          data={data}
-          loading={loading}
-          emptyMessage="Nenhum pagamento encontrado."
-          keyExtractor={(p) => p.id}
-        />
+      <div data-tutorial="payments-list" className="relative">
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.div
+            key={activeView}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.15,
+              ease: [0.23, 1, 0.32, 1],
+            }}
+          >
+            {activeView === "board" ? (
+              <PagamentoBoard
+                payments={data}
+                loading={loading}
+                onViewDetails={onViewDetails}
+                onChanged={() => void refetch()}
+              />
+            ) : (
+              <DataTable
+                columns={columns}
+                data={data}
+                loading={loading}
+                emptyMessage="Nenhum pagamento encontrado."
+                keyExtractor={(p) => p.id}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <Pagination

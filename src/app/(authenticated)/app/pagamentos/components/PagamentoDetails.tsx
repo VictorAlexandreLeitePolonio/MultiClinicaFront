@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { FormSection } from "@/components/ui/FormSection";
 import { FormField } from "@/components/ui/FormField";
@@ -26,6 +26,9 @@ interface Props {
   id: number;
   onBack: () => void;
   onSave: () => void;
+  /** "sheet" esconde o cabeçalho de página: o painel já traz o título. */
+  variant?: "page" | "sheet";
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 const paymentStatusOptions = [
@@ -36,9 +39,16 @@ const paymentStatusOptions = [
 
 const dateInputValue = (value: string | null) => value?.slice(0, 10) ?? "";
 
-export default function PagamentoDetails({ id, onBack, onSave }: Props) {
+export default function PagamentoDetails({
+  id,
+  onBack,
+  onSave,
+  variant = "page",
+  onDirtyChange,
+}: Props) {
   const { data, loading, error } = usePagamentoById(id);
   const { updatePagamento, isPending } = usePagamentoUpdate();
+  const reduceMotion = useReducedMotion();
   const { data: planos, loading: loadingPlanos } = usePlanos();
   const [isEditing, setIsEditing] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -48,7 +58,7 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
     reset,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<PagamentoFormData>({
     resolver: zodResolver(PagamentoSchema),
     defaultValues: {
@@ -103,6 +113,14 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
     }
   }, [data, reset]);
 
+  useEffect(() => {
+    onDirtyChange?.(isEditing && isDirty);
+  }, [isEditing, isDirty, onDirtyChange]);
+
+  useEffect(() => {
+    return () => onDirtyChange?.(false);
+  }, [onDirtyChange]);
+
   const onSubmit = async (formData: PagamentoFormData) => {
     try {
       await updatePagamento(id, formData);
@@ -129,10 +147,30 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
     }
   };
 
+  const actions = !isEditing ? (
+    <Button onClick={() => setIsEditing(true)}>
+      <Edit3 size={16} className="mr-2" />
+      Editar
+    </Button>
+  ) : (
+    <div className="flex gap-2">
+      <Button variant="outline" onClick={handleCancelEdit}>
+        <X size={16} className="mr-2" />
+        Cancelar
+      </Button>
+      <Button onClick={handleSubmit(onSubmit)} loading={isPending}>
+        <Save size={16} className="mr-2" />
+        Salvar Alterações
+      </Button>
+    </div>
+  );
+
   if (loading) {
     return (
-      <div className="space-y-6 max-w-2xl">
-        <PageHeader title="Detalhes do Pagamento" onBack={onBack} />
+      <div className={variant === "sheet" ? "space-y-4" : "space-y-6 max-w-2xl"}>
+        {variant === "page" && (
+          <PageHeader title="Detalhes do Pagamento" onBack={onBack} />
+        )}
         <p className="text-gray-600 dark:text-slate-300">
           Carregando...
         </p>
@@ -142,41 +180,29 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
 
   if (error) {
     return (
-      <div className="space-y-6 max-w-2xl">
-        <PageHeader title="Detalhes do Pagamento" onBack={onBack} />
+      <div className={variant === "sheet" ? "space-y-4" : "space-y-6 max-w-2xl"}>
+        {variant === "page" && (
+          <PageHeader title="Detalhes do Pagamento" onBack={onBack} />
+        )}
         <p className="text-red-500">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <PageHeader
-        title="Detalhes do Pagamento"
-        onBack={onBack}
-        actions={
-          !isEditing ? (
-            <Button onClick={() => setIsEditing(true)}>
-              <Edit3 size={16} className="mr-2" />
-              Editar
-            </Button>
-          ) : (
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={handleCancelEdit}>
-                <X size={16} className="mr-2" />
-                Cancelar
-              </Button>
-              <Button onClick={handleSubmit(onSubmit)} loading={isPending}>
-                <Save size={16} className="mr-2" />
-                Salvar Alterações
-              </Button>
-            </div>
-          )
-        }
-      />
+    <div className={variant === "sheet" ? "space-y-6" : "space-y-6 max-w-2xl"}>
+      {variant === "page" ? (
+        <PageHeader
+          title="Detalhes do Pagamento"
+          onBack={onBack}
+          actions={actions}
+        />
+      ) : (
+        <div className="flex justify-end gap-2">{actions}</div>
+      )}
 
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={reduceMotion ? false : { opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className={`flex items-center gap-2 px-4 py-3 rounded-xl border ${
           isEditing
@@ -215,8 +241,8 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
             <select
               disabled={!isEditing}
               value={patientId || 0}
-              onChange={(e) => setValue("patientId", Number(e.target.value), { shouldValidate: true })}
-              className={`w-full px-4 py-3 border rounded-xl transition-all
+              onChange={(e) => setValue("patientId", Number(e.target.value), { shouldValidate: true, shouldDirty: true })}
+              className={`w-full px-4 py-3 border rounded-xl transition-[border-color,background-color,box-shadow]
                 ${!isEditing
                   ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
                   : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
@@ -246,8 +272,8 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
             <select
               disabled={!isEditing}
               value={planId || 0}
-              onChange={(e) => setValue("planId", Number(e.target.value), { shouldValidate: true })}
-              className={`w-full px-4 py-3 border rounded-xl transition-all
+              onChange={(e) => setValue("planId", Number(e.target.value), { shouldValidate: true, shouldDirty: true })}
+              className={`w-full px-4 py-3 border rounded-xl transition-[border-color,background-color,box-shadow]
                 ${!isEditing
                   ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
                   : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
@@ -286,7 +312,7 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
             value={referenceMonth || ""}
             onChange={(e) =>
               setValue("referenceMonth", e.target.value, {
-                shouldValidate: true,
+                shouldValidate: true, shouldDirty: true,
               })
             }
           />
@@ -305,8 +331,8 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
               id="paymentMethod"
               disabled={methodDisabled}
               value={paymentMethod || ""}
-              onChange={(e) => setValue("paymentMethod", e.target.value, { shouldValidate: true })}
-              className={`w-full px-4 py-3 border rounded-xl transition-all
+              onChange={(e) => setValue("paymentMethod", e.target.value, { shouldValidate: true, shouldDirty: true })}
+              className={`w-full px-4 py-3 border rounded-xl transition-[border-color,background-color,box-shadow]
                 ${methodDisabled
                   ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
                   : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
@@ -345,8 +371,8 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
             <select
               disabled={!isEditing}
               value={status || "Pending"}
-              onChange={(e) => setValue("status", e.target.value as "Pending" | "Paid" | "Cancelled", { shouldValidate: true })}
-              className={`w-full px-4 py-3 border rounded-xl transition-all
+              onChange={(e) => setValue("status", e.target.value as "Pending" | "Paid" | "Cancelled", { shouldValidate: true, shouldDirty: true })}
+              className={`w-full px-4 py-3 border rounded-xl transition-[border-color,background-color,box-shadow]
                 ${!isEditing
                   ? "bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 cursor-not-allowed"
                   : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
@@ -369,7 +395,7 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
             value={paymentDate || ""}
             onChange={(e) => {
               const value = e.target.value;
-              setValue("paymentDate", value ? value : null, { shouldValidate: true });
+              setValue("paymentDate", value ? value : null, { shouldValidate: true, shouldDirty: true });
             }}
           />
 
@@ -381,7 +407,7 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
               type="date"
               disabled={!isEditing}
               value={paidAt || ""}
-              onChange={(e) => setValue("paidAt", e.target.value, { shouldValidate: true })}
+              onChange={(e) => setValue("paidAt", e.target.value, { shouldValidate: true, shouldDirty: true })}
             />
           )}
 
@@ -401,25 +427,27 @@ export default function PagamentoDetails({ id, onBack, onSave }: Props) {
           )}
         </FormSection>
 
-        <div className="flex gap-2 md:hidden">
-          {!isEditing ? (
-            <Button onClick={() => setIsEditing(true)}>
-              <Edit3 size={16} className="mr-2" />
-              Editar
-            </Button>
-          ) : (
-            <>
-              <Button variant="outline" onClick={handleCancelEdit}>
-                <X size={16} className="mr-2" />
-                Cancelar
+        {variant === "page" && (
+          <div className="flex gap-2 md:hidden">
+            {!isEditing ? (
+              <Button onClick={() => setIsEditing(true)}>
+                <Edit3 size={16} className="mr-2" />
+                Editar
               </Button>
-              <Button onClick={handleSubmit(onSubmit)} loading={isPending}>
-                <Save size={16} className="mr-2" />
-                Salvar
-              </Button>
-            </>
-          )}
-        </div>
+            ) : (
+              <>
+                <Button variant="outline" onClick={handleCancelEdit}>
+                  <X size={16} className="mr-2" />
+                  Cancelar
+                </Button>
+                <Button onClick={handleSubmit(onSubmit)} loading={isPending}>
+                  <Save size={16} className="mr-2" />
+                  Salvar
+                </Button>
+              </>
+            )}
+          </div>
+        )}
       </form>
     </div>
   );
