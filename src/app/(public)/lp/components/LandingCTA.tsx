@@ -1,28 +1,43 @@
-import { ArrowRight, Mail } from "lucide-react";
-import { siteConfig } from "@/lib/site";
+"use client";
+
+import { ArrowRight } from "lucide-react";
+import { ShimmerLink } from "@/components/magicui/shimmer-button";
 
 export function LandingCTA() {
   return (
-    <section id="contato" data-mascot-anchor="contato" data-landing-reveal className="landing-cta py-24 sm:py-32">
+    <section
+      id="contato"
+      aria-labelledby="cta-title"
+      className="border-t border-[var(--lp-line)] bg-[var(--lp-bg)] py-20 sm:py-28"
+    >
       <div className="mx-auto max-w-[88rem] px-6 lg:px-8">
-        <div className="landing-cta__panel landing-contact">
-          <div>
-            <h2 className="text-4xl font-bold leading-tight tracking-[-0.04em] text-white sm:text-5xl">Vamos conhecer<br />a rotina da sua clínica?</h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-teal-50 sm:text-lg">Conte o que sua equipe precisa organizar. O primeiro passo é uma conversa para entender se o Cliniq faz sentido para você.</p>
-            <a href={`mailto:${siteConfig.contactEmail}?subject=${encodeURIComponent("Quero conhecer o Cliniq")}&body=${encodeURIComponent("Olá! Quero conhecer o Cliniq.\n\nNome da clínica:\nMinha função:\nO que precisamos organizar:\nComo conheci o Cliniq:\n")}`} className="landing-button landing-button--light mt-8">
-              <Mail size={17} /> Conversar sobre minha clínica <ArrowRight size={16} />
-            </a>
-            <p className="mt-4 text-xs leading-6 text-teal-50">Abre seu aplicativo de e-mail. Você revisa a mensagem antes de enviar.</p>
+        <div className="rounded-3xl border border-[var(--lp-line)] bg-[var(--lp-surface)] px-6 py-14 text-center sm:px-10 sm:py-20">
+          <h2
+            id="cta-title"
+            className="font-wide mx-auto max-w-3xl text-balance text-[clamp(2rem,5vw,4rem)] leading-[1.02] tracking-[-0.03em] text-[var(--lp-ink)]"
+          >
+            Pronto para tirar a clínica do papel?
+          </h2>
+          <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-[var(--lp-muted)]">
+            Agenda, prontuário, consulta gravada e cobrança online num sistema só. Comece
+            pelo plano Free e cresça quando fizer sentido.
+          </p>
+
+          <div className="mt-9 flex justify-center">
+            <ShimmerLink
+              href="/cadastro"
+              background="var(--color-primary)"
+              shimmerColor="var(--lp-ink)"
+              className="lp-shimmer gap-2 px-6 py-3.5 text-sm font-semibold text-[var(--lp-bg)]"
+            >
+              Começar grátis
+              <ArrowRight size={16} aria-hidden="true" />
+            </ShimmerLink>
           </div>
-          <div className="landing-contact__next">
-            <h3>O que acontece depois?</h3>
-            <ol>
-              <li><span>1</span><div><strong>Você apresenta sua clínica</strong><p>Compartilhe sua rotina e o que gostaria de melhorar.</p></div></li>
-              <li><span>2</span><div><strong>Conversamos sobre o acesso</strong><p>O acesso é liberado por indicação e depende da avaliação da equipe.</p></div></li>
-              <li><span>3</span><div><strong>Combinamos os próximos passos</strong><p>Se houver disponibilidade, alinhamos a apresentação e as condições de uso.</p></div></li>
-            </ol>
-            <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
-          </div>
+
+          <p className="mt-4 font-mono text-xs text-[var(--lp-muted)]">
+            Sem cartão · Plano Free para sempre
+          </p>
         </div>
       </div>
     </section>

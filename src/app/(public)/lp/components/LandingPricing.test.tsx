@@ -10,6 +10,22 @@ vi.mock("@/app/(public)/lp/services/plans.service", () => ({
   fetchPublicPlans: vi.fn(),
 }));
 
+vi.mock("@number-flow/react", () => ({
+  default: ({
+    value,
+    locales,
+    format,
+    className,
+  }: {
+    value: number;
+    locales?: Intl.LocalesArgument;
+    format?: Intl.NumberFormatOptions;
+    className?: string;
+  }) => (
+    <span className={className}>{new Intl.NumberFormat(locales, format).format(value)}</span>
+  ),
+}));
+
 const plans: PublicPlansResponse = {
   plans: [
     {
