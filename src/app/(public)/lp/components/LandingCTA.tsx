@@ -1,12 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { ShimmerButton } from "@/components/magicui/shimmer-button";
+import { ShimmerLink } from "@/components/magicui/shimmer-button";
 
 export function LandingCTA() {
-  const router = useRouter();
-
   return (
     <section
       id="contato"
@@ -27,16 +24,15 @@ export function LandingCTA() {
           </p>
 
           <div className="mt-9 flex justify-center">
-            <ShimmerButton
-              type="button"
-              onClick={() => router.push("/cadastro")}
+            <ShimmerLink
+              href="/cadastro"
               background="var(--color-primary)"
               shimmerColor="var(--lp-ink)"
-              className="lp-shimmer gap-2 px-6 py-3.5 text-sm font-semibold text-[var(--lp-bg)] transition-transform duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-surface)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:translate-y-0 motion-reduce:active:scale-100"
+              className="lp-shimmer gap-2 px-6 py-3.5 text-sm font-semibold text-[var(--lp-bg)]"
             >
               Começar grátis
               <ArrowRight size={16} aria-hidden="true" />
-            </ShimmerButton>
+            </ShimmerLink>
           </div>
 
           <p className="mt-4 font-mono text-xs text-[var(--lp-muted)]">

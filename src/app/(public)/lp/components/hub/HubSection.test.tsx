@@ -83,9 +83,9 @@ describe("HubSection", () => {
     expect(screen.getAllByText("Itapetininga · SP")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Destaque")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Fundadora")[0]).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Ver o Hub" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Colocar minha clínica no Hub" })).toHaveAttribute(
       "href",
-      "/paciente",
+      "/cadastro",
     );
 
     await userEvent.click(screen.getAllByRole("button", { name: /Clínica Alfa/ })[0]);

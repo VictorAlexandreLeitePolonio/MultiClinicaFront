@@ -232,10 +232,10 @@ export function HubSection() {
           </ul>
 
           <Link
-            href="/paciente"
+            href="/cadastro"
             className="mt-8 inline-flex items-center gap-2 rounded-full border border-[var(--lp-line)] px-5 py-2.5 text-sm font-semibold text-[var(--lp-ink)] transition-transform duration-150 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-bg)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
           >
-            Ver o Hub
+            Colocar minha clínica no Hub
             <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
         </div>
