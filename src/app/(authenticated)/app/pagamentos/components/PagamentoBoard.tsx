@@ -6,7 +6,7 @@ import { DropdownMenu } from "radix-ui";
 import { GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import type { Payment, PaymentStatus } from "@/types";
+import type { Payment, PaymentStatus, PaymentStatusSummary } from "@/types";
 import { formatCivilDate } from "@/utils/formatters";
 import { cn } from "@/lib/utils";
 import { usePagamentoUpdate } from "../hooks/update";
@@ -15,6 +15,10 @@ import type { PagamentoFormData } from "../schemas/pagamento.schema";
 interface Props {
   payments: Payment[];
   loading?: boolean;
+  /** Contagem e soma por status de todo o filtro (sem paginação). */
+  summary?: PaymentStatusSummary[];
+  /** Carregando o resumo: o cabeçalho mostra "—" no lugar da contagem e do total. */
+  summaryLoading?: boolean;
   onViewDetails: (id: number) => void;
   onChanged?: () => void;
 }
@@ -95,6 +99,8 @@ function confirmDescription(payment: Payment, target: PaymentStatus) {
 export function PagamentoBoard({
   payments,
   loading = false,
+  summary,
+  summaryLoading = false,
   onViewDetails,
   onChanged,
 }: Props) {
@@ -189,13 +195,14 @@ export function PagamentoBoard({
       <div className="grid gap-4 md:grid-cols-3" aria-label="Quadro de pagamentos">
         {columns.map(({ status, label }) => {
           const items = grouped[status];
-          const total = items.reduce(
-            (sum, payment) => sum + payment.planAmount,
-            0,
-          );
-          const countLabel = `${items.length} ${
-            items.length === 1 ? "pagamento" : "pagamentos"
-          }`;
+          const summaryEntry = summary?.find((entry) => entry.status === status);
+          const count = summary ? (summaryEntry?.count ?? 0) : items.length;
+          const total = summary
+            ? (summaryEntry?.total ?? 0)
+            : items.reduce((sum, payment) => sum + payment.planAmount, 0);
+          const countLabel = summaryLoading
+            ? "—"
+            : `${count} ${count === 1 ? "pagamento" : "pagamentos"}`;
           return (
             <section
               key={status}
@@ -221,7 +228,7 @@ export function PagamentoBoard({
                   <span>{countLabel}</span>
                   <span aria-hidden="true"> · </span>
                   <span data-testid="payments-column-total">
-                    {brl.format(total)}
+                    {summaryLoading ? "—" : brl.format(total)}
                   </span>
                 </p>
               </header>
@@ -310,6 +317,12 @@ export function PagamentoBoard({
                     </motion.li>
                   ))}
                 </ul>
+              )}
+
+              {!summaryLoading && count > items.length && (
+                <p className="px-1 text-center text-xs text-[var(--color-gray-600)]">
+                  Mostrando {items.length} de {count} · veja as outras páginas
+                </p>
               )}
             </section>
           );
