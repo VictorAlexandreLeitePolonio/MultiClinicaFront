@@ -1,73 +1,115 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Moon, Sun, Loader2 } from "lucide-react";
+import { useRef } from "react";
+import { flushSync } from "react-dom";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { easeCss } from "@/lib/motion";
+import { cn } from "@/lib/utils";
+
+export function toggleThemeWithTransition(
+  next: string,
+  setTheme: (theme: string) => void,
+  origin?: { x: number; y: number },
+) {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    setTheme(next);
+    return;
+  }
+
+  const reduce =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!document.startViewTransition || reduce) {
+    setTheme(next);
+    return;
+  }
+
+  const x = origin?.x ?? window.innerWidth / 2;
+  const y = origin?.y ?? 0;
+  const radius = Math.hypot(
+    Math.max(x, window.innerWidth - x),
+    Math.max(y, window.innerHeight - y),
+  );
+
+  const transition = document.startViewTransition(() => {
+    flushSync(() => setTheme(next));
+  });
+
+  transition.ready.then(() => {
+    document.documentElement.animate(
+      {
+        clipPath: [
+          `circle(0px at ${x}px ${y}px)`,
+          `circle(${radius}px at ${x}px ${y}px)`,
+        ],
+      },
+      {
+        duration: 420,
+        easing: easeCss.out,
+        pseudoElement: "::view-transition-new(root)",
+      },
+    );
+  });
+}
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
-  const [isChanging, setIsChanging] = useState(false);
-  const timeoutRef = useRef<number | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const isDark = resolvedTheme === "dark";
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        window.clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
+  const label = isDark ? "Ativar tema claro" : "Ativar tema escuro";
 
   const handleToggle = () => {
-    if (timeoutRef.current) {
-      window.clearTimeout(timeoutRef.current);
-    }
+    const rect = buttonRef.current?.getBoundingClientRect();
+    const origin = rect
+      ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+      : undefined;
 
-    setIsChanging(true);
-    setTheme(isDark ? "light" : "dark");
-    timeoutRef.current = window.setTimeout(() => {
-      setIsChanging(false);
-      timeoutRef.current = null;
-    }, 650);
+    toggleThemeWithTransition(isDark ? "light" : "dark", setTheme, origin);
   };
 
-  return (
-    <>
-      <button
-        type="button"
-        onClick={handleToggle}
-        disabled={isChanging}
-        aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
-        title={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
-        className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 bg-white text-secondary shadow-sm transition-colors hover:bg-primary-muted disabled:cursor-wait disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
-      >
-        {isChanging ? (
-          <Loader2 size={16} className="animate-spin" />
-        ) : isDark ? (
-          <Sun size={16} />
-        ) : (
-          <Moon size={16} />
-        )}
-      </button>
+  const iconStyle = {
+    transitionProperty: "transform, opacity, filter",
+    transitionDuration: "200ms",
+    transitionTimingFunction: easeCss.out,
+  } as const;
 
-      {isChanging && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/85 px-4 backdrop-blur-sm dark:bg-slate-950/85"
-        >
-          <div className="flex w-full max-w-xs flex-col items-center rounded-xl border border-primary-dark bg-white p-6 text-center text-secondary shadow-[0_18px_50px_-44px_rgba(15,23,42,0.42)] dark:border-primary-light dark:bg-slate-900 dark:text-white">
-            <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary-dark dark:text-primary-light" aria-hidden="true" />
-            <p className="text-sm font-bold uppercase tracking-wide">
-              Alterando tema
-            </p>
-            <p className="mt-2 text-sm text-gray-600 dark:text-white">
-              Aplicando contraste e cores da interface.
-            </p>
-          </div>
-        </div>
-      )}
-    </>
+  return (
+    <button
+      ref={buttonRef}
+      type="button"
+      onClick={handleToggle}
+      aria-label={label}
+      title={label}
+      style={{ transitionTimingFunction: easeCss.out }}
+      className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--color-gray-200)] bg-[var(--color-card)] text-[var(--color-secondary)] transition-[transform,background-color,box-shadow] duration-[160ms] hover:bg-[var(--color-primary-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+    >
+      <span className="relative h-4 w-4" aria-hidden="true">
+        <Sun
+          size={16}
+          data-theme-toggle-icon="sun"
+          className={cn(
+            "absolute inset-0",
+            isDark
+              ? "rotate-0 scale-100 opacity-100 blur-0"
+              : "rotate-90 scale-90 opacity-0 blur-[2px]",
+          )}
+          style={iconStyle}
+        />
+        <Moon
+          size={16}
+          data-theme-toggle-icon="moon"
+          className={cn(
+            "absolute inset-0",
+            isDark
+              ? "rotate-90 scale-90 opacity-0 blur-[2px]"
+              : "rotate-0 scale-100 opacity-100 blur-0",
+          )}
+          style={iconStyle}
+        />
+      </span>
+    </button>
   );
 }

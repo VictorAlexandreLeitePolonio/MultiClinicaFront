@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { trackModuleClick } from "@/lib/analytics";
 import { usePathname } from "next/navigation";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
+import { spring } from "@/lib/motion";
+import { cn } from "@/lib/utils";
+import { trackModuleClick } from "@/lib/analytics";
 
 interface SidebarLinkProps {
   href: string;
@@ -14,37 +16,39 @@ interface SidebarLinkProps {
 
 export function SidebarLink({ href, label, icon, collapsed }: SidebarLinkProps) {
   const pathname = usePathname();
+  const reduceMotion = useReducedMotion();
   const isActive = pathname === href;
 
   return (
-    <motion.div 
-      whileHover={{ x: collapsed ? 0 : 2 }} 
-      transition={{ type: "spring", stiffness: 300 }}
-      className="relative"
-    >
-      {/* Indicador animado de item ativo */}
-      {isActive && (
-        <motion.div
-          layoutId="active-indicator"
-          className="absolute bottom-2 left-0 top-2 w-1 rounded-full bg-[#14b8a6]"
-          initial={false}
-          transition={{ type: "spring", stiffness: 400, damping: 30 }}
-        />
+    <Link
+      href={href}
+      onClick={() => trackModuleClick(href, label)}
+      title={collapsed ? label : undefined}
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors duration-[160ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]",
+        collapsed && "justify-center",
+        isActive
+          ? "text-[var(--color-primary-dark)] dark:text-[var(--color-primary-light)]"
+          : "text-[var(--color-gray-600)] hover:text-[var(--color-primary-dark)] dark:hover:text-[var(--color-primary-light)]",
       )}
-      <Link
-        href={href}
-        onClick={() => trackModuleClick(href, label)}
-        title={collapsed ? label : undefined}
-        className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all
-          ${collapsed ? "justify-center" : ""}
-          ${isActive
-            ? "border-[#a7f3d0] bg-[#ecfdf5] text-[#0f766e] shadow-[0_12px_26px_-22px_rgba(20,184,166,0.9)] dark:border-[#0f766e] dark:bg-slate-900 dark:text-[#67e8f9]"
-            : "border-transparent text-[#64748b] hover:border-[#d7f3ea] hover:bg-[#f8fffc] hover:text-[#0f766e] dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-900 dark:hover:text-white"
-          }`}
-      >
-        <span className={isActive ? "opacity-100" : "opacity-75"}>{icon}</span>
-        {!collapsed && <span>{label}</span>}
-      </Link>
-    </motion.div>
+    >
+      {isActive &&
+        (reduceMotion ? (
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 rounded-xl bg-[var(--color-primary-muted)]"
+          />
+        ) : (
+          <motion.span
+            aria-hidden="true"
+            layoutId="sidebar-active"
+            transition={spring.ui}
+            className="absolute inset-0 rounded-xl bg-[var(--color-primary-muted)]"
+          />
+        ))}
+      <span className="relative shrink-0">{icon}</span>
+      {!collapsed && <span className="relative truncate">{label}</span>}
+    </Link>
   );
 }

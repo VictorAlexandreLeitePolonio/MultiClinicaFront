@@ -2158,3 +2158,17 @@ body {
 }
 
 /* Trilha F4 */
+
+/* Troca de tema: a revelação circular é desenhada no View Transition; a
+   captura antiga não precisa animar por conta própria. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme-toggle-icon] {
+    transition-duration: 0ms !important;
+  }
+}
