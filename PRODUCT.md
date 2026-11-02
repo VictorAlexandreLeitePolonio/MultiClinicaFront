@@ -21,7 +21,7 @@ SaaS de gestão para clínicas de saúde, começando por fisioterapia: agenda, p
 
 ## Brand personality
 
-Confiável, calma, clínica sem ser fria. Teal de saúde como acento, muito branco, tipografia limpa (Inter). Familiaridade acima de surpresa: o software some na tarefa.
+Tecnologia que transmite competência: a solução tech para clínicas que ainda vivem no papel e no WhatsApp manual. Moderna sem assustar quem não é do ramo. Teal elétrico como acento, Mona Sans (títulos expandidos na LP) e Geist Mono nos dados. A LP é escura e cinematográfica; o backoffice é claro, rápido e "vivo": motion curto que confirma ações e mostra a IA trabalhando, nunca enfeite que atrase a tarefa.
 
 ## Design principles
 
