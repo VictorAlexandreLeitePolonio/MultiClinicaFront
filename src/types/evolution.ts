@@ -29,7 +29,6 @@ export type EvolutionFieldUnit =
   | "Score";
 
 export type EvolutionDirection = "Neutral" | "Increase" | "Decrease";
-export type TreatmentStatus = "Active" | "Paused" | "Completed" | "Canceled";
 export type EvolutionStatus = "Draft" | "Completed" | "Canceled";
 
 export interface EvolutionTemplate {
@@ -96,36 +95,6 @@ export interface EvolutionTemplateFieldUpdatePayload extends Partial<EvolutionTe
   isActive?: boolean;
 }
 
-export interface PatientTreatment {
-  id: number;
-  patientId: number;
-  professionalId: number | null;
-  templateId: number;
-  title: string;
-  description: string | null;
-  startedAt: string;
-  endedAt: string | null;
-  status: TreatmentStatus;
-  createdAt: string;
-}
-
-export interface PatientTreatmentPayload {
-  templateId: number;
-  professionalId?: number | null;
-  title: string;
-  description?: string | null;
-  startedAt?: string | null;
-}
-
-export interface PatientTreatmentUpdatePayload {
-  professionalId?: number | null;
-  title?: string;
-  description?: string | null;
-  startedAt?: string | null;
-  endedAt?: string | null;
-  status?: TreatmentStatus;
-}
-
 export interface PatientEvolutionValue {
   fieldId: number;
   valueNumber: number | null;
@@ -137,7 +106,10 @@ export interface PatientEvolutionValue {
 export interface PatientEvolution {
   id: number;
   patientId: number;
-  treatmentId: number;
+  /** Consulta de origem; uma consulta pode ter várias evoluções. */
+  appointmentId: number | null;
+  /** Fichas medidas nesta evolução. */
+  templateNames: string[];
   professionalId: number;
   serviceId: number | null;
   date: string;
@@ -151,6 +123,7 @@ export interface PatientEvolution {
 
 export interface PatientEvolutionPayload {
   professionalId?: number | null;
+  appointmentId?: number | null;
   serviceId?: number | null;
   date?: string | null;
   description?: string | null;
@@ -163,22 +136,6 @@ export interface PatientEvolutionPayload {
 
 export interface PatientEvolutionUpdatePayload extends Partial<Omit<PatientEvolutionPayload, "values">> {
   values?: PatientEvolutionValue[];
-}
-
-export interface TreatmentProgressResponse {
-  treatment: {
-    id: number;
-    title: string;
-  };
-  summary: {
-    totalEvolutions: number;
-    overallProgress: number | null;
-    improvingFields: number;
-    worseningFields: number;
-    stableFields: number;
-    lastEvolutionDate: string | null;
-  };
-  charts: TreatmentProgressChart[];
 }
 
 export interface TreatmentProgressChart {
@@ -199,7 +156,8 @@ export interface TreatmentProgressPoint {
 }
 
 export interface EvolutionDashboardSummary {
-  activeTreatments: number;
+  /** Pacientes com evolução concluída com medição nos últimos 60 dias. */
+  patientsInFollowUp: number;
   completedEvolutionsThisMonth: number;
   patientsImproving: number;
   patientsStable: number;
@@ -216,3 +174,34 @@ export interface MostUsedEvolutionTemplate {
 
 export type EvolutionTemplatesResult = PagedResult<EvolutionTemplate>;
 export type PatientEvolutionsResult = PagedResult<PatientEvolution>;
+
+// GET /api/patients/{id}/measurements: uma série por ficha medida.
+export interface PatientMeasurementSeries {
+  templateId: number;
+  templateName: string;
+  lastDate: string;
+  evolutionCount: number;
+  fields: TreatmentProgressChart[];
+}
+
+export type PatientTimelineEventType = "appointment" | "evolution" | "anamnesis";
+
+// GET /api/patients/{id}/timeline?before=&take=
+export interface PatientTimelineEvent {
+  type: PatientTimelineEventType;
+  id: number;
+  date: string;
+  title: string;
+  professionalName: string | null;
+  status: string | null;
+  consultationStatus: string | null;
+  appointmentId: number | null;
+  evolutionCount: number;
+  templateNames: string[];
+}
+
+export interface PatientTimeline {
+  events: PatientTimelineEvent[];
+  /** Passe em ?before= para a próxima página; null quando acabou. */
+  nextBefore: string | null;
+}

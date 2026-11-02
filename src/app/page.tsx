@@ -6,6 +6,7 @@ import { LandingExperience } from "./(public)/lp/components/LandingExperience";
 import { LandingClients } from "./(public)/lp/components/LandingClients";
 import { LandingClinicsShowcase } from "./(public)/lp/components/LandingClinicsShowcase";
 import { LandingPatientExperience } from "./(public)/lp/components/LandingPatientExperience";
+import { LandingPricing } from "./(public)/lp/components/LandingPricing";
 import { LandingFaq } from "./(public)/lp/components/LandingFaq";
 import { LandingCTA } from "./(public)/lp/components/LandingCTA";
 import { LandingFooter } from "./(public)/lp/components/LandingFooter";
@@ -41,6 +42,7 @@ export default function HomePage() {
       <LandingClients />
       <LandingPatientExperience />
       <LandingClinicsShowcase />
+      <LandingPricing />
       <LandingFaq />
       <LandingCTA />
       <LandingFooter />

@@ -4,7 +4,6 @@ import {
   CalendarDays,
   CreditCard,
   FileText,
-  Package,
   ShieldCheck,
   Users,
 } from "lucide-react";
@@ -16,7 +15,6 @@ export type LandingModuleId =
   | "financeiro"
   | "pagamentos"
   | "evolucao"
-  | "estoque"
   | "permissoes";
 
 export interface LandingModule {
@@ -92,16 +90,6 @@ export const landingModules: readonly LandingModule[] = [
     metric: "8",
     metricLabel: "acompanhamentos ativos",
     highlights: ["Linha do tempo", "Metas de tratamento", "Resumo por paciente"],
-  },
-  {
-    id: "estoque",
-    label: "Estoque",
-    title: "O que a clínica usa, sob controle",
-    description: "Acompanhe produtos, compras e movimentações sem depender de planilhas soltas.",
-    icon: Package,
-    metric: "32",
-    metricLabel: "itens monitorados",
-    highlights: ["Produtos", "Compras", "Alertas de estoque"],
   },
   {
     id: "permissoes",

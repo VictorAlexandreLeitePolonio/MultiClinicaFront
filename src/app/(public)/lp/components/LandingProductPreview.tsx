@@ -131,19 +131,6 @@ export function ModuleWorkspace({ moduleId }: ModuleWorkspaceProps) {
     );
   }
 
-  if (moduleId === "estoque") {
-    return (
-      <div className="landing-workspace" aria-hidden="true">
-        <div className="landing-workspace__toolbar"><strong>Itens monitorados</strong><span className="landing-workspace__badge">2 alertas</span></div>
-        <div className="landing-stock-list">
-          {["Luvas descartáveis", "Bandagem elástica", "Álcool 70%"].map((item, index) => (
-            <div key={item} className="landing-stock-row"><span><strong>{item}</strong><small>{index === 1 ? "Estoque baixo" : "Disponível"}</small></span><i className={`landing-stock-bar landing-stock-bar--${index + 1}`} /></div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="landing-workspace" aria-hidden="true">
       <div className="landing-workspace__toolbar"><strong>Perfis de acesso</strong><span>4 perfis ativos</span></div>

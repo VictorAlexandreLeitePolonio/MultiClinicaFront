@@ -19,6 +19,7 @@ const clinic = {
   likeCount: 10,
   likedByMe: false,
   acceptsAppointmentRequests: true,
+  badge: null as "Featured" | "Founder" | null,
 };
 
 describe("MarketplaceClinicCard", () => {
@@ -30,5 +31,21 @@ describe("MarketplaceClinicCard", () => {
 
     expect(onSelect).toHaveBeenCalledWith(42);
     expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it.each([
+    ["Featured", "Destaque"],
+    ["Founder", "Fundadora"],
+  ] as const)("mostra o selo %s", (badge, label) => {
+    render(<MarketplaceClinicCard clinic={{ ...clinic, badge }} onSelect={vi.fn()} />);
+
+    expect(screen.getByText(label)).toBeInTheDocument();
+  });
+
+  it("não mostra selo quando o badge é nulo", () => {
+    render(<MarketplaceClinicCard clinic={clinic} onSelect={vi.fn()} />);
+
+    expect(screen.queryByText("Destaque")).not.toBeInTheDocument();
+    expect(screen.queryByText("Fundadora")).not.toBeInTheDocument();
   });
 });

@@ -1,3 +1,4 @@
+import type { EvolutionFieldUnit } from "@/types/evolution";
 // Formatadores para documentos brasileiros
 
 /**
@@ -216,10 +217,11 @@ export function unformatDate(dateString: string): string {
 
 /**
  * Formata mês de referência: 2024-03 → 03/2024
+ * Também aceita DateOnly serializado pela API: 2024-03-01 → 03/2024
  */
 export function formatReferenceMonth(monthString: string): string {
   if (!monthString) return ''
-  const parts = monthString.split('-')
+  const parts = monthString.slice(0, 7).split('-')
   if (parts.length !== 2) return monthString
   return `${parts[1]}/${parts[0]}`
 }
@@ -300,3 +302,25 @@ export function isValidCEP(cep: string): boolean {
   const clean = cep.replace(/\D/g, '')
   return clean.length === 8
 }
+
+/** Unidade de campo de ficha de medição, como exibida ao usuário. */
+export const EVOLUTION_UNIT_LABELS: Record<EvolutionFieldUnit, string> = {
+  None: "",
+  Points: "Pontos",
+  Percentage: "%",
+  Kg: "kg",
+  G: "g",
+  Mg: "mg",
+  Cm: "cm",
+  Mm: "mm",
+  M: "m",
+  Degrees: "graus",
+  Seconds: "s",
+  Minutes: "min",
+  Hours: "h",
+  Days: "dias",
+  Repetitions: "rep.",
+  Liters: "L",
+  Ml: "ml",
+  Score: "pontos",
+};

@@ -22,6 +22,9 @@ export function LandingHeader() {
           <LandingSmoothLink href="#como-funciona" className="transition-colors hover:text-teal-700">
             Como funciona
           </LandingSmoothLink>
+          <LandingSmoothLink href="#planos" className="transition-colors hover:text-teal-700">
+            Planos
+          </LandingSmoothLink>
           <LandingSmoothLink href="#faq" className="transition-colors hover:text-teal-700">
             FAQ
           </LandingSmoothLink>
@@ -36,6 +39,7 @@ export function LandingHeader() {
             <div className="landing-header__dropdown">
               <LandingSmoothLink href="#modulos">Módulos</LandingSmoothLink>
               <LandingSmoothLink href="#como-funciona">Como funciona</LandingSmoothLink>
+              <LandingSmoothLink href="#planos">Planos</LandingSmoothLink>
               <LandingSmoothLink href="#faq">FAQ</LandingSmoothLink>
               <Link href="/paciente/login">Portal do paciente</Link>
             </div>

@@ -1,3 +1,4 @@
+import type { HubBadge } from "@/types/plans";
 import publicApi from "@/lib/publicApi";
 import { ClinicCategory } from "@/types";
 
@@ -11,6 +12,7 @@ export interface PublicClinicCard {
   categories: ClinicCategory[];
   likeCount: number;
   acceptsAppointmentRequests: boolean;
+  badge: HubBadge;
 }
 
 export async function getPublicClinics(limit = 9): Promise<PublicClinicCard[]> {

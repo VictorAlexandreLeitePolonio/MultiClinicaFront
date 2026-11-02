@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import type { AuthRobotState } from "@/components/auth/AuthMouseRobot";
@@ -16,9 +16,12 @@ import { Logo } from "@/components/ui/Logo";
 import { FormField } from "@/components/ui/FormField";
 import { PasswordField } from "@/components/ui/PasswordField";
 import { Button } from "@/components/ui/Button";
+import { resolvePostLoginPath } from "./utils/postLoginPath";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next");
   const { setAuth, isAuthenticated, user } = useAuth();
   const { loginUser, loading } = useLogin();
   const [robotState, setRobotState] = useState<AuthRobotState>("idle");
@@ -29,14 +32,15 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    defaultValues: { email: searchParams.get("email") ?? "" },
   });
 
   // Redireciona se já estiver autenticado
   useEffect(() => {
     if (isAuthenticated && user) {
-      router.replace(getDashboardPathByRole(user.role));
+      router.replace(resolvePostLoginPath(getDashboardPathByRole(user.role), next));
     }
-  }, [isAuthenticated, router, user]);
+  }, [isAuthenticated, next, router, user]);
 
   const onSubmit = async (data: LoginFormData) => {
     setRobotState("loading");
@@ -44,7 +48,7 @@ export default function LoginPage() {
     if (result.success && result.auth) {
       setRobotState("success");
       setAuth(result.auth);
-      router.replace(getDashboardPathByRole(result.auth.user.role));
+      router.replace(resolvePostLoginPath(getDashboardPathByRole(result.auth.user.role), next));
     } else {
       setRobotState("error");
       toast.error(result.error ?? "Erro ao fazer login.");
@@ -94,6 +98,12 @@ export default function LoginPage() {
         </form>
 
         <Link
+          href="/cadastro"
+          className="text-center text-sm font-medium text-[#0f766e] transition-colors hover:text-[#14b8a6]"
+        >
+          Ainda não tem conta? Comece grátis
+        </Link>
+        <Link
           href="/paciente/login"
           className="text-center text-sm font-medium text-[#0f766e] transition-colors hover:text-[#14b8a6]"
         >
@@ -107,5 +117,13 @@ export default function LoginPage() {
         </Link>
       </AuthLayout>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="theme-light min-h-screen bg-[#f8fafc]" />}>
+      <LoginContent />
+    </Suspense>
   );
 }

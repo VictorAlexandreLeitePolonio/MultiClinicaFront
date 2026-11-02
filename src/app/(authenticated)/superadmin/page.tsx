@@ -4,7 +4,10 @@ import {
   Building2,
   CircleDollarSign,
   ClipboardList,
+  Crown,
   ShieldCheck,
+  Sparkles,
+  Users,
 } from 'lucide-react'
 import { ErrorState } from '@/components/ui/ErrorState'
 import { MetricCard } from '@/components/ui/MetricCard'
@@ -32,8 +35,23 @@ export default function SuperAdminDashboardPage() {
         {
           label: 'Bloqueadas por cobrança',
           value: data.billingBlocked,
-          description: `${data.billingEnabled} com cobrança ativa`,
+          description: 'Bloqueio manual do SuperAdmin',
           icon: ClipboardList,
+        },
+        {
+          label: 'Clínicas no Free',
+          value: data.planCounts.free,
+          icon: Users,
+        },
+        {
+          label: 'Clínicas no Pro',
+          value: data.planCounts.pro,
+          icon: Sparkles,
+        },
+        {
+          label: 'Clínicas no Premium',
+          value: data.planCounts.premium,
+          icon: Crown,
         },
         {
           label: 'Receita recebida no mês',
@@ -60,7 +78,7 @@ export default function SuperAdminDashboardPage() {
 
       {isLoading && (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, index) => (
+          {Array.from({ length: 7 }).map((_, index) => (
             <Skeleton key={index} className="h-32" />
           ))}
         </section>

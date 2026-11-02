@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
+  async redirects() {
+    return [
+      { source: '/app/modelos-evolucao', destination: '/app/fichas', permanent: false },
+      { source: '/app/prontuarios', destination: '/app/pacientes', permanent: false },
+    ]
+  },
   async rewrites() {
     return [
       {

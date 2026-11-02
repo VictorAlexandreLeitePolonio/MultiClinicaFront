@@ -12,7 +12,12 @@ const questions = [
   {
     id: "modules",
     question: "Quais módulos estão disponíveis?",
-    answer: "A plataforma reúne agenda, pacientes, prontuários, evolução, pagamentos, balanço, estoque e permissões.",
+    answer: "A plataforma reúne agenda, pacientes, prontuários, evolução, pagamentos, balanço e permissões.",
+  },
+  {
+    id: "free-plan",
+    question: "Posso começar grátis?",
+    answer: "Sim. O plano Free é gratuito para sempre e você assina um plano pago quando quiser.",
   },
   {
     id: "access",

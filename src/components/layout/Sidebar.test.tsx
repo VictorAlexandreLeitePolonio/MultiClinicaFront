@@ -23,6 +23,10 @@ vi.mock("next/navigation", () => ({
   usePathname: () => "/app",
 }));
 
+vi.mock("@/contexts/PatientAuthContext", () => ({
+  usePatientAuth: () => ({ patient: { name: "Ana", email: "ana@example.com" }, logout: vi.fn() }),
+}));
+
 describe("Sidebar", () => {
   beforeEach(() => {
     mockedUser = {
@@ -40,7 +44,11 @@ describe("Sidebar", () => {
 
     expect(screen.getByText("Pacientes")).toBeInTheDocument();
     expect(screen.getByText("Agenda")).toBeInTheDocument();
-    expect(screen.getByText("Prontuários")).toBeInTheDocument();
+    expect(screen.queryByText("Prontuários")).not.toBeInTheDocument();
+    expect(screen.getByText("Fichas de medição").closest("a")).toHaveAttribute(
+      "href",
+      "/app/fichas",
+    );
     expect(screen.getByText("Pagamentos")).toBeInTheDocument();
     expect(screen.getByText("Balanço")).toBeInTheDocument();
     expect(screen.queryByText("Financeiro")).not.toBeInTheDocument();
@@ -62,6 +70,7 @@ describe("Sidebar", () => {
 
     expect(screen.getByText("Pacientes")).toBeInTheDocument();
     expect(screen.getByText("Agenda")).toBeInTheDocument();
+    expect(screen.getByText("Fichas de medição")).toBeInTheDocument();
     expect(screen.getByText("Pagamentos")).toBeInTheDocument();
     expect(screen.queryByText("Prontuários")).not.toBeInTheDocument();
     expect(screen.queryByText("Balanço")).not.toBeInTheDocument();
@@ -117,5 +126,15 @@ describe("Sidebar", () => {
     render(<Sidebar area="clinic" />);
 
     expect(screen.getByText("Configurações")).toBeInTheDocument();
+  });
+
+  it("shows the patient portal modules with charges", () => {
+    render(<Sidebar area="patient" />);
+
+    expect(screen.getByText("Cobranças").closest("a")).toHaveAttribute(
+      "href",
+      "/paciente/cobrancas",
+    );
+    expect(screen.getByText("Minhas clínicas")).toBeInTheDocument();
   });
 });

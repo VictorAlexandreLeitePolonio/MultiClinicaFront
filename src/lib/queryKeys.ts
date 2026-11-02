@@ -36,6 +36,11 @@ export const queryKeys = {
     all: ["plans"] as const,
     list: (params: unknown) => ["plans", "list", params] as const,
     detail: (planId: number) => ["plans", "detail", planId] as const,
+    public: ["plans", "public"] as const,
+  },
+  billing: {
+    status: ["billing", "status"] as const,
+    usage: ["billing", "usage"] as const,
   },
   users: {
     all: ["users"] as const,
@@ -49,15 +54,6 @@ export const queryKeys = {
       detail: (templateId: number) => ["evolution", "templates", templateId] as const,
       fields: (templateId: number) => ["evolution", "templates", templateId, "fields"] as const,
     },
-    patientTreatments: (patientId: number) => ["evolution", "patients", patientId, "treatments"] as const,
-    patientTreatment: (patientId: number, treatmentId: number) =>
-      ["evolution", "patients", patientId, "treatments", treatmentId] as const,
-    patientEvolutions: (patientId: number, treatmentId: number, params: unknown) =>
-      ["evolution", "patients", patientId, "treatments", treatmentId, "evolutions", params] as const,
-    patientEvolution: (patientId: number, treatmentId: number, evolutionId: number) =>
-      ["evolution", "patients", patientId, "treatments", treatmentId, "evolutions", evolutionId] as const,
-    treatmentProgress: (patientId: number, treatmentId: number) =>
-      ["evolution", "patients", patientId, "treatments", treatmentId, "progress"] as const,
     dashboardSummary: ["evolution", "dashboard-summary"] as const,
   },
   superAdmin: {
@@ -67,6 +63,7 @@ export const queryKeys = {
     billing: (clinicId: number, params: unknown) => ["superadmin", "billing", clinicId, params] as const,
     history: (clinicId: number, params: unknown) => ["superadmin", "history", clinicId, params] as const,
     clinicUsers: (clinicId: number, params: unknown) => ["superadmin", "users", clinicId, params] as const,
+    hubApprovals: ["superadmin", "hub-approvals"] as const,
   },
 };
 
@@ -115,4 +112,35 @@ export const marketplaceKeys = {
 export const superAdminClinicSettingsKeys = {
   all: ["superadmin-clinic-settings"] as const,
   detail: (clinicId: number) => ["superadmin-clinic-settings", clinicId] as const,
+};
+
+export const whatsAppLinkKeys = {
+  status: ["whatsapp-link", "status"] as const,
+};
+
+export const mercadoPagoKeys = {
+  status: ["mercadopago", "status"] as const,
+};
+
+export const publicPaymentKeys = {
+  detail: (token: string) => ["public-payment", token] as const,
+};
+
+export const patientChargeKeys = {
+  all: ["patient-charges"] as const,
+};
+
+export const consultationKeys = {
+  detail: (appointmentId: number) => ["consultation", appointmentId] as const,
+  chargeSuggestion: (appointmentId: number) => ["consultation", appointmentId, "charge-suggestion"] as const,
+  byPatient: (patientId: number) => ["consultation", "patient", patientId] as const,
+};
+
+// Prontuário do paciente: evoluções sem acompanhamento, medições e linha do tempo.
+export const patientRecordKeys = {
+  all: (patientId: number) => ["patient-record", patientId] as const,
+  evolutions: (patientId: number, params: unknown) => ["patient-record", patientId, "evolutions", params] as const,
+  evolution: (patientId: number, evolutionId: number) => ["patient-record", patientId, "evolution", evolutionId] as const,
+  measurements: (patientId: number) => ["patient-record", patientId, "measurements"] as const,
+  timeline: (patientId: number) => ["patient-record", patientId, "timeline"] as const,
 };

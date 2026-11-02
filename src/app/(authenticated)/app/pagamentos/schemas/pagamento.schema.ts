@@ -24,4 +24,9 @@ export const PagamentoSchema = z.object({
     .optional(),
 });
 
+export const PagamentoCreateSchema = PagamentoSchema.extend({
+  sendOnline: z.boolean(),
+});
+
 export type PagamentoFormData = z.infer<typeof PagamentoSchema>;
+export type PagamentoCreateFormData = z.infer<typeof PagamentoCreateSchema>;

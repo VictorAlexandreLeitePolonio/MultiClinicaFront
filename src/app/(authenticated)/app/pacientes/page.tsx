@@ -36,7 +36,7 @@ function PacientesPage() {
             <PacienteList
               onCreate={() => goTo("create")}
               onViewDetails={(id) => goTo("view", id)}
-              onVerProntuarios={(patientId) => router.push(`/app/prontuarios?mode=cards&patientId=${patientId}`)}
+              onVerProntuarios={(patientId) => router.push(`/app/pacientes?mode=profile&id=${patientId}&aba=anamnese`)}
               onVerPerfil={(patientId) => goTo("profile", patientId)}
             />
           </motion.div>

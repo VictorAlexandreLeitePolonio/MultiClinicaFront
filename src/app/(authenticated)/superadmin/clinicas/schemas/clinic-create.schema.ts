@@ -12,8 +12,6 @@ export const ClinicCreateSchema = z
     cidade: z.string().optional(),
     estado: z.string().optional(),
     cep: z.string().optional(),
-    billingEnabled: z.boolean(),
-    monthlyFee: z.number().min(0, "Mensalidade não pode ser negativa"),
     status: z.enum(["Active", "Inactive"]),
     internalNotes: z.string().optional(),
     createFirstAdmin: z.boolean(),
@@ -60,5 +58,5 @@ export type ClinicCreateFormData = z.infer<typeof ClinicCreateSchema>;
 
 export const clinicDataFields = ["name", "document", "email", "phone"] as const;
 export const clinicAddressFields = ["rua", "numero", "bairro", "cidade", "estado", "cep"] as const;
-export const clinicBillingFields = ["billingEnabled", "monthlyFee", "status", "internalNotes"] as const;
+export const clinicStatusFields = ["status", "internalNotes"] as const;
 export const clinicAdminFields = ["createFirstAdmin", "adminName", "adminEmail", "adminPassword"] as const;

@@ -59,23 +59,24 @@ export default function SuperAdminClinicsPage() {
       ),
     },
     {
-      key: 'cobrancaAtiva',
+      key: 'plan',
+      label: 'Plano',
+      render: (clinic) => clinic.plan,
+    },
+    {
+      key: 'isBlockedByBilling',
       label: 'Cobrança',
       render: (clinic) => (
         <StatusBadge
-          status={clinic.isBlockedByBilling ? 'Blocked' : clinic.cobrancaAtiva ? 'Enabled' : 'Disabled'}
+          status={clinic.isBlockedByBilling ? 'Blocked' : 'Enabled'}
           mapping={{
             Enabled: {
-              label: 'Ativa',
+              label: 'Em dia',
               className: 'bg-blue-100 text-blue-700 border-blue-200',
             },
             Blocked: {
               label: 'Bloqueada',
               className: 'bg-red-100 text-red-700 border-red-200',
-            },
-            Disabled: {
-              label: 'Desativada',
-              className: 'bg-gray-100 text-gray-700 border-gray-200',
             },
           }}
         />
@@ -97,12 +98,6 @@ export default function SuperAdminClinicsPage() {
               label: 'Ver detalhes',
               onClick: () => router.push(`/superadmin/clinicas/${clinic.id}`),
               icon: <Eye size={14} />,
-            },
-            {
-              label: 'Configurar cobrança',
-              onClick: () =>
-                router.push(`/superadmin/clinicas/${clinic.id}?action=billing`),
-              icon: <CreditCard size={14} />,
             },
             {
               label: 'Registrar pagamento',

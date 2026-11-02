@@ -6,6 +6,18 @@ import { Building2, CalendarCheck2, Heart, MapPin } from "lucide-react";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { usePublicClinics } from "@/components/clinic/usePublicClinics";
 import { ClinicDetailModal, ClinicDetailSource } from "@/components/clinic/ClinicDetailModal";
+import type { HubBadge } from "@/types/plans";
+
+const badgeStyles: Record<Exclude<HubBadge, null>, { label: string; className: string }> = {
+  Featured: {
+    label: "Destaque",
+    className: "border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200",
+  },
+  Founder: {
+    label: "Fundadora",
+    className: "border-teal-200 bg-teal-50 text-teal-900 dark:border-teal-900/60 dark:bg-teal-950/40 dark:text-teal-200",
+  },
+};
 
 export function LandingClinicsShowcase() {
   const { data: clinics, isLoading, isError } = usePublicClinics(9);
@@ -66,9 +78,18 @@ export function LandingClinicsShowcase() {
                       </div>
                     )}
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-bold text-slate-950 transition-colors group-hover:text-teal-700">
-                        {clinic.displayName}
-                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate text-sm font-bold text-slate-950 transition-colors group-hover:text-teal-700">
+                          {clinic.displayName}
+                        </p>
+                        {clinic.badge && (
+                          <span
+                            className={`rounded-full border px-2 py-0.5 text-[11px] font-semibold ${badgeStyles[clinic.badge].className}`}
+                          >
+                            {badgeStyles[clinic.badge].label}
+                          </span>
+                        )}
+                      </div>
                       {location && (
                         <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-slate-500">
                           <MapPin size={11} />

@@ -6,7 +6,6 @@ import { useAuth } from '@/contexts/AuthContext'
 import { usePatientAuth } from '@/contexts/PatientAuthContext'
 import { logout } from '@/app/(public)/login/services/auth.service'
 import { useRouter } from 'next/navigation'
-import { SidebarGroup } from './SidebarGroup'
 import { SidebarLink } from './SidebarLink'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { BrandLogo } from '@/components/ui/BrandLogo'
@@ -15,7 +14,6 @@ import {
   Home,
   Users,
   Calendar,
-  FileText,
   Activity,
   CreditCard,
   ClipboardList,
@@ -24,11 +22,12 @@ import {
   ChevronLeft,
   ChevronRight,
   BarChart2,
+  BadgeCheck,
   Building2,
-  Package,
   Settings,
   Store,
   User,
+  Receipt,
 } from 'lucide-react'
 import { getTenantTheme } from '@/utils/tenant'
 
@@ -52,14 +51,8 @@ const baseModules = [
     roles: ['Administrador', 'Profissional', 'Recepcao'],
   },
   {
-    href: '/app/prontuarios',
-    label: 'Prontuários',
-    icon: <FileText size={18} />,
-    roles: ['Administrador', 'Profissional'],
-  },
-  {
-    href: '/app/modelos-evolucao',
-    label: 'Modelos Evolução',
+    href: '/app/fichas',
+    label: 'Fichas de medição',
     icon: <Activity size={18} />,
     roles: ['Administrador', 'Profissional', 'Recepcao'],
   },
@@ -76,13 +69,6 @@ const adminModules = [
     href: '/app/financeiro',
     label: 'Balanço',
     icon: <BarChart2 size={18} />,
-    roles: ['Administrador'],
-  },
-  {
-    // ponytail: só Administrador tem financeiro.auditoria.visualizar, então gate por role == gate por can
-    href: '/app/financeiro/auditoria',
-    label: 'Auditoria',
-    icon: <FileText size={18} />,
     roles: ['Administrador'],
   },
   {
@@ -106,44 +92,17 @@ const settingsModule = {
   permission: 'clinic.settings.view',
 }
 
-const stockGroup = {
-  label: 'Estoque e Compras',
-  icon: <Package size={18} />,
-  items: [
-    {
-      href: '/app/estoque/produtos',
-      label: 'Produtos',
-      permission: 'estoque.produtos.visualizar',
-    },
-    {
-      href: '/app/estoque/categorias-produto',
-      label: 'Categorias de Produto',
-      permission: 'estoque.produtos.visualizar',
-    },
-    {
-      href: '/app/estoque/movimentacoes',
-      label: 'Movimentações',
-      permission: 'estoque.movimentacoes.visualizar',
-    },
-    {
-      href: '/app/estoque/fornecedores',
-      label: 'Fornecedores',
-      permission: 'compras.visualizar',
-    },
-    {
-      href: '/app/estoque/compras',
-      label: 'Compras',
-      permission: 'compras.visualizar',
-    },
-  ],
-}
-
 const superAdminModules = [
   { href: '/superadmin', label: 'Dashboard', icon: <Home size={18} /> },
   {
     href: '/superadmin/clinicas',
     label: 'Clínicas',
     icon: <Building2 size={18} />,
+  },
+  {
+    href: '/superadmin/aprovacoes',
+    label: 'Aprovações do hub',
+    icon: <BadgeCheck size={18} />,
   },
   {
     href: '/superadmin/cobrancas',
@@ -160,6 +119,7 @@ const superAdminModules = [
 const patientModules = [
   { href: '/paciente', label: 'Início', icon: <Home size={18} /> },
   { href: '/paciente/consultas', label: 'Consultas', icon: <Calendar size={18} /> },
+  { href: '/paciente/cobrancas', label: 'Cobranças', icon: <Receipt size={18} /> },
   { href: '/paciente/solicitacoes', label: 'Solicitações', icon: <ClipboardList size={18} /> },
   { href: '/paciente/clinicas', label: 'Minhas clínicas', icon: <Building2 size={18} /> },
   { href: '/paciente/marketplace', label: 'Marketplace', icon: <Store size={18} /> },
@@ -264,15 +224,6 @@ export function Sidebar({ area }: SidebarProps) {
         ))}
         {area === 'clinic' && can(settingsModule.permission) && (
           <SidebarLink {...settingsModule} collapsed={collapsed} />
-        )}
-        {area === 'clinic' && (
-          <SidebarGroup
-            label={stockGroup.label}
-            icon={stockGroup.icon}
-            items={stockGroup.items}
-            can={can}
-            collapsed={collapsed}
-          />
         )}
       </nav>
 

@@ -7,15 +7,6 @@ import { financialTutorial } from "./definitions/financial/module.tutorial";
 import { medicalRecordsTutorial } from "./definitions/medical-records/module.tutorial";
 import { patientsTutorial } from "./definitions/patients/module.tutorial";
 import { paymentsTutorial } from "./definitions/payments/module.tutorial";
-import { stockCategoriesTutorial } from "./definitions/stock-categories/module.tutorial";
-import { stockMovementsTutorial } from "./definitions/stock-movements/module.tutorial";
-import { createMovementTask } from "./definitions/stock-movements/tasks/create-movement.tutorial";
-import { purchasesTutorial } from "./definitions/purchases/module.tutorial";
-import { createPurchaseTask } from "./definitions/purchases/tasks/create-purchase.tutorial";
-import { stockProductsTutorial } from "./definitions/stock-products/module.tutorial";
-import { createProductTask } from "./definitions/stock-products/tasks/create-product.tutorial";
-import { suppliersTutorial } from "./definitions/suppliers/module.tutorial";
-import { createSupplierTask } from "./definitions/suppliers/tasks/create-supplier.tutorial";
 import { usersTutorial } from "./definitions/users/module.tutorial";
 import { plansTutorial } from "./definitions/plans/module.tutorial";
 import { settingsTutorial } from "./definitions/settings/module.tutorial";
@@ -29,11 +20,6 @@ export const tutorialRegistry: ModuleTutorial[] = [
   evolutionTemplatesTutorial,
   paymentsTutorial,
   financialTutorial,
-  stockProductsTutorial,
-  stockCategoriesTutorial,
-  stockMovementsTutorial,
-  suppliersTutorial,
-  purchasesTutorial,
   usersTutorial,
   plansTutorial,
   settingsTutorial,
@@ -45,10 +31,6 @@ export const tutorialRegistry: ModuleTutorial[] = [
 // removidos: durante a navegação do Next o tour some/trava, e um tour guiado
 // não pode depender de um alvo que só monta depois de uma troca de rota.
 export const taskRegistry: TaskTutorial[] = [
-  createProductTask,
-  createMovementTask,
-  createPurchaseTask,
-  createSupplierTask,
   updateSettingsTask,
 ];
 

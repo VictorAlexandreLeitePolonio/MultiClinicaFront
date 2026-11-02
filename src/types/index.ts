@@ -1,23 +1,13 @@
+import type { ConsultationStatus } from "./consultation";
+
+import type { ClinicPlan } from "./plans";
+
 export interface PagedResult<T> {
   data: T[];
   page: number;
   pageSize: number;
   totalCount: number;
   totalPages: number;
-}
-
-export interface AuditoriaRegistro {
-  id: number;
-  usuarioId: number;
-  usuarioNome: string;
-  modulo: string;
-  acao: string;
-  entidade: string;
-  entidadeId: number;
-  dadosAntes: string | null;
-  dadosDepois: string | null;
-  motivo: string | null;
-  dataAcao: string;
 }
 
 export type UserRole = "SuperAdmin" | "Administrador" | "Profissional" | "Recepcao";
@@ -171,14 +161,12 @@ export interface PublicClinic {
   acceptsAppointmentRequests: boolean;
 }
 
-export type BillingStatus = "Enabled" | "Blocked" | "Disabled";
-
 export interface SuperAdminDashboardMetrics {
   totalClinics: number;
   activeClinics: number;
   inactiveClinics: number;
   billingBlocked: number;
-  billingEnabled: number;
+  planCounts: { free: number; pro: number; premium: number };
   overdueCharges: number;
   monthlyReceived: number;
   monthlyPending: number;
@@ -201,10 +189,9 @@ export interface SuperAdminClinic {
   cep: string;
   isActive: boolean;
   isBlockedByBilling: boolean;
-  valorMensalidade: number;
-  diaVencimento: number;
-  cobrancaAtiva: boolean;
-  dataInicioCobranca: string | null;
+  plan: ClinicPlan;
+  isFounder: boolean;
+  isHubApproved: boolean;
   createdAt: string;
 }
 
@@ -267,6 +254,12 @@ export interface Payment {
   paidAt: string | null;
   paymentDate: string | null;
   createdAt: string;
+  // Pagamento online (Mercado Pago)
+  paidOnline: boolean;
+  mpStatus: string | null;
+  // "Estornado", "Contestado" ou "PagamentoDuplicado:<mpPaymentId>"
+  onlineAlert: string | null;
+  hasPaymentLink: boolean;
 }
 
 export interface CreatePaymentDto {
@@ -277,6 +270,8 @@ export interface CreatePaymentDto {
   status: PaymentStatus;
   paidAt?: string;
   paymentDate?: string | null;
+  /** Envia a cobrança online por e-mail logo após criar. Ignorado em formas manuais. */
+  sendOnline: boolean;
 }
 
 /** Estado de ativação da identidade global (PatientAccount) do paciente. */
@@ -427,6 +422,8 @@ export interface Appointment {
   status: "Scheduled" | "Completed" | "Cancelled";
   createdAt: string;
   timeZoneId?: string;
+  consultationStatus?: ConsultationStatus | null;
+  consultationReviewed?: boolean;
 }
 
 export interface MedicalRecord {
@@ -524,6 +521,25 @@ export interface PatientProfile {
 }
 
 export * from "./evolution";
+export type {
+  BillingCycle,
+  BillingStatus,
+  BillingLimitError,
+  ClinicPlan,
+  HubApprovalItem,
+  HubBadge,
+  PlanFeature,
+  PlanRequiredError,
+  ProfessionalLimitError,
+  PublicPlan,
+  PublicPlansResponse,
+  PurchaseItem,
+  SignupRequest,
+  UsageMetric,
+  UsageMetricStatus,
+  UsagePack,
+  UsageResponse,
+} from "./plans";
 
 export interface BalancePeriod {
   startDate: string;
@@ -532,18 +548,11 @@ export interface BalancePeriod {
 
 export interface BalanceMoneySummary {
   appointmentIncome: number;
-  productSalesIncome: number;
   totalIncome: number;
-  productPurchaseCost: number;
-  productOutputCost: number;
-  productLossCost: number;
-  productInternalUseCost: number;
   manualExpenseCost: number;
   totalOutcome: number;
   estimatedProfit: number;
   paidAppointmentCount: number;
-  productSaleCount: number;
-  stockCostMovementCount: number;
   manualExpenseCount: number;
 }
 
@@ -561,41 +570,13 @@ export interface BalancePatientsSummary {
   total: number;
 }
 
-export interface BalanceLowStockProduct {
-  productId: number;
-  name: string;
-  currentQuantity: number;
-  minimumQuantity: number;
-}
-
-export interface BalanceStockSummary {
-  totalProducts: number;
-  productsBelowMinimum: number;
-  stockEntriesInPeriod: number;
-  stockOutputsInPeriod: number;
-  productSalesInPeriod: number;
-  productPurchasesInPeriod: number;
-  productLossesInPeriod: number;
-  productInternalUseInPeriod: number;
-  lowStockProducts: BalanceLowStockProduct[];
-}
-
 export interface BalanceEvolutionSummary {
   evolutionsInPeriod: number;
-  treatmentsInProgress: number;
-  completedTreatments: number;
 }
 
-export type BalanceRecentMovementSource = "Payment" | "Stock" | "ManualExpense";
+export type BalanceRecentMovementSource = "Payment" | "ManualExpense";
 
-export type BalanceRecentMovementType =
-  | "AppointmentPayment"
-  | "ProductSale"
-  | "ProductPurchase"
-  | "ProductOutput"
-  | "ProductLoss"
-  | "InternalUse"
-  | "ClinicExpense";
+export type BalanceRecentMovementType = "AppointmentPayment" | "ClinicExpense";
 
 export interface BalanceRecentMovement {
   id: number;
@@ -603,7 +584,6 @@ export interface BalanceRecentMovement {
   type: BalanceRecentMovementType;
   description: string;
   amount: number | null;
-  quantity: number | null;
   date: string;
 }
 
@@ -621,7 +601,6 @@ export interface FinancialBalance {
   money: BalanceMoneySummary;
   appointments: BalanceAppointmentsSummary;
   patients: BalancePatientsSummary;
-  stock: BalanceStockSummary;
   evolutions: BalanceEvolutionSummary;
   recentMovements: BalanceRecentMovement[];
 }

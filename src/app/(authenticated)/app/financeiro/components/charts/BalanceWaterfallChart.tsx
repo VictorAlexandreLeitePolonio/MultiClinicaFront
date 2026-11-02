@@ -29,10 +29,6 @@ export function BalanceWaterfallChart({ money }: Props) {
   const income = money.totalIncome;
 
   const costs: Array<[string, number]> = [
-    ["Compras", money.productPurchaseCost],
-    ["Saídas", money.productOutputCost],
-    ["Perdas", money.productLossCost],
-    ["Uso interno", money.productInternalUseCost],
     ["Despesas", money.manualExpenseCost],
   ];
 

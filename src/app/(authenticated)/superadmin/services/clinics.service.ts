@@ -8,12 +8,12 @@ import {
   SuperAdminClinicUser,
   UserRole,
 } from '@/types'
+import type { ClinicPlan } from '@/types/plans'
 
 export interface GetSuperAdminClinicsParams {
   page: number
   pageSize: number
   isActive?: boolean
-  cobrancaAtiva?: boolean
   isBlockedByBilling?: boolean
   overdue?: boolean
 }
@@ -92,25 +92,6 @@ export async function getSuperAdminClinicUsers(
   )
 }
 
-export interface ConfigureClinicBillingPayload {
-  valorMensalidade: number
-  diaVencimento: number
-  cobrancaAtiva: boolean
-  dataInicioCobranca?: string | null
-}
-
-export async function configureClinicBilling(
-  clinicId: number,
-  payload: ConfigureClinicBillingPayload,
-): Promise<SuperAdminClinicDetail> {
-  const response = await api.put<SuperAdminClinicDetail>(
-    `/api/superadmin/clinicas/${clinicId}/billing`,
-    payload,
-  )
-
-  return response.data
-}
-
 export interface RegisterClinicPaymentPayload {
   chargeId: number
   paymentMethod: string
@@ -167,4 +148,12 @@ export async function createSuperAdminClinicUser(
   )
 
   return response.data
+}
+
+export async function setClinicPlan(
+  clinicaId: number,
+  plan: ClinicPlan,
+  isFounder: boolean,
+): Promise<void> {
+  await api.put(`/api/superadmin/clinicas/${clinicaId}/plan`, { plan, isFounder })
 }

@@ -19,4 +19,12 @@ describe("PatientShell", () => {
     expect(links).toHaveLength(2);
     links.forEach((link) => expect(link).toHaveAttribute("href", "/paciente/marketplace"));
   });
+
+  it("exibe Cobranças na navegação desktop e mobile", () => {
+    render(<PatientShell>conteúdo</PatientShell>);
+
+    const links = screen.getAllByRole("link", { name: "Cobranças" });
+    expect(links).toHaveLength(2);
+    links.forEach((link) => expect(link).toHaveAttribute("href", "/paciente/cobrancas"));
+  });
 });

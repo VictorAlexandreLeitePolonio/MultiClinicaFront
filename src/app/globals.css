@@ -750,7 +750,6 @@ body {
 
 .landing-patient-list,
 .landing-payment-list,
-.landing-stock-list,
 .landing-role-list {
   display: grid;
   gap: 7px;
@@ -760,7 +759,6 @@ body {
 .landing-patient-row,
 .landing-record-head,
 .landing-payment-row,
-.landing-stock-row,
 .landing-role-list > div {
   display: flex;
   min-width: 0;
@@ -773,7 +771,6 @@ body {
 .landing-patient-row > span:nth-child(2),
 .landing-record-head > span:nth-child(2),
 .landing-payment-row > span,
-.landing-stock-row > span,
 .landing-role-list > div > span:nth-child(2) {
   display: grid;
   min-width: 0;
@@ -783,7 +780,6 @@ body {
 .landing-patient-row strong,
 .landing-record-head strong,
 .landing-payment-row strong,
-.landing-stock-row strong,
 .landing-role-list strong {
   overflow: hidden;
   color: #334155;
@@ -795,7 +791,6 @@ body {
 .landing-patient-row small,
 .landing-record-head small,
 .landing-payment-row small,
-.landing-stock-row small,
 .landing-role-list small {
   overflow: hidden;
   color: #94a3b8;
@@ -973,26 +968,6 @@ body {
 
 .landing-timeline--current > span {
   background: #67e8f9;
-}
-
-.landing-stock-row {
-  flex-wrap: wrap;
-}
-
-.landing-stock-bar {
-  width: 74px;
-  height: 6px;
-  margin-left: auto;
-  border-radius: 99px;
-  background: linear-gradient(90deg, #14b8a6 0 76%, #d7f3ea 76% 100%);
-}
-
-.landing-stock-bar--2 {
-  background: linear-gradient(90deg, #f59e0b 0 34%, #fef3c7 34% 100%);
-}
-
-.landing-stock-bar--3 {
-  background: linear-gradient(90deg, #14b8a6 0 58%, #d7f3ea 58% 100%);
 }
 
 .landing-role-icon {

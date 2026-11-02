@@ -14,8 +14,8 @@ import {
   ClinicCreateSchema,
   clinicAddressFields,
   clinicAdminFields,
-  clinicBillingFields,
   clinicDataFields,
+  clinicStatusFields,
 } from "../schemas/clinic-create.schema";
 
 interface ClinicCreateWizardProps {
@@ -27,7 +27,7 @@ interface ClinicCreateWizardProps {
 const steps = [
   { title: "Dados cadastrais", description: "Identificação e contato da clínica" },
   { title: "Endereço", description: "Localização operacional" },
-  { title: "Cobrança e status", description: "Controle comercial inicial" },
+  { title: "Status", description: "Situação inicial da clínica" },
   { title: "Administrador", description: "Primeiro acesso da clínica" },
   { title: "Revisão", description: "Conferência antes do cadastro" },
 ];
@@ -54,8 +54,6 @@ export function ClinicCreateWizard({ loading, onCancel, onSubmit }: ClinicCreate
       cidade: "",
       estado: "",
       cep: "",
-      billingEnabled: true,
-      monthlyFee: 0,
       status: "Active",
       internalNotes: "",
       createFirstAdmin: true,
@@ -70,7 +68,7 @@ export function ClinicCreateWizard({ loading, onCancel, onSubmit }: ClinicCreate
   const validateCurrentStep = async () => {
     if (currentStep === 0) return trigger(clinicDataFields);
     if (currentStep === 1) return trigger(clinicAddressFields);
-    if (currentStep === 2) return trigger(clinicBillingFields);
+    if (currentStep === 2) return trigger(clinicStatusFields);
     if (currentStep === 3) return trigger(clinicAdminFields);
     return true;
   };
@@ -111,22 +109,7 @@ export function ClinicCreateWizard({ loading, onCancel, onSubmit }: ClinicCreate
       )}
 
       {currentStep === 2 && (
-        <FormSection title="Cobrança e status" columns={2}>
-          <label className="flex items-center gap-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm font-semibold text-secondary dark:text-white">
-            <input
-              type="checkbox"
-              checked={formValues.billingEnabled}
-              onChange={(event) => setValue("billingEnabled", event.target.checked, { shouldValidate: true })}
-            />
-            Cobrança comercial ativa
-          </label>
-          <FormField
-            label="Mensalidade"
-            type="number"
-            step="0.01"
-            error={errors.monthlyFee?.message}
-            {...register("monthlyFee", { valueAsNumber: true })}
-          />
+        <FormSection title="Status" columns={2}>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold uppercase tracking-wide text-secondary dark:text-white">
               Status
@@ -160,7 +143,6 @@ export function ClinicCreateWizard({ loading, onCancel, onSubmit }: ClinicCreate
             <p><strong>E-mail:</strong> {formValues.email || "-"}</p>
             <p><strong>Cidade:</strong> {formValues.cidade || "-"}</p>
             <p><strong>Status:</strong> {formValues.status === "Active" ? "Ativa" : "Inativa"}</p>
-            <p><strong>Cobrança:</strong> {formValues.billingEnabled ? "Ativa" : "Desativada"}</p>
             <p><strong>Administrador:</strong> {formValues.createFirstAdmin ? formValues.adminName || "-" : "Não será criado agora"}</p>
           </div>
         </section>

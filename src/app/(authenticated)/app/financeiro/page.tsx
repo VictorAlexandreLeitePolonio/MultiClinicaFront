@@ -14,12 +14,10 @@ import { BalanceMoneyCards } from "./components/BalanceMoneyCards";
 import { BalanceOperationalCards } from "./components/BalanceOperationalCards";
 import { BalancePeriodFilter } from "./components/BalancePeriodFilter";
 import { BalanceRecentMovementsTable } from "./components/BalanceRecentMovementsTable";
-import { LowStockProductsTable } from "./components/LowStockProductsTable";
 import { ClinicExpensesSection } from "./components/ClinicExpensesSection";
 import { ChartCard } from "./components/charts/chartKit";
 import { BalanceWaterfallChart } from "./components/charts/BalanceWaterfallChart";
 import { BalanceAppointmentsDonut } from "./components/charts/BalanceAppointmentsDonut";
-import { BalanceStockChart } from "./components/charts/BalanceStockChart";
 
 export default function FinancialBalancePage() {
   const [period, setPeriod] = useState<GetFinancialBalanceParams>({});
@@ -50,10 +48,7 @@ export default function FinancialBalancePage() {
         <>
           <BalanceMoneyCards money={null} loading />
           <Skeleton className="h-[440px]" />
-          <div className="grid gap-6 lg:grid-cols-2">
-            <Skeleton className="h-80" />
-            <Skeleton className="h-80" />
-          </div>
+          <Skeleton className="h-80" />
         </>
       ) : !data ? (
         <EmptyState title="Nenhum dado disponível" description="Não há dados de balanço para o período selecionado." />
@@ -69,12 +64,9 @@ export default function FinancialBalancePage() {
             </ChartCard>
           </div>
 
-          <div data-tutorial="financial-charts" className="grid gap-6 lg:grid-cols-2">
+          <div data-tutorial="financial-charts">
             <ChartCard title="Consultas por status" subtitle="Distribuição das consultas no período.">
               <BalanceAppointmentsDonut appointments={data.appointments} />
-            </ChartCard>
-            <ChartCard title="Movimentações de estoque" subtitle="Quantidade por tipo de movimentação.">
-              <BalanceStockChart stock={data.stock} />
             </ChartCard>
           </div>
 
@@ -83,21 +75,14 @@ export default function FinancialBalancePage() {
               money={data.money}
               appointments={data.appointments}
               patients={data.patients}
-              stock={data.stock}
               evolutions={data.evolutions}
             />
           </div>
 
-          <div className="grid items-start gap-6 lg:grid-cols-2">
-            <section className="space-y-3">
-              <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Produtos abaixo do mínimo</h2>
-              <LowStockProductsTable products={data.stock.lowStockProducts ?? []} />
-            </section>
-            <section className="space-y-3">
-              <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Últimas movimentações</h2>
-              <BalanceRecentMovementsTable movements={data.recentMovements ?? []} />
-            </section>
-          </div>
+          <section className="space-y-3">
+            <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Últimas movimentações</h2>
+            <BalanceRecentMovementsTable movements={data.recentMovements ?? []} />
+          </section>
         </>
       )}
 

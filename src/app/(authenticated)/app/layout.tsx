@@ -5,6 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { canAccessClinicApp } from "@/lib/auth/routes";
 import { AppShell } from "@/components/layout/AppShell";
+import { PlanRequiredModal } from "@/components/billing/PlanRequiredModal";
+import { ConsultationRecorderProvider } from "@/components/consultation/ConsultationRecorderProvider";
 
 interface ClinicAppLayoutProps {
   children: ReactNode;
@@ -23,5 +25,10 @@ export default function ClinicAppLayout({ children }: ClinicAppLayoutProps) {
 
   if (!user || !canAccessClinicApp(user.role)) return null;
 
-  return <AppShell>{children}</AppShell>;
+  return (
+    <ConsultationRecorderProvider>
+      <AppShell>{children}</AppShell>
+      <PlanRequiredModal />
+    </ConsultationRecorderProvider>
+  );
 }

@@ -23,8 +23,8 @@ export function BalanceMoneyCards({ money, loading = false }: BalanceMoneyCardsP
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <MetricCard label="Entradas totais" value={formatCurrency(income)} description="Pagamentos e vendas no período." icon={TrendingUp} />
-      <MetricCard label="Saídas totais" value={formatCurrency(outcome)} description="Custos de estoque e despesas manuais." icon={TrendingDown} />
+      <MetricCard label="Entradas totais" value={formatCurrency(income)} description="Pagamentos de consultas no período." icon={TrendingUp} />
+      <MetricCard label="Saídas totais" value={formatCurrency(outcome)} description="Despesas manuais no período." icon={TrendingDown} />
       <MetricCard label="Resultado estimado" value={formatCurrency(profit)} description="Entradas menos saídas; não é lucro contábil." icon={Scale} />
       <MetricCard label="Margem estimada" value={`${margin.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`} description="Resultado sobre as entradas." icon={Percent} />
     </div>

@@ -74,6 +74,8 @@ export function Button({
         ) : (
           <motion.span
             key="text"
+            // svg é display:block no preflight do Tailwind; sem flex aqui o ícone quebra a linha acima do texto.
+            className="inline-flex items-center justify-center gap-1.5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
