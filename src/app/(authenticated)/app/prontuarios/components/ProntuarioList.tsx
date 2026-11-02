@@ -7,12 +7,22 @@ import { DeleteConfirmDialog } from "@/components/ui/DeleteConfirmDialog";
 import { Pagination } from "@/components/ui/Pagination";
 import { Button } from "@/components/ui/Button";
 import { ActionsDropdown } from "@/components/ui/ActionsDropdown";
-import { Eye, Trash2 } from "lucide-react";
+import { ViewSwitcher, useViewPreference, type ViewOption } from "@/components/ui/ViewSwitcher";
+import { Activity, Eye, List, Trash2 } from "lucide-react";
 import { useProntuariosPaginated } from "../hooks/pagined";
 import { useProntuarioDelete } from "../hooks/delete";
 import { toast } from "sonner";
 import { MedicalRecord, User } from "@/types";
 import { getUsers } from "@/app/(authenticated)/app/usuarios/services/users.service";
+import { useAuth } from "@/contexts/AuthContext";
+import { ClinicTimelineView } from "./ClinicTimelineView";
+
+type ProntuarioView = "list" | "timeline";
+
+const viewOptions: ViewOption<ProntuarioView>[] = [
+  { value: "list", label: "Lista", icon: List },
+  { value: "timeline", label: "Linha do tempo", icon: Activity },
+];
 
 interface Props {
   onCreate: () => void;
@@ -35,6 +45,14 @@ export default function ProntuarioList({ onCreate, onViewCards, onViewDetails }:
     refetch,
   } = useProntuariosPaginated();
   const { deleteProntuario, isPending: deleting } = useProntuarioDelete();
+  const { user } = useAuth();
+  const [view, setView] = useViewPreference<ProntuarioView>("prontuarios", "list", [
+    "list",
+    "timeline",
+  ]);
+
+  const isReception = user?.role === "Recepcao";
+  const activeView: ProntuarioView = isReception ? "list" : view;
 
   const [toDelete, setToDelete] = useState<MedicalRecord | null>(null);
   const [users, setUsers] = useState<User[]>([]);
@@ -133,88 +151,99 @@ export default function ProntuarioList({ onCreate, onViewCards, onViewDetails }:
 
   const hasFilters = patientName || createdAt || userId;
 
-  if (error) return <p className="text-red-500">{error}</p>;
-
   return (
     <div className="space-y-4">
       <PageHeader
         title="Prontuários"
         actions={
-          <div data-tutorial="medical-records-new">
-            <Button onClick={onCreate}>+ Novo Prontuário</Button>
-          </div>
+          <>
+            {!isReception && (
+              <ViewSwitcher options={viewOptions} value={activeView} onChange={setView} />
+            )}
+            <div data-tutorial="medical-records-new">
+              <Button onClick={onCreate}>+ Novo Prontuário</Button>
+            </div>
+          </>
         }
       />
 
-      {/* Filtros em linha */}
-      <div className="flex flex-wrap items-end gap-3 p-4 bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700">
-        <div data-tutorial="medical-records-search" className="flex-1 min-w-50">
-          <label className="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">
-            Nome do Paciente
-          </label>
-          <input
-            type="text"
-            value={patientName}
-            onChange={(e) => setPatientName(e.target.value)}
-            placeholder="Buscar paciente..."
-            className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
+      {activeView === "timeline" ? (
+        <ClinicTimelineView />
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <>
+          {/* Filtros em linha */}
+          <div className="flex flex-wrap items-end gap-3 p-4 bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700">
+            <div data-tutorial="medical-records-search" className="flex-1 min-w-50">
+              <label className="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">
+                Nome do Paciente
+              </label>
+              <input
+                type="text"
+                value={patientName}
+                onChange={(e) => setPatientName(e.target.value)}
+                placeholder="Buscar paciente..."
+                className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
+              />
+            </div>
+
+            <div className="w-45">
+              <label className="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">
+                Data de Criação
+              </label>
+              <input
+                type="date"
+                value={createdAt}
+                onChange={(e) => setCreatedAt(e.target.value)}
+                className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
+              />
+            </div>
+
+            <div className="w-50">
+              <label className="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">
+                Profissional
+              </label>
+              <select
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
+              >
+                <option value="">Todos</option>
+                {users.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {hasFilters && (
+              <Button variant="outline" onClick={handleClearFilters}>
+                Limpar
+              </Button>
+            )}
+          </div>
+
+          <div data-tutorial="medical-records-list">
+            <DataTable
+              columns={columns}
+              data={data}
+              loading={loading}
+              emptyMessage="Nenhum prontuário encontrado."
+              keyExtractor={(r) => r.id}
+            />
+          </div>
+
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
           />
-        </div>
-
-        <div className="w-45">
-          <label className="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">
-            Data de Criação
-          </label>
-          <input
-            type="date"
-            value={createdAt}
-            onChange={(e) => setCreatedAt(e.target.value)}
-            className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
-          />
-        </div>
-
-        <div className="w-50">
-          <label className="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">
-            Profissional
-          </label>
-          <select
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            className="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-secondary dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none"
-          >
-            <option value="">Todos</option>
-            {users.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {hasFilters && (
-          <Button variant="outline" onClick={handleClearFilters}>
-            Limpar
-          </Button>
-        )}
-      </div>
-
-      <div data-tutorial="medical-records-list">
-        <DataTable
-          columns={columns}
-          data={data}
-          loading={loading}
-          emptyMessage="Nenhum prontuário encontrado."
-          keyExtractor={(r) => r.id}
-        />
-      </div>
-
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        pageSize={pageSize}
-        onPageChange={setPage}
-        onPageSizeChange={setPageSize}
-      />
+        </>
+      )}
 
       <DeleteConfirmDialog
         open={!!toDelete}
