@@ -4,7 +4,6 @@ import { agendaTutorial } from "./definitions/agenda/module.tutorial";
 import { dashboardTutorial } from "./definitions/dashboard/module.tutorial";
 import { evolutionTemplatesTutorial } from "./definitions/evolution-templates/module.tutorial";
 import { financialTutorial } from "./definitions/financial/module.tutorial";
-import { medicalRecordsTutorial } from "./definitions/medical-records/module.tutorial";
 import { patientsTutorial } from "./definitions/patients/module.tutorial";
 import { paymentsTutorial } from "./definitions/payments/module.tutorial";
 import { usersTutorial } from "./definitions/users/module.tutorial";
@@ -16,7 +15,6 @@ export const tutorialRegistry: ModuleTutorial[] = [
   dashboardTutorial,
   patientsTutorial,
   agendaTutorial,
-  medicalRecordsTutorial,
   evolutionTemplatesTutorial,
   paymentsTutorial,
   financialTutorial,
