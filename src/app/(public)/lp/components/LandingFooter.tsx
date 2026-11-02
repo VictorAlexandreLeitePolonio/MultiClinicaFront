@@ -15,8 +15,7 @@ export function LandingFooter() {
             href="/"
             className="flex w-fit items-center gap-2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-bg)]"
           >
-            <BrandLogo variant="mark" size={32} className="rounded-lg" />
-            <span className="text-sm font-semibold text-[var(--lp-ink)]">Cliniq Care</span>
+            <BrandLogo variant="lockup-dark" size={32} />
           </Link>
 
           <div className="flex flex-col gap-4 text-sm sm:items-end">

@@ -69,10 +69,7 @@ export function LandingHeader() {
             FOCUS_RING,
           )}
         >
-          <span aria-hidden="true">
-            <BrandLogo variant="mark" size={34} className="rounded-[10px]" priority />
-          </span>
-          <span className="text-[15px] font-semibold tracking-[-0.02em]">Cliniq Care</span>
+          <BrandLogo variant="lockup-dark" size={34} priority />
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm text-[var(--lp-muted)] lg:flex">
