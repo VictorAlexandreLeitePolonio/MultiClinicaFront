@@ -3,8 +3,7 @@
 import type { MouseEvent, ReactNode } from "react";
 import { useLenis } from "./SmoothScroll";
 
-const LANDING_HEADER_OFFSET = 88;
-const LENIS_HEADER_OFFSET = -72;
+const LANDING_HEADER_OFFSET = 72;
 
 interface LandingSmoothLinkProps {
   children: ReactNode;
@@ -45,7 +44,8 @@ export function LandingSmoothLink({ children, className, href }: LandingSmoothLi
     }
 
     if (lenis) {
-      lenis.scrollTo(target, { offset: LENIS_HEADER_OFFSET, immediate: keyboard });
+      // As seções da LP já têm scroll-margin-top; o Lenis desconta essa margem.
+      lenis.scrollTo(target, { offset: 0, immediate: keyboard });
       return;
     }
 

@@ -75,5 +75,68 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     };
   }, [reduce]);
 
+  useEffect(() => {
+    let frame = 0;
+    let stopStabilizing = () => {};
+
+    const scrollToHash = () => {
+      stopStabilizing();
+
+      const { hash } = window.location;
+      if (!hash) return;
+
+      const target = document.querySelector<HTMLElement>(hash);
+      if (!target) return;
+
+      const applyScroll = () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          if (lenis) {
+            lenis.scrollTo(target, { offset: 0, immediate: true });
+            return;
+          }
+
+          target.scrollIntoView({ behavior: "auto", block: "start" });
+        });
+      };
+
+      // O bloco fixo das funcionalidades e o carregamento dos planos alteram a
+      // altura do documento: recalcula e reaplica a âncora enquanto o layout assenta.
+      if (lenis) ScrollTrigger.refresh();
+      applyScroll();
+
+      const observer =
+        typeof ResizeObserver === "function"
+          ? new ResizeObserver(applyScroll)
+          : null;
+      observer?.observe(document.body);
+
+      const timeout = window.setTimeout(() => stopStabilizing(), 3000);
+      const stop = () => stopStabilizing();
+
+      stopStabilizing = () => {
+        cancelAnimationFrame(frame);
+        observer?.disconnect();
+        window.clearTimeout(timeout);
+        window.removeEventListener("wheel", stop);
+        window.removeEventListener("touchstart", stop);
+        window.removeEventListener("pointerdown", stop);
+        window.removeEventListener("keydown", stop);
+      };
+
+      window.addEventListener("wheel", stop, { passive: true });
+      window.addEventListener("touchstart", stop, { passive: true });
+      window.addEventListener("pointerdown", stop, { passive: true });
+      window.addEventListener("keydown", stop);
+    };
+
+    scrollToHash();
+    window.addEventListener("hashchange", scrollToHash);
+    return () => {
+      window.removeEventListener("hashchange", scrollToHash);
+      stopStabilizing();
+    };
+  }, [lenis]);
+
   return <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>;
 }

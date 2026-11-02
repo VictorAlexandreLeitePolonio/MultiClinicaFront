@@ -30,7 +30,7 @@ describe("LandingSmoothLink", () => {
 
     await userEvent.click(screen.getByRole("link", { name: "Ver como funciona" }));
 
-    expect(scrollTo).toHaveBeenCalledWith(target, { offset: -72, immediate: false });
+    expect(scrollTo).toHaveBeenCalledWith(target, { offset: 0, immediate: false });
     expect(window.location.hash).toBe("#funcionalidades");
   });
 
@@ -43,7 +43,7 @@ describe("LandingSmoothLink", () => {
     await userEvent.keyboard("{Enter}");
 
     expect(scrollTo).toHaveBeenCalledWith(expect.any(HTMLElement), {
-      offset: -72,
+      offset: 0,
       immediate: true,
     });
     expect(scrollTo.mock.calls[0][0]).toBe(target);

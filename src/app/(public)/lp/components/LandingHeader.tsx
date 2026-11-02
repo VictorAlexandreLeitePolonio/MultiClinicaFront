@@ -1,63 +1,82 @@
-"use client";
+'use client'
 
-import { useEffect, useState, type ReactNode } from "react";
-import Link from "next/link";
-import { Menu } from "lucide-react";
-import { BrandLogo } from "@/components/ui/BrandLogo";
-import { cn } from "@/lib/utils";
-import { LandingSmoothLink } from "./LandingSmoothLink";
+import { useEffect, useState, type ReactNode } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Menu } from 'lucide-react'
+import { BrandLogo } from '@/components/ui/BrandLogo'
+import { cn } from '@/lib/utils'
+import { LandingSmoothLink } from './LandingSmoothLink'
 
 const NAV_LINKS = [
-  { href: "#funcionalidades", label: "Funcionalidades" },
-  { href: "/hub", label: "Hub" },
-  { href: "#planos", label: "Planos" },
-  { href: "#faq", label: "Dúvidas" },
-] as const;
+  { href: '/#funcionalidades', label: 'Funcionalidades' },
+  { href: '/hub', label: 'Hub' },
+  { href: '/#planos', label: 'Planos' },
+  { href: '/#faq', label: 'Dúvidas' },
+] as const
 
 const FOCUS_RING =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-bg)]";
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--lp-bg)]'
 
 function NavigationLink({
   href,
   className,
   children,
 }: {
-  href: string;
-  className: string;
-  children: ReactNode;
+  href: string
+  className: string
+  children: ReactNode
 }) {
-  if (href.startsWith("#")) {
+  const pathname = usePathname()
+
+  if (href.startsWith('/#')) {
+    if (pathname === '/') {
+      return (
+        <LandingSmoothLink href={href.slice(1) as `#${string}`} className={className}>
+          {children}
+        </LandingSmoothLink>
+      )
+    }
+
+    return (
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+    )
+  }
+
+  if (href.startsWith('#')) {
     return (
       <LandingSmoothLink href={href as `#${string}`} className={className}>
         {children}
       </LandingSmoothLink>
-    );
+    )
   }
 
   return (
     <Link href={href} className={className}>
       {children}
     </Link>
-  );
+  )
 }
 
 export function LandingHeader() {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const update = () => setScrolled(window.scrollY > 24);
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
-  }, []);
+    const update = () => setScrolled(window.scrollY > 24)
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    return () => window.removeEventListener('scroll', update)
+  }, [])
 
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-40 border-b transition-[background-color,border-color] duration-200 motion-reduce:transition-none",
+        'fixed inset-x-0 top-0 z-40 border-b transition-[background-color,border-color] duration-200 motion-reduce:transition-none',
         scrolled
-          ? "border-[var(--lp-line)] bg-[var(--lp-bg)]/80 backdrop-blur-sm"
-          : "border-transparent bg-transparent",
+          ? 'border-[var(--lp-line)] bg-[var(--lp-bg)]/80 backdrop-blur-sm'
+          : 'border-transparent bg-transparent',
       )}
       data-scrolled={scrolled}
     >
@@ -65,7 +84,7 @@ export function LandingHeader() {
         <Link
           href="/"
           className={cn(
-            "flex shrink-0 items-center gap-2.5 rounded-lg text-[var(--lp-ink)]",
+            'flex shrink-0 items-center gap-2.5 rounded-lg text-[var(--lp-ink)]',
             FOCUS_RING,
           )}
         >
@@ -78,7 +97,7 @@ export function LandingHeader() {
               key={link.href}
               href={link.href}
               className={cn(
-                "rounded-md transition-colors hover:text-[var(--lp-ink)]",
+                'rounded-md transition-colors hover:text-[var(--lp-ink)]',
                 FOCUS_RING,
               )}
             >
@@ -91,7 +110,7 @@ export function LandingHeader() {
           <Link
             href="/login"
             className={cn(
-              "hidden min-h-10 items-center rounded-lg px-2 text-sm font-semibold text-[var(--lp-muted)] transition-colors hover:text-[var(--lp-ink)] lg:inline-flex",
+              'hidden min-h-10 items-center rounded-lg px-2 text-sm font-semibold text-[var(--lp-muted)] transition-colors hover:text-[var(--lp-ink)] lg:inline-flex',
               FOCUS_RING,
             )}
           >
@@ -100,7 +119,7 @@ export function LandingHeader() {
           <Link
             href="/cadastro"
             className={cn(
-              "hidden min-h-10 items-center rounded-full bg-[var(--color-primary)] px-4 text-sm font-semibold text-[var(--lp-bg)] transition-[background-color,transform] duration-200 hover:bg-[var(--color-primary-light)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 lg:inline-flex",
+              'hidden min-h-10 items-center rounded-full bg-[var(--color-primary)] px-4 text-sm font-semibold text-[var(--lp-bg)] transition-[background-color,transform] duration-200 hover:bg-[var(--color-primary-light)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 lg:inline-flex',
               FOCUS_RING,
             )}
           >
@@ -111,7 +130,7 @@ export function LandingHeader() {
             <summary
               aria-label="Abrir menu"
               className={cn(
-                "inline-flex size-10 cursor-pointer list-none items-center justify-center rounded-lg border border-[var(--lp-line)] bg-[var(--lp-surface)] text-[var(--lp-ink)] transition-colors [&::-webkit-details-marker]:hidden",
+                'inline-flex size-10 cursor-pointer list-none items-center justify-center rounded-lg border border-[var(--lp-line)] bg-[var(--lp-surface)] text-[var(--lp-ink)] transition-colors [&::-webkit-details-marker]:hidden',
                 FOCUS_RING,
               )}
             >
@@ -124,7 +143,7 @@ export function LandingHeader() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--lp-muted)] transition-colors hover:bg-[var(--lp-bg)] hover:text-[var(--lp-ink)]",
+                    'rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--lp-muted)] transition-colors hover:bg-[var(--lp-bg)] hover:text-[var(--lp-ink)]',
                     FOCUS_RING,
                   )}
                 >
@@ -135,7 +154,7 @@ export function LandingHeader() {
                 <Link
                   href="/login"
                   className={cn(
-                    "rounded-lg px-3 py-2.5 text-sm font-semibold text-[var(--lp-ink)] transition-colors hover:bg-[var(--lp-bg)]",
+                    'rounded-lg px-3 py-2.5 text-sm font-semibold text-[var(--lp-ink)] transition-colors hover:bg-[var(--lp-bg)]',
                     FOCUS_RING,
                   )}
                 >
@@ -144,7 +163,7 @@ export function LandingHeader() {
                 <Link
                   href="/cadastro"
                   className={cn(
-                    "rounded-lg bg-[var(--color-primary)] px-3 py-2.5 text-center text-sm font-semibold text-[var(--lp-bg)] transition-transform active:scale-[0.97] motion-reduce:active:scale-100",
+                    'rounded-lg bg-[var(--color-primary)] px-3 py-2.5 text-center text-sm font-semibold text-[var(--lp-bg)] transition-transform active:scale-[0.97] motion-reduce:active:scale-100',
                     FOCUS_RING,
                   )}
                 >
@@ -156,5 +175,5 @@ export function LandingHeader() {
         </div>
       </div>
     </header>
-  );
+  )
 }
