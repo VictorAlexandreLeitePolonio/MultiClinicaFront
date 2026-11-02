@@ -98,7 +98,7 @@ function toFormValues(patient: Patient): PacienteFormData {
     bairro: patient.bairro ?? "",
     cidade: patient.cidade ?? "",
     estado: patient.estado ?? "",
-    cep: maskCEP(patient.cep ?? ""),
+    cep: unformatCEP(patient.cep ?? ""),
   };
 }
 
@@ -289,8 +289,9 @@ export default function PacienteFocusForm({
             label="CEP"
             id="cep"
             error={errors.cep?.message}
-            value={field.value ?? ""}
-            onChange={(event) => field.onChange(maskCEP(event.target.value))}
+            // O estado guarda só os dígitos (o schema de edição exige 8); a máscara é só de exibição.
+            value={maskCEP(field.value ?? "")}
+            onChange={(event) => field.onChange(unformatCEP(maskCEP(event.target.value)))}
             onBlur={field.onBlur}
           />
         )}

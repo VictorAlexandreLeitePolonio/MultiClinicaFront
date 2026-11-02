@@ -1,94 +1,129 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
+import { spring } from "@/lib/motion";
 import type { GetFinancialBalanceParams } from "../services/financial.service";
 
 interface BalancePeriodFilterProps {
   onApply: (params: GetFinancialBalanceParams) => void;
 }
 
-const toIso = (date: Date) => date.toISOString().slice(0, 10);
+const MONTHS = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 
-type PresetKey = "7d" | "30d" | "month" | "all" | "custom";
-
-function presetRange(key: Exclude<PresetKey, "custom">): GetFinancialBalanceParams {
-  const now = new Date();
-  const end = toIso(now);
-  if (key === "all") return {};
-  if (key === "month") {
-    return { startDate: toIso(new Date(now.getFullYear(), now.getMonth(), 1)), endDate: end };
-  }
-  const days = key === "7d" ? 6 : 29;
-  const start = new Date(now);
-  start.setDate(start.getDate() - days);
-  return { startDate: toIso(start), endDate: end };
+/** "2026-11-01" + "2026-11-30" → "1 a 30 de novembro de 2026". */
+export function formatPeriod(start: string, end: string): string {
+  const [sy, sm, sd] = start.split("T")[0].split("-").map(Number);
+  const [ey, em, ed] = end.split("T")[0].split("-").map(Number);
+  if (!sy || !ey) return "";
+  if (sy === ey && sm === em) return `${sd} a ${ed} de ${MONTHS[em - 1]} de ${ey}`;
+  if (sy === ey) return `${sd} de ${MONTHS[sm - 1]} a ${ed} de ${MONTHS[em - 1]} de ${ey}`;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(sd)}/${pad(sm)}/${sy} a ${pad(ed)}/${pad(em)}/${ey}`;
 }
 
-const presets: Array<{ key: Exclude<PresetKey, "custom">; label: string }> = [
-  { key: "all", label: "Tudo" },
-  { key: "7d", label: "7 dias" },
-  { key: "30d", label: "30 dias" },
+type PresetKey = "month" | "30d" | "7d" | "custom";
+
+/** Data civil local (YYYY-MM-DD). `toISOString` usa UTC e vira o dia às 21h no Brasil. */
+export function localIso(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+export function presetRange(key: Exclude<PresetKey, "custom">, now = new Date()): GetFinancialBalanceParams {
+  // Sem datas, o back usa o mês corrente inteiro (inclui o que já está agendado até o fim do mês).
+  if (key === "month") return {};
+  const start = new Date(now);
+  start.setDate(start.getDate() - (key === "7d" ? 6 : 29));
+  return { startDate: localIso(start), endDate: localIso(now) };
+}
+
+const options: Array<{ key: PresetKey; label: string }> = [
   { key: "month", label: "Este mês" },
+  { key: "30d", label: "30 dias" },
+  { key: "7d", label: "7 dias" },
+  { key: "custom", label: "Personalizado" },
 ];
 
+const dateInput =
+  "h-9 rounded-xl border border-[var(--color-gray-200)] bg-[var(--color-card)] px-3 font-mono text-sm text-[var(--color-secondary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]";
+
 export function BalancePeriodFilter({ onApply }: BalancePeriodFilterProps) {
-  const [active, setActive] = useState<PresetKey>("all");
+  const layoutId = useId();
+  const [active, setActive] = useState<PresetKey>("month");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const isInvalid = Boolean(startDate && endDate && startDate > endDate);
 
-  const selectPreset = (key: Exclude<PresetKey, "custom">) => {
+  const select = (key: PresetKey) => {
     setActive(key);
-    onApply(presetRange(key));
+    if (key !== "custom") onApply(presetRange(key));
   };
 
   const applyCustom = () => {
     if (isInvalid) return;
-    setActive("custom");
     onApply({ startDate: startDate || undefined, endDate: endDate || undefined });
   };
 
-  const chipClass = (isActive: boolean) =>
-    `rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
-      isActive
-        ? "bg-[#14b8a6] text-white shadow-sm"
-        : "border border-[#d7f3ea] bg-white text-[#0f766e] hover:bg-[#ecfdf5] dark:border-slate-700 dark:bg-slate-900 dark:text-[#67e8f9] dark:hover:bg-slate-800"
-    }`;
-
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-[#d7f3ea] bg-white p-3 dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:flex-wrap sm:items-center">
-      <div className="flex flex-wrap gap-2">
-        {presets.map((preset) => (
-          <button key={preset.key} type="button" onClick={() => selectPreset(preset.key)} className={chipClass(active === preset.key)}>
-            {preset.label}
-          </button>
-        ))}
-        <button type="button" onClick={() => setActive("custom")} className={chipClass(active === "custom")}>
-          Personalizado
-        </button>
+    <div className="flex flex-col items-start gap-2 sm:items-end">
+      <div
+        role="radiogroup"
+        aria-label="Período"
+        className="inline-flex rounded-xl border border-[var(--color-gray-200)] bg-[var(--color-card)] p-1"
+      >
+        {options.map((option) => {
+          const selected = option.key === active;
+          return (
+            <button
+              key={option.key}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => select(option.key)}
+              className={cn(
+                "relative inline-flex h-8 items-center rounded-lg px-3 text-xs font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]",
+                selected
+                  ? "text-[var(--color-primary-dark)] dark:text-[var(--color-primary-light)]"
+                  : "text-[var(--color-gray-600)] hover:text-[var(--color-secondary)]",
+              )}
+            >
+              {selected && (
+                <motion.span
+                  layoutId={layoutId}
+                  transition={spring.ui}
+                  className="absolute inset-0 rounded-lg bg-[var(--color-primary-muted)]"
+                />
+              )}
+              <span className="relative">{option.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {active === "custom" && (
-        <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
-          <input
-            aria-label="Data inicial"
-            type="date"
-            value={startDate}
-            onChange={(event) => setStartDate(event.target.value)}
-            className="rounded-xl border border-[#d7f3ea] bg-white px-3 py-2 text-sm text-[#0f172a] focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-          />
-          <span className="text-sm text-[#64748b] dark:text-slate-400">até</span>
-          <input
-            aria-label="Data final"
-            type="date"
-            value={endDate}
-            onChange={(event) => setEndDate(event.target.value)}
-            className="rounded-xl border border-[#d7f3ea] bg-white px-3 py-2 text-sm text-[#0f172a] focus:border-[#14b8a6] focus:outline-none focus:ring-4 focus:ring-[#99f6e4]/50 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-          />
-          <Button type="button" fullWidth={false} disabled={isInvalid} onClick={applyCustom}>Aplicar</Button>
-          {isInvalid && <p className="basis-full text-xs text-red-600">A data inicial deve ser anterior à data final.</p>}
-        </div>
+        <form
+          className="flex flex-wrap items-center gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            applyCustom();
+          }}
+        >
+          <input aria-label="Data inicial" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className={dateInput} />
+          <span className="text-sm text-[var(--color-gray-600)]">até</span>
+          <input aria-label="Data final" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className={dateInput} />
+          <Button type="submit" fullWidth={false} disabled={isInvalid || (!startDate && !endDate)}>
+            Aplicar
+          </Button>
+          {isInvalid && (
+            <p role="alert" className="basis-full text-xs text-red-600 dark:text-red-400">
+              A data inicial deve ser anterior à data final.
+            </p>
+          )}
+        </form>
       )}
     </div>
   );

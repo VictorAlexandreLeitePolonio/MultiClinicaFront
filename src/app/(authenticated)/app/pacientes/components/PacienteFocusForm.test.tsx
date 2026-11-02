@@ -100,3 +100,38 @@ it("abre os detalhes preenchidos e com a etapa de acesso ao portal", async () =>
   expect(screen.getByRole("button", { name: /etapa 3: acesso ao portal/i })).toBeInTheDocument();
 });
 
+
+it("edita paciente com CEP e passa pela etapa de endereço", async () => {
+  hooks.patient = {
+    id: 8,
+    name: "Bruno Lima",
+    email: "bruno@cliniq.local",
+    cpf: "52998224725",
+    rg: null,
+    phone: "11999990000",
+    rua: "Rua das Flores",
+    numero: "10",
+    bairro: "Centro",
+    cidade: "São Paulo",
+    estado: "SP",
+    cep: "01001000",
+    birthDate: "1990-01-01",
+    isActive: true,
+    appointmentStatus: null,
+    paymentStatus: null,
+    portalAccessStatus: null,
+  };
+  const user = userEvent.setup();
+  render(
+    <PacienteFocusForm mode="edit" open patientId={8} onClose={vi.fn()} onSaved={vi.fn()} />,
+  );
+
+  await screen.findByDisplayValue("Bruno Lima");
+  await user.click(screen.getByRole("button", { name: "Continuar" }));
+  // A tela mostra o CEP mascarado; o estado guarda só os dígitos que o schema aceita.
+  expect(await screen.findByDisplayValue("01001-000")).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "Continuar" }));
+
+  expect(await screen.findByRole("button", { name: "Salvar alterações" })).toBeInTheDocument();
+  expect(screen.queryByText("CEP inválido")).not.toBeInTheDocument();
+});
